@@ -1,0 +1,62 @@
+{
+     "geographical factors": [
+          "districtid",
+          "blockid",
+          "clusterid"
+     ],
+     "social factors": [
+          "genderid",
+          "religionid",
+          "socialcatid",
+          "disability",
+          "subcaste"
+     ],
+     "economic factors": [
+          "bpl",
+          "whetherhomeless"
+     ],
+     "school factors": [
+          "schmgt",
+          "schcat",
+          "medium"
+     ],
+     "attendance factors": [
+          "[full][#partns=3][partn_1, frac_a]",
+          "[full][#partns=3][partn_1, frac_m]",
+          "[full][#partns=3][partn_1, frac_p]",
+          "[full][#partns=3][partn_2, frac_a]",
+          "[full][#partns=3][partn_2, frac_m]",
+          "[full][#partns=3][partn_2, frac_p]",
+          "[full][#partns=3][partn_3, frac_a]",
+          "[full][#partns=3][partn_3, frac_m]",
+          "[full][#partns=3][partn_3, frac_p]",
+          "[full][last_a]",
+          "[full][last_m]",
+          "[full][last_p]",
+          "attnd_label_10",
+          "attnd_label_15",
+          "attnd_label_20",
+          "attnd_label_30",
+          "attnd_label_40",
+          "attnd_label_50",
+          "attnd_label_60"
+     ],
+     "sat factors": [
+          "english_score",
+          "english_attnd",
+          "evs_score",
+          "evs_attnd",
+          "gujarati_score",
+          "gujarati_attnd",
+          "hindi_score",
+          "hindi_attnd",
+          "maths_score",
+          "maths_attnd",
+          "sanskrit_score",
+          "sanskrit_attnd",
+          "science_score",
+          "science_attnd",
+          "social science_score",
+          "social science_attnd"
+     ]
+}

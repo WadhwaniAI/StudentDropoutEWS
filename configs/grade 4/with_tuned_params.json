@@ -1,0 +1,89 @@
+{
+     "exp": {
+          "title": "public schools [fullay, attendance labels, sat, drift>0.5], grade 4",
+          "project": "ews",
+          "root_data": "data",
+          "root_exps": "exps/public schools [fullay, attendance labels, sat, drift]/grade 4"
+     },
+     "notes": {
+          "description": "public schools [fullay, attendance labels]"
+     },
+     "data": {
+          "grade": 4,
+          "trn_file": "data/grade 4/2223 | grade 4 | master | sem1sem2 | train[fullsat].pkl",
+          "tst_file": ["data/grade 4/2324 | grade 4 | master | sem1sem2 | srv-upd[fullsat].pkl"],
+          "chosen_tst_file": "",
+          "index": "aadhaaruid",
+          "label": "target",
+          "holidays": "data/cols_to_exclude.json",
+          "datasets_to_save": ["trn", "val", "srv-upd[fullsat]"],
+          "processing": {
+               "drop_feature_groups": ["month_agg_attnd", "schoolid", "villageid", "class", "studentage", "freetransportfacility", "academicyear", "[full][#partns=3][partn_3, frac_m]", "[full][#partns=3][partn_3, frac_p]", "[full][last_m]"]
+          },
+          "sample": {
+               "p": "actual",
+               "seed": 5
+          },
+          "split": {
+               "train_size": 0.7,
+               "random_state": 42,
+               "shuffle": true
+          },
+          "post_split_transforms": {  },
+          "post_split_encodings": {  },
+          "feature_engineering": {
+               "groups_of_months": {
+                    "full": [6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4]
+               },
+               "disc_cols_miss_frxn": 1.0,
+               "combs_of_chars": [[1, ["m", "p", "a"]]],
+               "partitions": [3],
+               "last_a_m_p_features": true,
+               "drop_all_attendances": true
+          },
+          "label_engineering": {
+               "implement_on": ["train[fullsat]", "srv-upd[fullsat]"],
+               "task": "altered classification",
+               "months": [6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4],
+               "poas": [10, 15, 20, 30, 40, 50, 60],
+               "disc_cols_miss_frxn": 1.0,
+               "drop_attnd_label": false
+          },
+          "filter": {
+               "in": {
+                    "schcat": ["1", "2", "3", "4", "5", "6", "7"]
+               },
+               "notin": {
+                    "schmgt": ["5", "92", "93", "94", "95", "97", "101"]
+               }
+          },
+          "baseline_params": {
+               "poas": [10, 15, 20, 30, 40, 50, 60],
+               "pocs": ["full"],
+               "markers": ["v", "^", "<", ">", "s", "P", "X"]
+          }
+     },
+     "model": {
+          "n_trials": 50,
+          "calibration_nbins": 20,
+          "params": {
+               "fixed": {
+                    "iterations": 1800,
+                    "leaf_estimation_method": "Newton",
+                    "grow_policy": "SymmetricTree",
+                    "boosting_type": "Ordered",
+                    "l2_leaf_reg": 4.849394798,
+                    "random_seed": 0,
+                    "depth": 8,
+                    "bagging_temperature": 0.09638853371,
+                    "auto_class_weights": "None",
+                    "loss_function": "Logloss",
+                    "learning_rate": 0.009516295977,
+                    "score_function": "Cosine",
+                    "task_type": "CPU",
+                    "leaf_estimation_iterations": 5,
+                    "bootstrap_type": "Bayesian"
+               }
+          }
+     }
+}
