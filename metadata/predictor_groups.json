@@ -33,13 +33,13 @@
           "[full][last_a]",
           "[full][last_m]",
           "[full][last_p]",
-          "attnd_label_10",
-          "attnd_label_15",
-          "attnd_label_20",
-          "attnd_label_30",
-          "attnd_label_40",
-          "attnd_label_50",
-          "attnd_label_60"
+          "binary_absence_10",
+          "binary_absence_15",
+          "binary_absence_20",
+          "binary_absence_30",
+          "binary_absence_40",
+          "binary_absence_50",
+          "binary_absence_60"
      ],
      "sat factors": [
           "english_score",

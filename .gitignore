@@ -1,7 +1,16 @@
-data/sample_data_dictionary.json
-data/2223\ \|\ grade\ 8\ \|\ master\ \|\ sem1sem2\ \|\ train\[fullsat\].pkl
-data/2324\ \|\ grade\ 8\ \|\ master\ \|\ sem1sem2\ \|\ srv-upd\[fullsat\].pkl
-data/students_options_v1.pkl
-configs/with_tuned_params.json
-src/__pycache__
-src/wandb
+# Byte-compiled / optimized / DLL files
+**/__pycache__/
+*.py[cod]
+
+# W&B logs
+wandb/
+.wandb/
+
+# Data files (example: ignore all .pkl files)
+data/**/*.pkl
+
+# notebooks
+*.ipynb
+
+# Ignore any file or folder with 'demo' in the name
+**/*[dD][eE][mM][oO]*

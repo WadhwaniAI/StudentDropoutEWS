@@ -4,19 +4,15 @@ import numpy as np
 import optuna
 import pandas as pd
 import pickle
-
 from catboost import CatBoostClassifier
 from sklearn.calibration import calibration_curve
 from sklearn.isotonic import IsotonicRegression
 from sklearn import metrics
 from sklearn.metrics import precision_recall_curve
-
-from utils import *
-from eval import get_thresholds_for_max_f1_and_lift
+from .utils import get_optuna_suggestions, address_device_compatibility, filter_valid_params, get_optimal_thresholds
 
 
-
-class CatBoostBinaryClassifier():
+class CatBoostBinaryClassifier:
 
      def __init__(
                self, 
@@ -118,11 +114,8 @@ class CatBoostBinaryClassifier():
           df_val.to_csv(f"{self.exp_dir}/val_postcalibration_confidence_scores.csv", index=False)
 
           # get optimal thresholds for max f1 score and max lift
-          threshold_max_f1, threshold_max_lift = get_thresholds_for_max_f1_and_lift(
-               df=df_val, 
-               preds_proba_1_col="preds_proba_1", 
-               preds_proba_0_col="preds_proba_0", 
-               target_col="target"
+          threshold_max_f1, threshold_max_lift = get_optimal_thresholds(
+               df=df_val, proba_1_col="preds_proba_1", target_col=self.config.data.label
           )
                
           # pass the threshold as model's attribute, only to save it 
@@ -278,164 +271,3 @@ class CatBoostBinaryClassifier():
                cat_features=self.cat_features, 
                **study.best_params
           )
-
-
-
-def get_optuna_suggestions(
-     trial: optuna.trial.Trial,
-     param_name: str,
-     dtype: str,
-     tuning_space: dict, 
-):
-     
-     '''
-     Description:
-          Suggests parameters for tuning based on the type of parameter.
-     Args:
-          trial: The optuna trial object.
-          param_name: The name of the parameter to tune.
-          dtype: The data type of the parameter.
-          tuning_space: The tuning space for the parameter.
-     Returns:
-          Suggested parameter for tuning
-     '''
-
-     # alter "none" to None in tuning space due to json / toml constraints
-     tuning_space = replace_value_in_nested_dict(
-          d=tuning_space, 
-          target="None", 
-          replacement=None
-     )
-
-     # suggest parameters based on dtype
-     if dtype == "int":
-          return trial.suggest_int(name=param_name, **tuning_space)
-     elif dtype == "float":
-          return trial.suggest_float(name=param_name, **tuning_space)
-     elif dtype == "categorical":
-          return trial.suggest_categorical(name=param_name, **tuning_space)
-     else:
-          raise ValueError(f"Invalid dtype: {dtype}")
-     
-
-
-
-def address_device_compatibility(parameters: dict) :
-
-     '''
-     Description:
-          Addresses device compatibility issues for CatBoost.
-
-     Args:
-          parameters: All CatBoost parameters that have to be checked for cpu / gpu compatibility.
-     Returns:
-          "task_type": "gpu" and "device" if gpu compatible, else "cpu".
-     '''
-
-     # conditions for CPU usage
-     conditions = [
-          "random_strength" in parameters and parameters["random_strength"] != 1,          
-          "rsm" in parameters and parameters["rsm"] != 1,          
-          "diffusion_temperature" in parameters and parameters["diffusion_temperature"] != 10000,
-          "sampling_frequency" in parameters and parameters["sampling_frequency"] != "PerTreeLevel",
-          "approx_on_full_history" in parameters and parameters["approx_on_full_history"] != False,
-          "langevin" in parameters and parameters["langevin"] != False
-     ]
-
-     # if any of the conditions are met, then use CPU
-     if any(conditions):
-          parameters["task_type"] = "CPU"
-          parameters.pop("device", None)
-     
-     # return parameters with updated device type
-     return parameters
-
-
-
-def loss_curves(train_dir: str):
-
-     '''
-     Description:
-          Plots the loss curves for training and validation data.
-     Args:
-          train_dir: The directory where the training data is.
-     Returns:
-          A matplotlib figure showing the loss curves.
-     '''
-
-     # load loss curves
-     with open(f"{train_dir}/catboost_training.json") as json_file:
-          df_losscurves = pd.DataFrame(json.load(json_file)['iterations'])
-     
-     # rename columns
-     df_losscurves.rename(columns={'learn': 'trn', 'test': 'val'}, inplace=True)
-
-     # get iterations
-     iterations = list(df_losscurves['iteration'])
-
-     # initialise figure
-     fig, ax = plt.subplots(figsize=(9, 6))
-     
-     # loop over all training and validation losses
-     for ds_name in ['trn', 'val']:
-
-          # plot loss curve
-          ax.plot(iterations, [loss[0] for loss in list(df_losscurves[ds_name])], label=ds_name)
-
-     # set labels
-     ax.set_xlabel('Iterations')
-     ax.set_ylabel('Loss')
-     ax.set_title('Loss Curves')
-     ax.legend()
-     ax.grid(True)
-
-     # save figure
-     plt.savefig(f"{train_dir}/loss_curves.png")
-
-     # return figure
-     return fig
-
-
-
-class auc_pr(object):
-
-     '''
-     Description:
-          Defines the custom eval metric for CatBoost to use to counter overfitting.
-          For more info, read CatBoost documentation on overfitting.
-     '''
-
-     def is_max_optimal(self):
-
-          # Returns whether great values of metric are better
-          True
-
-     def evaluate(self, approxes, target, weight):
-
-          # approxes is a list of indexed containers
-          # (containers with only __len__ and __getitem__ defined),
-          # one container per approx dimension.
-          # Each container contains floats.
-          # weight is a one dimensional indexed container.
-          # target is a one dimensional indexed container.
-
-          confidence_scores = approxes[0]
-          
-          # precision recall curve
-          ps, rs, ts = precision_recall_curve(
-               y_true=target, 
-               probas_pred=confidence_scores
-          )
-
-          # area under precision recall curve
-          ap = metrics.auc(rs, ps)
-          
-          weight_sum = 1
-          # weight parameter can be None.
-          # Returns pair (error, weights sum)
-
-          return (ap, weight_sum)
-
-     def get_final_error(self, error, weight):
-          # Returns final value of metric based on error and weight
-          return error

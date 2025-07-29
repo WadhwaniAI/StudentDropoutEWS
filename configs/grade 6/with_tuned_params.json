@@ -2,23 +2,21 @@
      "exp": {
           "title": "public schools [fullay, attendance labels, sat, drift>0.5], grade 6",
           "project": "ews",
-          "root_data": "data",
           "root_exps": "exps/public schools [fullay, attendance labels, sat, drift]/grade 6"
      },
-     "notes": {
-          "description": "public schools [fullay, attendance labels]"
-     },
      "data": {
-          "grade": 6,
-          "trn_file": "data/grade 6/2223 | grade 6 | master | sem1sem2 | train[fullsat].pkl",
-          "tst_file": ["data/grade 6/2324 | grade 6 | master | sem1sem2 | srv-upd[fullsat].pkl"],
-          "chosen_tst_file": "",
+          "training_data_path": "datasets/ay2223_grade6.pkl",
+          "inference_data_path": "datasets/ay2324_grade6.pkl",
           "index": "aadhaaruid",
           "label": "target",
-          "holidays": "data/cols_to_exclude.json",
-          "datasets_to_save": ["trn", "val", "srv-upd[fullsat]"],
-          "processing": {
-               "drop_feature_groups": ["month_agg_attnd", "schoolid", "villageid", "class", "studentage", "freetransportfacility", "academicyear", "[full][#partns=3][partn_3, frac_m]", "[full][#partns=3][partn_3, frac_p]", "[full][last_m]"]
+          "holidays_calendar_path": "metadata/holidays_calendar.json",
+          "column_filters": {
+               "in": {
+                    "schcat": ["1", "2", "3", "4", "5", "6", "7"]
+               },
+               "notin": {
+                    "schmgt": ["5", "92", "93", "94", "95", "97", "101"]
+               }
           },
           "sample": {
                "p": "actual",
@@ -29,39 +27,17 @@
                "random_state": 42,
                "shuffle": true
           },
-          "post_split_transforms": {  },
-          "post_split_encodings": {  },
-          "feature_engineering": {
+          "engineer_features": {
                "groups_of_months": {
                     "full": [6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4]
                },
-               "disc_cols_miss_frxn": 1.0,
                "combs_of_chars": [[1, ["m", "p", "a"]]],
                "partitions": [3],
-               "last_a_m_p_features": true,
-               "drop_all_attendances": true
-          },
-          "label_engineering": {
-               "implement_on": ["train[fullsat]", "srv-upd[fullsat]"],
-               "task": "altered classification",
-               "months": [6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4],
-               "poas": [10, 15, 20, 30, 40, 50, 60],
                "disc_cols_miss_frxn": 1.0,
-               "drop_attnd_label": false
+               "months_for_binary": [6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4],
+               "absence_thresholds": [10, 15, 20, 30, 40, 50, 60]
           },
-          "filter": {
-               "in": {
-                    "schcat": ["1", "2", "3", "4", "5", "6", "7"]
-               },
-               "notin": {
-                    "schmgt": ["5", "92", "93", "94", "95", "97", "101"]
-               }
-          },
-          "baseline_params": {
-               "poas": [10, 15, 20, 30, 40, 50, 60],
-               "pocs": ["full"],
-               "markers": ["v", "^", "<", ">", "s", "P", "X"]
-          }
+          "drop_columns_or_groups": ["month_agg_attnd", "schoolid", "villageid", "class", "studentage", "freetransportfacility", "academicyear", "[full][#partns=3][partn_3, frac_m]", "[full][#partns=3][partn_3, frac_p]", "[full][last_m]"]
      },
      "model": {
           "n_trials": 50,
