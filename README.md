@@ -85,15 +85,15 @@ The ```metadata/``` directory contains mandatory auxiliary data aspects needed t
 A dataframe to use in training and inference pipelines must have a schema consistent with `data/schema.json`.
 
 **File type:**
-- A dataset (dataframe) file must be of pickle type. Example: `dataset/ay2223_grade3.pkl`
+A dataset (dataframe) file must be of pickle type. Example: `dataset/ay2223_grade3.pkl`
 
 **Naming format:**
-- The basename of any dataset file must follow the pattern: `ay<academic_year>_grade<grade>.pkl`. Example: `ay2223_grade3.pkl`
+The basename of any dataset file must follow the pattern: `ay<academic_year>_grade<grade>.pkl`. Example: `ay2223_grade3.pkl`
 </details>
 <details>
 <summary><h3>📘 Config template</h3></summary>
 
-- A JSON Configuration file is used to define all aspects for running an experiment. Example template is shown below.
+- A JSON Configuration file is used to define all aspects for running an experiment. A template is shown below.
 
 ---
 
