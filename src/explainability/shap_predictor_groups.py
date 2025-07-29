@@ -2,7 +2,9 @@ import json
 import os
 import pandas as pd
 import shap
-from typing import Dict, List
+import numpy as np
+from typing import Dict, List, Union
+from sklearn.metrics import precision_recall_curve
 from models.model import CatBoostBinaryClassifier
 from models.utils import get_model_features
 from utils import load_config
@@ -11,44 +13,60 @@ from utils import load_config
 class SHAPPipeline:
      """
      SHAPPipeline analyzes model predictions and explains them using SHAP values for a given experimental directory and dataset.
-     This class is tailored for experiments organized in a directory (`exp_dir`) with saved model, config, thresholds, and features.
-     Supports feature grouping, threshold-based prediction labeling, and identification of top contributing predictor groups
-     and features. 
-
-     Returns:
-          pd.DataFrame: Dataframe with SHAP scores, predictor group contributions, top driving features and predicted labels.
+     This class is tailored for experiments organized in a directory (`exp_dir`) with saved model, config, and features.
+     Returns a dataframe with predictor group contributions, and top driving factors.
      """
 
      def __init__(
-          self, exp_dir: str, df_path: str, predictor_groups: Dict[str, List[str]], target_recall: float, target_ds_name: str
+          self, exp_dir: str, df_path: str, predictor_groups: Union[str, Dict[str, List[str]]],
+          threshold: float=None, target_recall: float=None
      ):
-          """Initializes the SHAPPipeline with paths, thresholds, features, and model."""
+          """
+          Initializes the SHAPPipeline with paths, thresholds, features, and model.
+     
+          :param exp_dir (str): Path to experiment directory containing model, config, and metadata.
+          :param df_path (str): Path to the dataset to explain.
+          :param predictor_groups (str | dict): JSON file path or dict defining predictor groupings.
+          :param threshold (float | None): Classification threshold for label assignment.
+          :param target_recall (float | None): If no threshold is provided, this recall is used to compute threshold from val set.
+          """
           self.exp_dir = exp_dir
           self.df_path = df_path
-          self.predictor_groups = predictor_groups
+          self.threshold = threshold
           self.target_recall = target_recall
-          self.target_ds_name = target_ds_name
+
+          if isinstance(predictor_groups, str):
+               with open(predictor_groups, "r") as f:
+                    self.predictor_groups = json.load(f)
+          else:
+               self.predictor_groups = predictor_groups
 
           # Load metadata
-          self.cat_features, self.num_features, self.all_features = get_model_features(self.exp_dir)
-          self.thresholds = self._load_thresholds()
-          self.threshold = self._get_threshold()
+          self.cat_features, self.num_features = get_model_features(self.exp_dir)
+          self.all_features = self.cat_features + self.num_features
           self.model = self._load_model()
           self.df = self._load_dataframe()
           self.config = load_config(os.path.join(exp_dir, "config.json"))
 
-     def _load_thresholds(self) -> Dict:
-          """Loads threshold values from file."""
-          with open(os.path.join(self.exp_dir, "thresholds.json")) as f:
-               return json.load(f)
+          if self.threshold is None:
+               self.threshold = self._compute_threshold()
 
-     def _get_threshold(self) -> float:
-          """Retrieves the threshold for the target recall and dataset."""
-          key = f"{self.target_ds_name}, recall={self.target_recall}"
-          threshold = self.thresholds.get(key)
-          if threshold is None:
-               raise ValueError(f"No matching threshold found for key: {key}")
-          return threshold
+     def _compute_threshold(self) -> float:
+          """Compute threshold based on target recall or best F1 on val set."""
+          val_path = os.path.join(self.exp_dir, "val.pkl")
+          val_df = pd.read_pickle(val_path)
+          val_df[self.num_features] = val_df[self.num_features].astype("float64")
+          probas = self.model.predict_proba(val_df[self.all_features])[:, 1]
+          labels = val_df[self.config.data.label_col]
+
+          precisions, recalls, thresholds = precision_recall_curve(labels, probas)
+
+          if self.target_recall is not None:
+               idx = np.argmin(np.abs(recalls - self.target_recall))
+               return thresholds[idx]
+          else:
+               f1s = 2 * (precisions[:-1] * recalls[:-1]) / (precisions[:-1] + recalls[:-1] + 1e-8)
+               return thresholds[np.argmax(f1s)]
 
      def _load_model(self):
           """Loads the trained CatBoost model from file."""
@@ -57,9 +75,10 @@ class SHAPPipeline:
           return clf.model
 
      def _load_dataframe(self) -> pd.DataFrame:
-          """Loads the input dataframe and casts numeric features to float."""
+          """Loads the input dataframe and casts numeric features to float, and categorical to string."""
           df = pd.read_pickle(self.df_path)
-          df[self.num_features] = df[self.num_features].astype("float64")
+          df[self.num_features] = df[self.num_features].astype(np.float64)
+          df[self.cat_features] = df[self.cat_features].astype(str)
           return df
 
      def _generate_shap_values(self) -> None:
