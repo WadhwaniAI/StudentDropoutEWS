@@ -5,7 +5,8 @@ from data.engineer_attendance_features import EngineerAttendanceFeatures
 from models.model import CatBoostBinaryClassifier
 from models.utils import get_model_features
 from analysis.metrics import BinaryModelEvaluator
-from utils import load_config
+from utils import load_config, extract_academic_year_from_path
+
 
 
 def inference_pipeline(
@@ -44,7 +45,7 @@ def inference_pipeline(
      feature_engineer.configure_features(**config.data.engineer_features)
      df, _, _ = feature_engineer.generate_features(
           df,
-          acad_year="2324",
+          acad_year=extract_academic_year_from_path(inference_data_path),
           drop_columns_or_groups=config.data.drop_columns_or_groups,
           column_groups=column_groups
      )

@@ -8,11 +8,12 @@ from models.model import CatBoostBinaryClassifier
 from models.utils import save_model_features, loss_curves
 from analysis.metrics import BinaryModelEvaluator
 from src.data.utils import sample_and_split  
+from utils import extract_academic_year_from_path
 
 
 def training_pipeline(config: Munch, exp_dir: str) -> tuple[dict, dict]:
      """
-     Runs the full training pipeline and returns results for external logging.
+     Runs the full training pipeline and evaluates on training and validation datasets.
 
      :param config: Parsed configuration as a Munch dictionary for dotted access
      :param exp_dir: Directory to save experiment outputs
@@ -57,13 +58,13 @@ def training_pipeline(config: Munch, exp_dir: str) -> tuple[dict, dict]:
      datasets = {}
      datasets["train"], cat_features, num_features = feature_engineer.generate_features(
           df_train,
-          acad_year="2324",
+          acad_year=extract_academic_year_from_path(config.data.training_data_path),
           drop_columns_or_groups=config.data.drop_columns_or_groups,
           column_groups=column_groups
      )
      datasets["val"], _, _ = feature_engineer.generate_features(
           df_val,
-          acad_year="2324",
+          acad_year=extract_academic_year_from_path(config.data.training_data_path),
           drop_columns_or_groups=config.data.drop_columns_or_groups,
           column_groups=column_groups
      )
@@ -84,7 +85,7 @@ def training_pipeline(config: Munch, exp_dir: str) -> tuple[dict, dict]:
           y_val=datasets["val"][config.data.label]
      )
 
-     # Predict, save, and evaluate
+     # Predict, save, and evaluate on train and val
      wandb_metrics = {}
      for split, df_split in datasets.items():
           df_preds = model.predict(x=df_split, features=cat_features + num_features)

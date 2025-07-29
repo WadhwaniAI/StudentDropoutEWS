@@ -23,9 +23,11 @@ def main():
                config_exclude_keys=['exp']
           )
 
+          # Run training pipeline and return metrics on train and val
           training_summary, wandb_metrics = training_pipeline(config, exp_dir)
           print("Training summary:", training_summary)
 
+          # Run inference pipeline (optional)
           inference_path = getattr(config.data, "inference_path", None)
           if inference_path and os.path.exists(inference_path):
                print(f"===> Running inference for {inference_path}")

@@ -67,15 +67,14 @@ The ```metadata/``` directory contains mandatory auxiliary data aspects needed t
 - Example: `{"2223": {"6": {"sundays": [5, 12], "vacation": [1, 2], "pravesh utsav": [13, 14]}}}`
 - For subsequent academic years, this dictionary must be updated.
 
-```data/schema.json```
-- This is the universal dictionary with column names as keys and values as a list of appropriate datatype and description.
-- It is preferred that column names aren't modified.
-  - Modifying them would require modifying certain hardcoded aspects of scripts and configs as well.
+```metadata/schema.json```
+- This dictionary representa the schema for a dataset.
+- Each valid column name is a keys and value is a list of appropriate datatype and description.
 
-```data/column_groups.json```
+```metadata/column_groups.json```
 - This dictionary groups columns for combined use such as common preprocessing operations.
 
-```data/predictor_groups.json```
+```metadata/predictor_groups.json```
 - This dictionary enlists predictor groups used to explain predictions and guide interventions using SHAP.
 </details>
 <details>
@@ -200,7 +199,7 @@ from inference import inference_pipeline
 results = inference_pipeline(
      exp_dir=path/to/exp/dir,
      inference_data_path="datasets/test_set.pkl",
-     manual_thresholds={"test": 0.75} 
+     manual_thresholds={"test": 0.75} # optional
 )
 # Access outputs
 probas = results["preds_proba_1"]     # Series of predicted probabilities
