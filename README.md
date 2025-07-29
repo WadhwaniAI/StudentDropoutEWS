@@ -1,5 +1,5 @@
 <details>
-<summary><h1>🗂️ Project</h1></summary>
+<summary><h3>🗂️ Project</h3></summary>
 
 - EWS (Early Warning System) is a tabular binary classification problem to identify students at the risk of dropping out.
 - We receive the following kinds of data:
@@ -13,9 +13,8 @@
 - Separate models are trained for each grade (grades 3 to 8)
 - Results shared include the prediction class and contributions of predictor groups and features to guide interventions.
 </details>
-
 <details>
-<summary><h1>🧠 Index</h1></summary>
+<summary><h3>🧠 Index</h3></summary>
 
 - **Setup instructions**  
   Learn how to clone the repository, create a virtual environment, and install required packages.
@@ -41,9 +40,8 @@
 - **Explainability**  
   Shows how to generate predictor groups and their top driving features using SHAP scores for each student.
 </details>
-
 <details>
-<summary><h1>🔧 Setup instructions</h1></summary>
+<summary><h3>🔧 Setup instructions</h3></summary>
 
 - Clone the repository
 ```
@@ -58,9 +56,8 @@ $ conda activate venv
 $ pip install -r requirements.txt
 ```
 </details>
-
 <details>
-<summary><h1>📊 Important metadata</h1></summary>
+<summary><h3>📊 Important metadata</h3></summary>
 
 The ```metadata/``` directory contains mandatory auxiliary data aspects needed to train models, run inference, and obtain predictors.
 
@@ -81,9 +78,8 @@ The ```metadata/``` directory contains mandatory auxiliary data aspects needed t
 ```data/predictor_groups.json```
 - This dictionary enlists predictor groups used to explain predictions and guide interventions using SHAP.
 </details>
-
 <details>
-<summary><h1>🧩 Mandatory aspects of a dataset file</h1></summary>
+<summary><h3>🧩 Mandatory aspects of a dataset file</h3></summary>
 
 **Schema:**
 A dataframe to use in training and inference pipelines must have a schema consistent with `data/schema.json`.
@@ -94,9 +90,8 @@ A dataframe to use in training and inference pipelines must have a schema consis
 **Naming format:**
 - The basename of any dataset file must follow the pattern: `ay<academic_year>_grade<grade>.pkl`. Example: `ay2223_grade3.pkl`
 </details>
-
 <details>
-<summary><h1>📘 Config template</h1></summary>
+<summary><h3>📘 Config template</h3></summary>
 
 - A JSON Configuration file is used to define all aspects for running an experiment. Example template is shown below.
 
@@ -181,9 +176,8 @@ A dataframe to use in training and inference pipelines must have a schema consis
 }
 ```
 </details>
-
 <details>
-<summary><h1>🎯 Training a model</h1></summary>
+<summary><h3>🎯 Training a model</h3></summary>
 
 The `training_pipeline` trains a CatBoost model using the given config and saves outputs to the specified experiment directory.
 
@@ -195,9 +189,8 @@ training_summary, metrics_summary = training_pipeline(
 )
 ```
 </details>
-
 <details>
-<summary><h1>🎯 Inference</h1></summary>
+<summary><h3>🎯 Inference</h3></summary>
 
 The ```inference_pipeline``` performs prediction on new data using the trained CatBoost model from a given experiment directory. 
 It returns the input dataframe with predicted probabilities and binary labels (based on either learned or manual thresholds).
@@ -214,9 +207,8 @@ probas = results["preds_proba_1"]     # Series of predicted probabilities
 labels = results["predictions"]       # Series of "dropout" / "notdropout" labels
 ```
 </details>
-
 <details>
-<summary><h1>📉 Executing main.py</h1></summary>
+<summary><h3>📉 Executing main.py</h3></summary>
 
 This run the training (and optionally inference) pipelines for given JSON configs. Example: 
 
@@ -228,9 +220,8 @@ Arguments:
 config_source: Path to config JSON file or directory containing JSON configs.
 ```
 </details>
-
 <details>
-<summary><h1>💡 Explainability</h1></summary>
+<summary><h3>💡 Explainability</h3></summary>
 
 The `SHAPPipeline` explains model predictions using SHAP values by grouping feature contributions and identifying the top predictor groups and drivers behind each prediction.
 
