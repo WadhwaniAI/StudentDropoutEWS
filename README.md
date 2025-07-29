@@ -1,6 +1,5 @@
 <details>
 <summary><h3>🗂️ Project</h3></summary>
-
 - EWS (Early Warning System) is a tabular binary classification problem to identify students at the risk of dropping out.
 - We receive the following kinds of data:
   - Enrollment data: Information about students collected during enrollment
@@ -15,7 +14,6 @@
 </details>
 <details>
 <summary><h3>🧠 Index</h3></summary>
-
 - **Setup instructions**  
   Learn how to clone the repository, create a virtual environment, and install required packages.
 
