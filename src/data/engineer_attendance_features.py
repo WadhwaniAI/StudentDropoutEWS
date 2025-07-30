@@ -90,7 +90,7 @@ class EngineerAttendanceFeatures:
 
      def _num_of_patterns(self, s: str, pattern: str) -> int:
           """Counts overlapping occurrences of a pattern in a string."""
-          return 0 if not pattern else len(re.findall(f'(?={re.escape(pattern.strip())})', s.strip()))
+          return 0 if not pattern.strip() else len(re.findall(f'(?={re.escape(pattern.strip())})', s.strip()))
 
      def _formulate_pattern_strings(self, char_combos: List[List]) -> List[str]:
           """
