@@ -15,7 +15,6 @@ def determine_columns_to_drop(
 ) -> List[str]:
      """
      Determines the columns to drop based on column group names or individual column names.
-
      :param df: DataFrame to validate individual column existence
      :param drop_columns_or_groups: List of group names or individual column names to drop
      :param column_groups: Mapping from group names to list of column names
@@ -38,15 +37,12 @@ def split_features_by_dtype(
           df: pd.DataFrame, index: str="aadhaaruid", label: str="target", 
 ) -> Tuple[List[str], List[str]]:
      """
-     Splits DataFrame columns into categorical and numerical feature lists.
-     - Categorical: dtype 'object'
-     - Numerical: dtype np.float64 only     
+     Identify columns as Categorical with dtype 'object' and Numerical with dtype np.float64 only     
      Excludes index and label columns from both.
-
      :param df: Input DataFrame
      :param label: Name of label/target column to exclude
      :param index: Name of index column to exclude
-     :return: Tuple of (categorical_features, numerical_features)
+     Returns: Tuple of (categorical_features, numerical_features)
      """
      exclude = {label, index}
      categorical_features = [col for col in df.select_dtypes(include='object').columns if col not in exclude]
@@ -82,16 +78,14 @@ def sample_and_split(
 ) -> dict:
      """
      Samples the dataset based on given prevalence, then splits into train and validation sets.
-
      :param df (pd.DataFrame): DataFrame containing features and label
      :param label (str): Name of the label column to sample on
      :param sampling_prevalence (float or str): Desired prevalence for the label ('actual' for current prevalence)
      :param sample_seed (int): Seed for random sampling
      :param train_size (float): Proportion of the dataset to include in the train split
      :param split_seed (int): Seed for train-test split
-     :param shuffle (bool): Whether to shuffle the data before splitting
-     
-     :return: Tuple of DataFrames (df_train, df_val)
+     :param shuffle (bool): Whether to shuffle the data before splitting     
+     Returns: Tuple of DataFrames (df_train, df_val)
      """
      
      actual_p = df[label].mean()

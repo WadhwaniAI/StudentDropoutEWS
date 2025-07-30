@@ -15,8 +15,7 @@ class EngineerAttendanceFeatures:
                index: str="aadhaaruid", label: str="target"
      ):
           """
-          Initializes the feature engineer with holiday mappings and allowed missing attendance threshold.
-          
+          Initializes the feature engineer with holiday mappings and allowed missing attendance threshold.          
           :param holidays: Mapping of academic year to list of holiday date column names.
           :param disc_cols_miss_frxn: Maximum allowed fraction of 'm' (missing) values in valid columns.
           :param all_attendance_pattern: Regex pattern to match valid attendance column names (e.g., '12_15').
@@ -45,8 +44,7 @@ class EngineerAttendanceFeatures:
                months_for_binary: List[int]=[12, 1, 2, 3, 4],
                absence_thresholds: List[int]=[10, 15, 20, 30, 40, 50, 60]) -> None:
           """
-          Configure the feature generation parameters. This should be called once before processing dataframes.
-          
+          Configure the feature generation parameters. This should be called once before processing dataframes.          
           :param groups_of_months: Dictionary mapping group names to month lists for pattern features
           :param combs_of_chars: Character combinations for pattern generation
           :param partitions: List of partition numbers for pattern features
@@ -68,14 +66,13 @@ class EngineerAttendanceFeatures:
           self._configured = True
         
      def _get_valid_attendance_columns(
-          self, df: pd.DataFrame, acad_year: str, disc_cols_miss_frxn: float=1.0
+               self, df: pd.DataFrame, acad_year: str, disc_cols_miss_frxn: float=1.0
      ) -> tuple[List[str], List[str]]:
           """
           Identifies valid attendance columns by:
           - Matching the pattern 'digit_digit' (e.g., '12_15')
           - Excluding holiday columns for the given academic year
           - Filtering out columns with excessive missing 'm' values
-
           :param df: Input DataFrame containing attendance columns
           :param acad_year: Academic year identifier
           :return: Tuple of (all_attendance_columns, valid_attendance_columns)
@@ -98,7 +95,6 @@ class EngineerAttendanceFeatures:
      def _formulate_pattern_strings(self, char_combos: List[List]) -> List[str]:
           """
           Generates all string patterns based on max length and character combinations.
-
           :param char_combos: List of [max_len, characters] format
           :return: Sorted list of pattern strings
           """
@@ -112,7 +108,6 @@ class EngineerAttendanceFeatures:
      def _scaling_factor(self, L: int, s: str) -> int:
           """
           Calculates scaling factor to normalize pattern frequency.
-
           :param L: Length of the sequence
           :param s: Pattern string
           :return: Integer scaling factor
@@ -124,13 +119,11 @@ class EngineerAttendanceFeatures:
      def _add_pattern_features(self, df: pd.DataFrame, cols: List[str], group_name: str) -> pd.DataFrame:
           """
           Adds normalized pattern frequency features from attendance strings over specified partitions.
-
           :param df: Input DataFrame
           :param cols: Attendance columns to process
           :param group_name: Group label (e.g. sem1)
           :return: DataFrame with new pattern features
-          """
-               
+          """               
           partitions = self._feature_config['partitions']
           pattern_features = []
 
@@ -152,7 +145,6 @@ class EngineerAttendanceFeatures:
      def _add_last_occurrence_features(self, df: pd.DataFrame, cols: List[str], group_name: str) -> pd.DataFrame:
           """
           Adds features capturing the last occurrence of 'a', 'm', 'p' in attendance string.
-
           :param df: Input DataFrame
           :param cols: Attendance columns to combine
           :param group_name: Group label
@@ -168,12 +160,10 @@ class EngineerAttendanceFeatures:
      def _add_binarised_features(self, df: pd.DataFrame, valid_attendances: List[str]) -> pd.DataFrame:
           """
           Adds binary features indicating absence in the last N days.
-
           :param df: Input DataFrame
           :param valid_attendances: List of valid attendance columns
           :return: Modified DataFrame with binary absence features
-          """
-               
+          """               
           months_for_binary = self._feature_config['months_for_binary']
           absence_thresholds = self._feature_config['absence_thresholds']
           
@@ -192,12 +182,13 @@ class EngineerAttendanceFeatures:
           return pd.concat([df, pd.DataFrame(binarised_data, index=df.index)], axis=1)
 
      def generate_features(
-          self, df: pd.DataFrame, acad_year: str, 
-          drop_columns_or_groups: List[str]=None, column_groups: Dict[str, List[str]]=None
+               self, df: pd.DataFrame, 
+               acad_year: str, 
+               drop_columns_or_groups: List[str]=None, 
+               column_groups: Dict[str, List[str]]=None
      ) -> pd.DataFrame:
           """
-          Generates all configured features for the given dataframe and academic year.
-          
+          Generates all configured features for the given dataframe and academic year.          
           :param df: Input DataFrame with attendance data
           :param acad_year: Academic year identifier
           :return: DataFrame with engineered features (original attendance columns removed)

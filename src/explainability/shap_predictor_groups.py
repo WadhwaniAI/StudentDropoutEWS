@@ -23,7 +23,6 @@ class SHAPPipeline:
      ):
           """
           Initializes the SHAPPipeline with paths, thresholds, features, and model.
-     
           :param exp_dir (str): Path to experiment directory containing model, config, and metadata.
           :param df_path (str): Path to the dataset to explain.
           :param predictor_groups (str | dict): JSON file path or dict defining predictor groupings.

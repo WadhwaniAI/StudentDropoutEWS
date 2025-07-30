@@ -11,10 +11,10 @@ class DataPreprocessor:
      """
 
      def __init__(
-          self,
-          schema_path: str="metadata/schema.json",
-          column_groups_path: str="metadata/column_groups.json",
-          attendance_replacement_map: Optional[dict]=None
+               self,
+               schema_path: str="metadata/schema.json",
+               column_groups_path: str="metadata/column_groups.json",
+               attendance_replacement_map: Optional[dict]=None
      ):
           """
           :param schema_path: Path to the JSON schema file defining column data types.
@@ -39,11 +39,9 @@ class DataPreprocessor:
      ) -> Tuple[pd.DataFrame, Dict[str, List[str]]]:
           """
           Lowercases column names, removes duplicates, casts dtypes, fixes exam attendance, and applies filters.
-
           :param df (pd.DataFrame): Input DataFrame to preprocess.
           :param index (str): Column name to use as index.
           :param label (str): Column name for the target variable.
-
           Returns: Tuple (Preprocessed DataFrame (pd.DataFrame), Filtered column_groups (dict))
           """
           # Lowercasing column names
@@ -103,19 +101,12 @@ class DataPreprocessor:
      ) -> Tuple[dict, dict]:
           """
           Validate and filter schema and feature group metadata based on DataFrame columns.
-
-          Parameters:
-          - df: Input DataFrame
-          - schema: Original schema dictionary
-          - column_groups: Original column_groups dictionary
-          - reserved_columns: Columns to exclude from validation
-
-          Returns:
-          - Filtered schema dictionary
-          - Filtered column_groups dictionary
-
-          Raises:
-          - ValueError if required columns are missing
+          :param df: Input DataFrame
+          :param schema: Original schema dictionary
+          :param column_groups: Original column_groups dictionary
+          :param reserved_columns: Columns to exclude from validation
+          Returns: Tuple of (Filtered schema dictionary, Filtered column_groups dictionary)
+          Raises: ValueError if required columns are missing
           """
           reserved_columns = reserved_columns or set()
           df_columns = set(df.columns)
