@@ -112,6 +112,8 @@ def training_pipeline(config: Munch, exp_dir: str) -> tuple[dict, dict]:
           "val_threshold_max_lift": val_threshold_max_lift,
           "shape_train": df_train.shape,
           "shape_val": df_val.shape,
+          "categorical_features": cat_features,
+          "numerical_features": num_features,
           "n_categorical_features": len(cat_features),
           "n_numerical_features": len(num_features),
           "loss_curves": loss_curves(train_dir=exp_dir)

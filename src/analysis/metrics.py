@@ -70,9 +70,12 @@ class BinaryModelEvaluator:
           return np.array(lifts), np.array(recalls), np.array(ks)
 
      def _finalize_plot(self):
-          """Standardize plot formatting."""
-          plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
-          plt.tight_layout()
+          """Standardize plot formatting and force square shape."""
+          ax = plt.gca()
+          ax.set_aspect('equal', adjustable='box')  # Make the plotting area square
+          if ax.get_legend_handles_labels()[0]:
+               plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
+          plt.tight_layout(pad=1.5)
           plt.grid()
 
      def _maybe_savefig(self, key):
