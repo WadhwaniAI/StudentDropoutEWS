@@ -2,6 +2,8 @@ import json
 import math
 import numpy as np
 import pandas as pd
+import re
+from pathlib import Path
 from sklearn.model_selection import train_test_split
 from typing import List, Dict, Tuple, Optional
 
@@ -17,7 +19,7 @@ def determine_columns_to_drop(
      :param df: DataFrame to validate individual column existence
      :param drop_columns_or_groups: List of group names or individual column names to drop
      :param column_groups: Mapping from group names to list of column names
-     :return: Sorted list of columns to drop
+     :return: Set of columns_to_drop, sorted alphabetically
      """
      drop_columns_or_groups = drop_columns_or_groups or []
      column_groups = column_groups or {}
@@ -89,7 +91,7 @@ def sample_and_split(
      :param split_seed (int): Seed for train-test split
      :param shuffle (bool): Whether to shuffle the data before splitting
      
-     :return: Dict with 'trn' and 'val' DataFrames (both include features + label)
+     :return: Tuple of DataFrames (df_train, df_val)
      """
      
      actual_p = df[label].mean()
@@ -123,7 +125,16 @@ def sample_and_split(
           random_state=split_seed, shuffle=shuffle
      )
 
-     return {
-          "train": pd.concat([X_train, y_train], axis=1).reset_index(drop=True),
-          "val": pd.concat([X_val, y_val], axis=1).reset_index(drop=True)
-     }
+     return (
+          pd.concat([X_train, y_train], axis=1).reset_index(drop=True),
+          pd.concat([X_val, y_val], axis=1).reset_index(drop=True)
+     )
+
+
+def extract_academic_year_from_path(path: str) -> str:
+     """Extract academic year (e.g., '2223') from path like 'ay2223_grade3.pkl'."""
+     filename = Path(path).name
+     match = re.search(r"ay(\d{4})_grade\d+.*\.pkl", filename)
+     if not match:
+          raise ValueError(f"Could not extract academic year from path: {path}")
+     return match.group(1)

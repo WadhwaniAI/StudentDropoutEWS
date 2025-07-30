@@ -1,14 +1,12 @@
 import os
 import pandas as pd
-import shutil
 from munch import Munch
-from data.preprocess import DataPreprocessor
-from data.engineer_attendance_features import EngineerAttendanceFeatures
-from models.model import CatBoostBinaryClassifier
-from models.utils import save_model_features, loss_curves
-from analysis.metrics import BinaryModelEvaluator
-from src.data.utils import sample_and_split  
-from utils import extract_academic_year_from_path
+from src.data.preprocess import DataPreprocessor
+from src.data.engineer_attendance_features import EngineerAttendanceFeatures
+from src.models.model import CatBoostBinaryClassifier
+from src.models.utils import save_model_features, loss_curves
+from src.analysis.metrics import BinaryModelEvaluator
+from src.data.utils import sample_and_split, extract_academic_year_from_path
 
 
 def training_pipeline(config: Munch, exp_dir: str) -> tuple[dict, dict]:
@@ -48,7 +46,7 @@ def training_pipeline(config: Munch, exp_dir: str) -> tuple[dict, dict]:
 
      # Initialize and configure feature engineering
      feature_engineer = EngineerAttendanceFeatures(
-          holidays=config.data.holidays_calendar_path,
+          holidays_calendar_path=config.data.holidays_calendar_path,
           index=config.data.index,
           label=config.data.label
      )
@@ -107,9 +105,6 @@ def training_pipeline(config: Munch, exp_dir: str) -> tuple[dict, dict]:
           evaluator.plot_all()
           wandb_metrics.update(metrics)
 
-     # Save config file
-     shutil.copyfile(config._config_path, os.path.join(exp_dir, "config.json"))
-
      # Additional metrics to log on WandB
      wandb_metrics.update({
           "best_params": best_params,
@@ -125,8 +120,10 @@ def training_pipeline(config: Munch, exp_dir: str) -> tuple[dict, dict]:
      # Final summary for CLI / main
      training_summary = {
           "best_params": best_params,
-          "val_threshold_max_f1": val_threshold_max_f1,
-          "val_threshold_max_lift": val_threshold_max_lift,
+          "val_optimal_thresholds": {
+               "val_threshold_max_f1": val_threshold_max_f1, 
+               "val_threshold_max_lift": val_threshold_max_lift
+          },
           "exp_dir": exp_dir
      }
 

@@ -1,12 +1,12 @@
 import os
 import pandas as pd
-from data.preprocess import DataPreprocessor
-from data.engineer_attendance_features import EngineerAttendanceFeatures
-from models.model import CatBoostBinaryClassifier
-from models.utils import get_model_features
-from analysis.metrics import BinaryModelEvaluator
-from utils import load_config, extract_academic_year_from_path
-
+from src.data.preprocess import DataPreprocessor
+from src.data.engineer_attendance_features import EngineerAttendanceFeatures
+from src.models.model import CatBoostBinaryClassifier
+from src.models.utils import get_model_features
+from src.analysis.metrics import BinaryModelEvaluator
+from src.utils import load_config
+from src.data.utils import extract_academic_year_from_path
 
 
 def inference_pipeline(
@@ -14,10 +14,11 @@ def inference_pipeline(
 ) -> dict:
      """
      Runs the full inference pipeline.
+
      :param: exp_dir (str): Experiment directory where config and models are saved.
      :param: inference_data_path (str): Path to the inference data file (pickle format).
-     Returns:
-          dict: Contains summary metrics under key 'metrics'.
+     :param: manual_thresholds (dict): Optional manual thresholds for evaluation.
+     :returns: Dict containing summary metrics.
      """
 
      # Load config and features from experiment directory
@@ -38,7 +39,7 @@ def inference_pipeline(
 
      # Initialize and configure feature engineering
      feature_engineer = EngineerAttendanceFeatures(
-          holidays=config.data.holidays_calendar_path,
+          holidays_calendar_path=config.data.holidays_calendar_path,
           index=config.data.index, 
           label=config.data.label
      )

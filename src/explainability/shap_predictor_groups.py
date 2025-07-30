@@ -5,9 +5,9 @@ import shap
 import numpy as np
 from typing import Dict, List, Union
 from sklearn.metrics import precision_recall_curve
-from models.model import CatBoostBinaryClassifier
-from models.utils import get_model_features
-from utils import load_config
+from src.models.model import CatBoostBinaryClassifier
+from src.models.utils import get_model_features
+from src.utils import load_config
 
 
 class SHAPPipeline:

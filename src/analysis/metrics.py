@@ -133,7 +133,7 @@ class BinaryModelEvaluator:
           """Plot probability score histogram."""
           plt.figure(figsize=(7, 6))
           if with_labels:
-               sns.histplot(self.df, x=self.proba_1_col, hue=self.label_col, bins=50)
+               sns.histplot(self.df, x=self.proba_1_col, hue=self.label_col, bins=50, legend=True)
                plt.title(f"{self.ds_name}: Proba dist with labels")
           else:
                sns.histplot(self.df, x=self.proba_1_col, bins=50)
@@ -149,7 +149,7 @@ class BinaryModelEvaluator:
           """Plot error scores (proba - label)."""
           self.df["error"] = self._compute_error_scores()
           plt.figure(figsize=(7, 6))
-          sns.histplot(self.df, x="error", hue=self.label_col, bins=50)
+          sns.histplot(self.df, x="error", hue=self.label_col, bins=50, legend=True)
           plt.xlabel("Error Score")
           plt.ylabel("Count")
           plt.yscale("log")

@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from typing import Dict, List
 from .utils import determine_columns_to_drop, split_features_by_dtype, holidays_academic_year_wise
-from utils import resolve_path
+from src.utils import resolve_path
 
 
 class EngineerAttendanceFeatures:
@@ -41,8 +41,8 @@ class EngineerAttendanceFeatures:
                groups_of_months: Dict[str, List[int]]={"full": [6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5]},
                combs_of_chars: List[List]=[[1, ['a', 'm', 'p']]],
                partitions: List[int]=[3],
-               months_for_binary: List[int]=[12, 1, 2, 3, 4],
                disc_cols_miss_frxn: float=1.0,
+               months_for_binary: List[int]=[12, 1, 2, 3, 4],
                absence_thresholds: List[int]=[10, 15, 20, 30, 40, 50, 60]) -> None:
           """
           Configure the feature generation parameters. This should be called once before processing dataframes.
@@ -50,6 +50,7 @@ class EngineerAttendanceFeatures:
           :param groups_of_months: Dictionary mapping group names to month lists for pattern features
           :param combs_of_chars: Character combinations for pattern generation
           :param partitions: List of partition numbers for pattern features
+          :param disc_cols_miss_frxn: Maximum allowed fraction of 'm' (missing) values to pick valid attendance columns
           :param months_for_binary: Months to consider for binary features
           :param absence_thresholds: Thresholds for binary absence features
           """

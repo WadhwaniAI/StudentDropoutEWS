@@ -2,7 +2,6 @@ import json
 import numpy as np
 import os
 import pytz
-import re
 from pathlib import Path
 from datetime import datetime
 from pathlib import Path
@@ -145,15 +144,6 @@ def get_config_files(config_path: str) -> list:
           return [os.path.join(config_path, f) for f in os.listdir(config_path) if f.endswith(".json")]
      else:
           raise ValueError("Expected a .json file or directory containing .json files.")
-
-
-def extract_academic_year_from_path(path: str) -> str:
-     """Extract academic year (e.g., '2223') from path like 'ay2223_grade3.pkl'."""
-     filename = Path(path).name
-     match = re.search(r"ay(\d{4})_grade\d+\.pkl", filename)
-     if not match:
-          raise ValueError(f"Could not extract academic year from path: {path}")
-     return match.group(1)
 
 
 def replace_value_in_nested_dict(d, target, replacement):

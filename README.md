@@ -209,14 +209,14 @@ labels = results["predictions"]       # Series of "dropout" / "notdropout" label
 <details>
 <summary><h3>📉 Executing main.py</h3></summary>
 
-This run the training (and optionally inference) pipelines for given JSON configs. Example: 
+This runs the training (and optionally inference) pipelines for given JSON configs. Example: Set cwd to repo root. Then:
 
 ```
-python main.py --config_source
+python -m src.main --config_source <path/to/config>
 
 Arguments:
 ----------
-config_source: Path to config JSON file or directory containing JSON configs.
+config_source: Path to config JSON file or directory of JSON configs.
 ```
 </details>
 <details>
