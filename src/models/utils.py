@@ -76,17 +76,6 @@ def save_model_features(exp_dir: str, cat_features: list, num_features: list) ->
           pickle.dump(num_features, f)
 
 
-def public_private_school_filter(
-          df: pd.DataFrame,
-          schcat_in: list[str]=["1", "2", "3", "4", "5", "6", "7"],
-          schmgt_notin: list[str]=["5", "92", "93", "94", "95", "97", "101"]
-) -> tuple[pd.DataFrame, pd.DataFrame]:
-     """Splits the dataframe into public and private school students based on school category and management."""
-     df.columns = map(str.lower, df.columns)
-     is_public = df["schcat"].isin(schcat_in) & ~df["schmgt"].isin(schmgt_notin)
-     return df[is_public], df[~is_public]
-
-
 def k_recall_curve(
           data: pd.DataFrame, label_col: str = "target", preds_proba_1_col: str = "preds_proba_1", num_points: int=1000
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:

@@ -132,3 +132,14 @@ def extract_academic_year_from_path(path: str) -> str:
      if not match:
           raise ValueError(f"Could not extract academic year from path: {path}")
      return match.group(1)
+
+
+def public_private_school_filter(
+          df: pd.DataFrame,
+          schcat_in: list[str]=["1", "2", "3", "4", "5", "6", "7"],
+          schmgt_notin: list[str]=["5", "92", "93", "94", "95", "97", "101"]
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+     """Splits the dataframe into public and private school students based on school category and management."""
+     df.columns = map(str.lower, df.columns)
+     is_public = df["schcat"].isin(schcat_in) & ~df["schmgt"].isin(schmgt_notin)
+     return df[is_public], df[~is_public]
