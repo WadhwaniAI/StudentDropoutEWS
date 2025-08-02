@@ -20,6 +20,8 @@ class TrainingPipeline(BasePipeline):
      def __init__(self, config_path: str):
           """Initializes the training-specific pipeline."""
           super().__init__()
+          
+          # Use ConfigManager to load and validate the config from the experiment directory
           self.config_path = config_path
           self.config = ConfigManager(config_input=self.config_path).get_validated_config()
           
@@ -47,14 +49,14 @@ class TrainingPipeline(BasePipeline):
                split_seed=self.config.data.split.random_state, shuffle=self.config.data.split.shuffle,
           )
           self.datasets = {TRAIN_SPLIT: df_train, VAL_SPLIT: df_val}
-          self.df = None
+          self.df = None # No longer needed after splitting
      
      def _train_model(self):
           """Initializes and trains the model."""
           save_model_features(exp_dir=self.exp_dir, cat_features=self.cat_features, num_features=self.num_features)
           self.model = CatBoostBinaryClassifier(exp_dir=self.exp_dir, cat_features=self.cat_features, config=self.config)
           
-          best_params, val_f1, val_lift = self.model.fit(
+          best_params, val_thresh_max_f1, val_thresh_max_lift = self.model.fit(
                x_train=self.datasets[TRAIN_SPLIT][self.cat_features + self.num_features], 
                y_train=self.datasets[TRAIN_SPLIT][self.config.data.label],
                x_val=self.datasets[VAL_SPLIT][self.cat_features + self.num_features], 
@@ -63,7 +65,7 @@ class TrainingPipeline(BasePipeline):
           loss_curves(train_dir=self.exp_dir)
           self.summary_metrics.update({
                "best_params": best_params, "shape_training_data": self.datasets[TRAIN_SPLIT].shape,
-               "val_threshold_max_f1": val_f1, "val_threshold_max_lift": val_lift,
+               "val_threshold_max_f1": val_thresh_max_f1, "val_threshold_max_lift": val_thresh_max_lift,
                "categorical_features": self.cat_features, "n_categorical_features": len(self.cat_features),
                "numerical_features": self.num_features, "n_numerical_features": len(self.num_features)
           })
@@ -72,8 +74,8 @@ class TrainingPipeline(BasePipeline):
      def _manual_thresholds(self) -> Dict[str, float]:
           """Defines thresholds based on validation set performance."""
           return {
-               "val_max_f1": self.summary_metrics.get("val_threshold_max_f1"),
-               "val_max_lift": self.summary_metrics.get("val_threshold_max_lift")
+               "max_f1 (val)": self.summary_metrics.get("val_threshold_max_f1"),
+               "max_lift (val)": self.summary_metrics.get("val_threshold_max_lift")
           }
 
      def _finalize(self):
