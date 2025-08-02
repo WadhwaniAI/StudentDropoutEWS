@@ -12,7 +12,7 @@ class DataPreprocessor:
 
      def __init__(
                self,
-               schema_path: str="metadata/schema.json",
+               schema_path: str="metadata/dataset_schema.json",
                column_groups_path: str="metadata/column_groups.json",
                attendance_replacement_map: Optional[dict]=None
      ):

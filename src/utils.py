@@ -5,7 +5,8 @@ import pytz
 from pathlib import Path
 from datetime import datetime
 from pathlib import Path
-from munch import munchify
+from munch import Munch, munchify
+from typing import Union
 
 
 # Define the root of this repo (2 levels up from src/)
@@ -36,11 +37,15 @@ def add_preds_threshold(df, preds_proba_col, threshold, preds_col='preds_thresho
      return df
      
 
-def load_config(file_path: str):
-     """Loads a JSON config file and returns a dot-accessible (munchified) dict."""
-     with open(file_path, "r") as f:
-          config = json.load(f)
-     return munchify(config)
+def load_config(config_input: Union[str, dict, Munch]) -> Munch:
+     """Loads a config from a file path, dict, or Munch, and returns a munchified dict for dot access."""
+     if isinstance(config_input, (dict, Munch)):
+          return munchify(config_input)
+     elif isinstance(config_input, str) and Path(config_input).exists():
+          with open(config_input, 'r') as f:
+               return munchify(json.load(f))
+     else:
+          raise ValueError("config_input must be a valid file path or a config dictionary.")
 
 
 def resolve_config_paths(config: dict, keys_to_resolve: list) -> dict:

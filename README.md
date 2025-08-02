@@ -1,17 +1,22 @@
 <details>
-<summary><h3>🗂️ Project</h3></summary>
+<summary><span style="font-size: 24px">🗂️ Project</span></summary>
 
 - EWS (Early Warning System) is a tabular binary classification problem to identify students at the risk of dropping out.
+- A student, identified using a unique Student ID is a
+  - Dropout (label 1): If the student ID is enrolled in a given academic year but is absent in the following academic year
+  - Not a dropout (label 0): If the student ID is enrolled in both (successive) the academic years.
 - We receive the following kinds of data:
   - Enrollment data: Information about students collected during enrollment
   - Attendance data: Daily attendance data collected throughout the academic year
   - Assessment data: Semester-1 Assessment Tests (SAT-1) that capture examination attendance and scores 
-- These are combined into a single dataset file per grade wherein:
-  - a row represents a student (identified using a PII ID as index)
-  - a column comes from either the enrollment data, attendance data or assessment data.
-- CatBoost is used to model the datasets.
-- Separate models are trained for each grade (grades 3 to 8)
+- These are combined into a single dataset file for each grade wherein:
+  - a row represents a student (identified using a Student ID as index)
+  - columns are sourced from the enrollment data, attendance data, assessment data, or are engineered features
+- CatBoost is used to build six prediction models, one for each grade (3 to 8) using the above generated dataset files.
+  - The input is a set of categorical and numerical features obtained from given datasets
+  - The output is probability scores indicative of the risk of a student dropping out
 - Results shared include the prediction class and contributions of predictor groups and features to guide interventions.
+
 </details>
 <details>
 <summary><h3>🧠 Index</h3></summary>
@@ -62,13 +67,14 @@ $ pip install -r requirements.txt
 The ```metadata/``` directory contains mandatory auxiliary data aspects needed to train models, run inference, and obtain predictors.
 
 ```metadata/holidays_calendar.json```
-- This nested dictionary stores non-working day metadata for each academic year (e.g., "2223"), and each month ("6", "7", etc.) 
-- It maps to categories like "sundays", "festive", "vacation", or custom labels (e.g., "pravesh utsav"), listing relevant day integers.
 - Example: `{"2223": {"6": {"sundays": [5, 12], "vacation": [1, 2], "pravesh utsav": [13, 14]}}}`
-- For subsequent academic years, this dictionary must be updated.
+- This nested dictionary stores non-working day metadata for each academic year (e.g., "2223" representing academic year 2022-23), and for each month within the year ("6", "7" representing June and July.) 
+- It maps to sub-categories like "sundays", "festive", "vacation", or custom labels (e.g., "pravesh utsav"), listing relevant dates as integers.
+- An example of this file for the academic years from 2022-23 to 2024-25 for the state of Gujarat is [here](metadata/holidays_calendar.json)
+- Please edit the dictionary within this file for the academic years of your interest.
 
 ```metadata/schema.json```
-- This dictionary representa the schema for a dataset.
+- This dictionary represents the schema for a dataset.
 - Each valid column name is a keys and value is a list of appropriate datatype and description.
 
 ```metadata/column_groups.json```
@@ -178,7 +184,7 @@ The basename of any dataset file must follow the pattern: `ay<academic_year>_gra
 <details>
 <summary><h3>🎯 Training a model</h3></summary>
 
-The `training_pipeline` trains a CatBoost model using the given config and saves outputs to the specified experiment directory.
+The `training_pipeline` trains a model using the given config and saves outputs to the specified experiment directory.
 
 ```
 from training import training_pipeline
@@ -191,7 +197,7 @@ training_summary, metrics_summary = training_pipeline(
 <details>
 <summary><h3>🎯 Inference</h3></summary>
 
-The ```inference_pipeline``` performs prediction on new data using the trained CatBoost model from a given experiment directory. 
+The ```inference_pipeline``` performs prediction on new data using the trained model from a given experiment directory. 
 It returns the input dataframe with predicted probabilities and binary labels (based on either learned or manual thresholds).
 
 ```

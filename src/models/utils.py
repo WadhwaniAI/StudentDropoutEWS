@@ -50,7 +50,6 @@ def loss_curves(train_dir: str):
      ax.set(xlabel='Iterations', ylabel='Loss', title='Loss Curves')
      ax.legend(); ax.grid(True)
      plt.savefig(f"{train_dir}/loss_curves.png")
-     return fig
 
 
 def filter_valid_params(params: dict) -> dict:

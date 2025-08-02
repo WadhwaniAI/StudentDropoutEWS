@@ -54,9 +54,9 @@ class SHAPPipeline:
           """Compute threshold based on target recall or best F1 on val set."""
           val_path = os.path.join(self.exp_dir, "val.pkl")
           val_df = pd.read_pickle(val_path)
-          val_df[self.num_features] = val_df[self.num_features].astype("float64")
-          probas = self.model.predict_proba(val_df[self.all_features])[:, 1]
-          labels = val_df[self.config.data.label_col]
+          assert "preds_proba_1" in val_df.columns, "Validation dataframe must contain 'preds_proba_1' column."
+          probas = val_df["preds_proba_1"].astype(np.float64).values
+          labels = val_df[self.config.data.label_col].astype(int).values
 
           precisions, recalls, thresholds = precision_recall_curve(labels, probas)
 

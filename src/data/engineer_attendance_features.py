@@ -10,9 +10,10 @@ from src.utils import resolve_path
 class EngineerAttendanceFeatures:
      def __init__(
                self, 
-               holidays_calendar_path: str="metadata/holidays_calendar.json",               
+               holidays_calendar_path: str="metadata/holidays_calendar.json", 
                all_attendance_pattern: str=r"^\d+_\d+$",
-               index: str="aadhaaruid", label: str="target"
+               index: str="aadhaaruid", 
+               label: str="target"
      ):
           """
           Initializes the feature engineer with holiday mappings and allowed missing attendance threshold.          
@@ -182,7 +183,8 @@ class EngineerAttendanceFeatures:
           return pd.concat([df, pd.DataFrame(binarised_data, index=df.index)], axis=1)
 
      def generate_features(
-               self, df: pd.DataFrame, 
+               self, 
+               df: pd.DataFrame, 
                acad_year: str, 
                drop_columns_or_groups: List[str]=None, 
                column_groups: Dict[str, List[str]]=None

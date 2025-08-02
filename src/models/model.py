@@ -1,4 +1,4 @@
-import json, pickle
+import json
 import numpy as np, pandas as pd, optuna
 from catboost import CatBoostClassifier
 from sklearn import metrics
