@@ -2,7 +2,7 @@ import os
 import shutil
 import wandb
 from typing import Any, Dict, Tuple
-from src.base_pipeline import BasePipeline
+from .base_pipeline import BasePipeline
 from src.config_manager import ConfigManager
 from src.models.model import CatBoostBinaryClassifier
 from src.models.utils import save_model_features, loss_curves

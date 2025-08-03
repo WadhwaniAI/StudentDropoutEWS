@@ -6,6 +6,7 @@ import re
 from pathlib import Path
 from sklearn.model_selection import train_test_split
 from typing import List, Dict, Tuple, Optional
+from collections import defaultdict
 
 
 def determine_columns_to_drop(
@@ -13,13 +14,11 @@ def determine_columns_to_drop(
           drop_columns_or_groups: Optional[List[str]]=None,
           column_groups: Optional[Dict[str, List[str]]]=None
 ) -> List[str]:
-     """
-     Determines the columns to drop based on column group names or individual column names.
+     """Determines the columns to drop based on column group names or individual column names.
      :param df: DataFrame to validate individual column existence
      :param drop_columns_or_groups: List of group names or individual column names to drop
      :param column_groups: Mapping from group names to list of column names
-     :return: Set of columns_to_drop, sorted alphabetically
-     """
+     :return: Set of columns_to_drop, sorted alphabetically"""
      drop_columns_or_groups = drop_columns_or_groups or []
      column_groups = column_groups or {}
      columns_to_drop = []
@@ -36,14 +35,12 @@ def determine_columns_to_drop(
 def split_features_by_dtype(
           df: pd.DataFrame, index: str="aadhaaruid", label: str="target", 
 ) -> Tuple[List[str], List[str]]:
-     """
-     Identify columns as Categorical with dtype 'object' and Numerical with dtype np.float64 only     
+     """Identify columns as Categorical with dtype 'object' and Numerical with dtype np.float64 only     
      Excludes index and label columns from both.
      :param df: Input DataFrame
      :param label: Name of label/target column to exclude
      :param index: Name of index column to exclude
-     Returns: Tuple of (categorical_features, numerical_features)
-     """
+     Returns: Tuple of (categorical_features, numerical_features)"""
      exclude = {label, index}
      categorical_features = [col for col in df.select_dtypes(include='object').columns if col not in exclude]
      numerical_features = [col for col in df.select_dtypes(include=np.float64).columns if col not in exclude]
@@ -52,10 +49,8 @@ def split_features_by_dtype(
 
 
 def holidays_academic_year_wise(holidays_path: str) -> dict:
-     """
-     Generate {academic_year: [month_day]} mapping from detailed holiday metadata.
-     :param holidays_path: Path to JSON file containing holiday data     
-     """
+     """Generate {academic_year: [month_day]} mapping from detailed holiday metadata.
+     :param holidays_path: Path to JSON file containing holiday data"""
      with open(holidays_path, "r") as f:
           holidays = json.load(f)
 
@@ -76,8 +71,7 @@ def holidays_academic_year_wise(holidays_path: str) -> dict:
 def sample_and_split(
           df, label, sampling_prevalence, sample_seed, train_size, split_seed, shuffle
 ) -> dict:
-     """
-     Samples the dataset based on given prevalence, then splits into train and validation sets.
+     """Samples the dataset based on given prevalence, then splits into train and validation sets.
      :param df (pd.DataFrame): DataFrame containing features and label
      :param label (str): Name of the label column to sample on
      :param sampling_prevalence (float or str): Desired prevalence for the label ('actual' for current prevalence)
@@ -85,9 +79,7 @@ def sample_and_split(
      :param train_size (float): Proportion of the dataset to include in the train split
      :param split_seed (int): Seed for train-test split
      :param shuffle (bool): Whether to shuffle the data before splitting     
-     Returns: Tuple of DataFrames (df_train, df_val)
-     """
-     
+     Returns: Tuple of DataFrames (df_train, df_val)"""
      actual_p = df[label].mean()
      p = actual_p if sampling_prevalence == "actual" else float(sampling_prevalence)
 
@@ -143,3 +135,20 @@ def public_private_school_filter(
      df.columns = map(str.lower, df.columns)
      is_public = df["schcat"].isin(schcat_in) & ~df["schmgt"].isin(schmgt_notin)
      return df[is_public], df[~is_public]
+
+
+def generate_column_groups_from_schema(dataset_schema_path):
+    """Generates column groups by reading group info from the dataset schema.
+    :param dataset_schema_path: Path to the dataset_schema.json (with group info).
+    :return: A dictionary mapping each group to its list of columns."""
+    with open(dataset_schema_path, 'r') as f:
+        schema = json.load(f)
+
+    # Use defaultdict to simplify appending to lists for each group.
+    column_groups = defaultdict(list)
+    for column, attributes in schema.items():
+        # If group information exists as the third attribute, append the column.
+        if len(attributes) > 2 and attributes[2]:
+            column_groups[attributes[2]].append(column)
+
+    return dict(column_groups)

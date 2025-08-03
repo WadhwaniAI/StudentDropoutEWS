@@ -1,6 +1,6 @@
 import argparse
-from src.training_pipeline import TrainingPipeline
-from src.inference_pipeline import InferencePipeline
+from src.pipelines.training_pipeline import TrainingPipeline
+from src.pipelines.inference_pipeline import InferencePipeline
 from src.data.utils import get_config_files
 
 
