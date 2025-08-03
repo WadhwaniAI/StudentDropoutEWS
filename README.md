@@ -18,13 +18,14 @@
 - Results shared include the prediction class and contributions of predictor groups and features to guide interventions.
 
 </details>
-<details>
-<summary><h3>🧠 Index</h3></summary>
 
-- **Setup instructions**  
+<details>
+<summary><span style="font-size: 24px">🧠 Index</span></summary>
+
+- **Setup**  
   Learn how to clone the repository, create a virtual environment, and install required packages.
 
-- **Important metadata**  
+- **Metadata**  
   Covers mandatory metadata such as calendar of holidays, dataset schema, column groups and predictor groups
 
 - **Mandatory aspects of a dataset file**  
@@ -45,8 +46,9 @@
 - **Explainability**  
   Shows how to generate predictor groups and their top driving features using SHAP scores for each student.
 </details>
+
 <details>
-<summary><h3>🔧 Setup instructions</h3></summary>
+<summary><span style="font-size: 24px">🔧 Setup</span></summary>
 
 - Clone the repository
 ```
@@ -61,8 +63,9 @@ $ conda activate venv
 $ pip install -r requirements.txt
 ```
 </details>
+
 <details>
-<summary><h3>📊 Important metadata</h3></summary>
+<summary><span style="font-size: 24px">📊 Metadata</span></summary>
 
 The ```metadata/``` directory contains mandatory auxiliary data aspects needed to train models, run inference, and obtain predictors.
 
@@ -83,20 +86,22 @@ The ```metadata/``` directory contains mandatory auxiliary data aspects needed t
 ```metadata/predictor_groups.json```
 - This dictionary enlists predictor groups used to explain predictions and guide interventions using SHAP.
 </details>
+
 <details>
-<summary><h3>🧩 Mandatory aspects of a dataset file</h3></summary>
+<summary><span style="font-size: 24px">🧩 Dataset</span></summary>
 
 **Schema:**
 A dataframe to use in training and inference pipelines must have a schema consistent with `data/schema.json`.
 
-**File type:**
+**Format:**
 A dataset (dataframe) file must be of pickle type. Example: `dataset/ay2223_grade3.pkl`
 
-**Naming format:**
+**Nomenclature:**
 The basename of any dataset file must follow the pattern: `ay<academic_year>_grade<grade>.pkl`. Example: `ay2223_grade3.pkl`
 </details>
+
 <details>
-<summary><h3>📘 Config template</h3></summary>
+<summary><span style="font-size: 24px">📘 Config</span></summary>
 
 - A JSON Configuration file is used to define all aspects for running an experiment. A template is shown below.
 
@@ -181,8 +186,9 @@ The basename of any dataset file must follow the pattern: `ay<academic_year>_gra
 }
 ```
 </details>
+
 <details>
-<summary><h3>🎯 Training a model</h3></summary>
+<summary><span style="font-size: 24px">🎯 Training</span></summary>
 
 The `training_pipeline` trains a model using the given config and saves outputs to the specified experiment directory.
 
@@ -194,8 +200,9 @@ training_summary, metrics_summary = training_pipeline(
 )
 ```
 </details>
+
 <details>
-<summary><h3>🎯 Inference</h3></summary>
+<summary><span style="font-size: 24px">🎯 Inference</span></summary>
 
 The ```inference_pipeline``` performs prediction on new data using the trained model from a given experiment directory. 
 It returns the input dataframe with predicted probabilities and binary labels (based on either learned or manual thresholds).
@@ -212,8 +219,9 @@ probas = results["preds_proba_1"]     # Series of predicted probabilities
 labels = results["predictions"]       # Series of "dropout" / "notdropout" labels
 ```
 </details>
+
 <details>
-<summary><h3>📉 Executing main.py</h3></summary>
+<summary><span style="font-size: 24px">📉 Executing main.py</span></summary>
 
 This runs the training (and optionally inference) pipelines for given JSON configs. Example: Set cwd to repo root. Then:
 
@@ -225,8 +233,9 @@ Arguments:
 config_source: Path to config JSON file or directory of JSON configs.
 ```
 </details>
+
 <details>
-<summary><h3>💡 Explainability</h3></summary>
+<summary><span style="font-size: 24px">💡 Explainability</span></summary>
 
 The `SHAPPipeline` explains model predictions using SHAP values by grouping feature contributions and identifying the top predictor groups and drivers behind each prediction.
 
