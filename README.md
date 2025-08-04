@@ -3,7 +3,7 @@
 
 - EWS (Early Warning System) is a tabular binary classification problem to identify students at the risk of dropping out.
 - A student, identified using a unique Student ID is a
-  - Dropout (label 1): If the student ID is enrolled in a given academic year but is absent in the following academic year
+  - Dropout (label 1): If the student ID is enrolled in a given academic year (AY) but is absent in the following AY.
   - Not a dropout (label 0): If the student ID is enrolled in both (successive) the academic years.
 - We receive the following kinds of data:
   - Enrollment data: Information about students collected during enrollment
@@ -70,12 +70,12 @@ $ pip install -r requirements.txt
 The [metadata](metadata) directory contains mandatory data aspects needed to use this repository.
 
 [Calendar of holidays](metadata/holidays_calendar.json)
-- This is a mandatory dictionary
-- Example: `{"2223": {"6": {"sundays": [5, 12], "vacation": [1, 2], "pravesh utsav": [13, 14]}}}`
-- This nested dictionary stores non-working day metadata for each academic year (e.g., "2223" representing academic year 2022-23), and for each month within the year ("6", "7" representing June and July.) 
-- It maps to sub-categories like "sundays", "festive", "vacation", or custom labels (e.g., "pravesh utsav"), listing relevant dates as integers.
-- An example of this file for the academic years from 2022-23 to 2024-25 for the state of Gujarat is [here](metadata/holidays_calendar.json)
-- Please edit the dictionary within this file for the academic years of your interest.
+- This is a mandatory nested dictionary holding information about holidays in AYs. 
+- For example: `{"2223": {"6": {"sundays": [5, 12, 19, 26], "vacation": [1, 2]}}}`
+- It stores non-working days for each AY (e.g., "2223" for AY 2022-23) and for each month in the AY (e.g., "6", "7" for June, July). 
+- It maps to sub-categories like "sundays", "festive", "vacation", or custom labels (e.g., "pravesh utsav"), listing dates as integers.
+- An example of this file for the AYs from 2022-23 to 2024-25 for the state of Gujarat is [here](metadata/holidays_calendar.json)
+- Please edit the dictionary within this file for the AYs of your interest.
 
 [Dataset Schema](metadata/schema.json)
 - This is a mandatory JSON dictionary representing the schema of a usable (valid) dataset.
