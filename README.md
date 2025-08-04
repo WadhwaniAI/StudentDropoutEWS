@@ -65,7 +65,7 @@ $ pip install -r requirements.txt
 </details>
 
 <details>
-<summary><span style="font-size: 24px">📊 Metadata</span></summary>
+<summary><span style="font-size: 24px">🧩 Metadata</span></summary>
 
 The ```metadata/``` directory contains mandatory auxiliary data aspects needed to train models, run inference, and obtain predictors.
 
@@ -88,7 +88,7 @@ The ```metadata/``` directory contains mandatory auxiliary data aspects needed t
 </details>
 
 <details>
-<summary><span style="font-size: 24px">🧩 Dataset</span></summary>
+<summary><span style="font-size: 24px">📊 Dataset</span></summary>
 
 **Schema:**
 A dataframe to use in training and inference pipelines must have a schema consistent with `data/schema.json`.
@@ -188,7 +188,7 @@ The basename of any dataset file must follow the pattern: `ay<academic_year>_gra
 </details>
 
 <details>
-<summary><span style="font-size: 24px">🎯 Training</span></summary>
+<summary><span style="font-size: 24px">📉 Training</span></summary>
 
 The `training_pipeline` trains a model using the given config and saves outputs to the specified experiment directory.
 
