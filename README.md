@@ -262,9 +262,11 @@ df_explained[["predictor_group_1", "predictor_group_1_top_driver"]].head()
 </details>
 
 <details>
-<summary><span style="font-size: 20px">🙏 Acknowledgements</span></summary>
+<summary><span style="font-size: 20px">🙏 Acknowledgements [wip]</span></summary>
 
 ---
+
+- We extend our sincere gratitude to *Vidya Samiksha Kendra (VSK), state of Gujarat, India* for their support. 
 
 ---
 
