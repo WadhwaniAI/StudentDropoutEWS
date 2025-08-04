@@ -57,7 +57,7 @@ The [metadata](metadata) directory contains mandatory data aspects needed to use
 - Valid datatypes are `str` for categorical columns, `float` for numerical columns, and `int` for target column.
 - Description is a piece of text briefly explaining the information the column contains.
 - Grouping enables combined use of columns such as in common preprocessing operations.
-- Modify [Dataset Schema](metadata/schema.json) to use a dataset that has columns with different names.
+- Modify [Dataset Schema](metadata/schema.json) if a dataset has different column names, datatypes, descriptions or groupings.
 
 [Config Schema](metadata/config_schema.json)
 - This is a *mandatory* nested JSON dictionary illustrating the valid schema of a `Config` file.
@@ -74,9 +74,9 @@ The [metadata](metadata) directory contains mandatory data aspects needed to use
 <details>
 <summary><span style="font-size: 20px">📊 Dataset</span></summary>
 
-- A valid dataset for training and inference must have a schema consistent with [dataset schema](metadata/dataset_schema.json). 
-- The columns in a usable dataset must be a subset of the columns in [dataset schema](metadata/dataset_schema.json). 
-- If the names of columns in the dataset are different, please modify [dataset schema](metadata/dataset_schema.json) before use.
+- A valid dataset for training and inference must have a schema consistent with [Dataset Schema](metadata/dataset_schema.json). 
+- The columns in a usable dataset must be a subset of the columns in [Dataset Schema](metadata/dataset_schema.json). 
+- If the names of columns in the dataset are different, please modify [Dataset Schema](metadata/dataset_schema.json) before use.
 - The format of a dataset file must be pickle. Example: `dataset/ay2223_grade3.pkl`. 
 - Currently, support for other file formats is not provided.
 - The basename of a dataset file is important to extract "academic year" and "grade" using regex.
