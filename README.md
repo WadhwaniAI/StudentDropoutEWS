@@ -1,22 +1,20 @@
 <details>
-<summary><span style="font-size: 20px">🗂️ Project</span></summary>
+<summary><span style="font-size: 20px">🗂️ Overview</span></summary>
 
-- EWS (Early Warning System) is a tabular binary classification problem to identify students at the risk of dropping out.
-- A student, identified using a unique Student ID is a
-  - Dropout (label 1): If the student ID is enrolled in a given academic year (AY) but is absent in the following AY.
-  - Not a dropout (label 0): If the student ID is enrolled in both (successive) the academic years.
-- We receive the following kinds of data:
-  - Enrollment data: Information about students collected during enrollment
-  - Attendance data: Daily attendance data collected throughout the academic year
-  - Assessment data: Semester-1 Assessment Tests (SAT-1) that capture examination attendance and scores 
-- These are combined into a single dataset file for each grade wherein:
-  - a row represents a student (identified using a Student ID as index)
-  - columns are sourced from the enrollment data, attendance data, assessment data, or are engineered features
-- CatBoost is used to build six prediction models, one for each grade (3 to 8) using the above generated dataset files.
-  - The input is a set of categorical and numerical features obtained from given datasets
-  - The output is probability scores indicative of the risk of a student dropping out
-- Results shared include the prediction class and contributions of predictor groups and features to guide interventions.
-[who can you use this repo]
+- Students in India drop out of schools due to various factors.
+- Students enrolled in a given academic year (AY) but failing to re-enroll in the next AY are dropouts.
+- This project is an Early Warning System (EWS) using ML to predict, understand and mitigate student dropouts.
+- We formulate this as a Binary Classification ML problem (dropout: label 1, not-dropout: label 0).
+- Data collected via enrollment, daily attendance and semester assessments is used.
+- Enrollment data delineates a student's regional and socioeconomic factors.
+- Daily attendance data delineates a student's daily attendance (present, absent or missing entry).
+- Semester assessment data delineats a student's attendance and performance in examinations.
+- The project has been developed using data provided by Vidya Samiksha Kendra (VSK), state of Gujarat, India.
+- Prior to usage, original data is assembled into a unified dataset with each row representing a student.
+- **Anyone** with similar data could use this project. The user will only have to modify [Dataset Schema](metadata/schema.json).
+- The project has been built for six grades (3 to 8). Each grade is dealt with separately.
+- 
+
 
 </details>
 
@@ -50,6 +48,7 @@ The [metadata](metadata) directory contains mandatory data aspects needed to use
 - Dates are integers under categories like "sundays", "festive", "vacation", or others (e.g., "pravesh utsav").
 - An example of this file for the AYs from 2022-23 to 2024-25 for the state of Gujarat is [here](metadata/holidays_calendar.json).
 - Please edit the dictionary within this file for the AYs of your interest.
+- This file could either be manually populated from a PDF or derived from a CSV notified by the administration.
 
 [Dataset Schema](metadata/schema.json)
 - This is a mandatory JSON dictionary representing the schema of a usable (valid) dataset.
@@ -228,5 +227,12 @@ shap_pipeline = SHAPPipeline(
 df_explained = shap_pipeline.run()
 df_explained[["predictor_group_1", "predictor_group_1_top_driver"]].head()
 ```
+
+</details>
+
+<details>
+<summary><span style="font-size: 20px">🙏 Acknowledgements</span></summary>
+
+
 
 </details>
