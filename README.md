@@ -73,7 +73,7 @@ The [metadata](metadata) directory contains mandatory data aspects needed to use
 
 <details>
 <summary><span style="font-size: 20px">📊 Dataset</span></summary>
-
+---
 - A valid dataset for training and inference must have a schema consistent with [Dataset Schema](metadata/dataset_schema.json). 
 - The columns in a usable dataset must be a subset of the columns in [Dataset Schema](metadata/dataset_schema.json). 
 - If the names of columns in the dataset are different, please modify [Dataset Schema](metadata/dataset_schema.json) before use.
@@ -86,6 +86,8 @@ The [metadata](metadata) directory contains mandatory data aspects needed to use
 
 <details>
 <summary><span style="font-size: 20px">📘 Config</span></summary>
+
+---
 
 - A new JSON Configuration file is used to define all aspects for training a model.
 - An existing JSON configuration file (from a previous experiment) is used to run inference on a new dataset.
