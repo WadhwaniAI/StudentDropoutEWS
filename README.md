@@ -23,10 +23,12 @@
 <summary><span style="font-size: 20px">🧠 Index</span></summary>
 
 - **Setup**  
-  Learn how to clone the repository, create a virtual environment, and install required packages.
+  - Learn how to clone the repository, create a virtual environment, and install required packages.
+  - abc
 
 - **Metadata**  
-  Covers mandatory metadata such as calendar of holidays, dataset schema, column groups and predictor groups
+  - Covers mandatory metadata such as calendar of holidays, dataset schema, column groups and predictor groups
+  - abc
 
 - **Mandatory aspects of a dataset file**  
   Details the columns, formats, and naming conventions expected in input data files.
