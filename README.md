@@ -242,6 +242,7 @@ config_source: Path to config JSON file or directory of JSON configs.
 <small>
 The `SHAPPipeline` explains model predictions using SHAP values by grouping feature contributions and identifying the top predictor groups and drivers behind each prediction.
 </small>
+
 <small>
 ```
 from explainability.shap_pipeline import SHAPPipeline
@@ -256,4 +257,5 @@ df_explained = shap_pipeline.run()
 df_explained[["predictor_group_1", "predictor_group_1_top_driver"]].head()
 ```
 </small>
+
 </details>
