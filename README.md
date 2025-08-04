@@ -1,6 +1,8 @@
 <details>
 <summary><span style="font-size: 20px">🗂️ Overview</span></summary>
 
+---
+
 - Students in India drop out of schools due to social, economic and geographical factors.
 - Students enrolled in a given academic year (AY) but failing to re-enroll in the next AY are dropouts.
 - This project is an Early Warning System (EWS) using ML to predict, understand and mitigate student dropouts.
@@ -17,10 +19,14 @@
 - Output is a dataframe with features and dropout probabilities as columns and rows as students.
 - EWS attempts to explain a model's predictions using [SHAP](https://shap.readthedocs.io/en/latest/) as illustrated in the `Explainability` section.
 
+---
+
 </details>
 
 <details>
 <summary><span style="font-size: 20px">🔧 Setup</span></summary>
+
+---
 
 - Clone the repository
 ```
@@ -35,10 +41,14 @@ $ conda activate venv
 $ pip install -r requirements.txt
 ```
 
+---
+
 </details>
 
 <details>
 <summary><span style="font-size: 20px">🧩 Metadata</span></summary>
+
+---
 
 The [metadata](metadata) directory contains mandatory data aspects needed to use this repository.
 
@@ -69,12 +79,14 @@ The [metadata](metadata) directory contains mandatory data aspects needed to use
 - Predictor groups are used to explain a model's predictions and guide interventions.
 - It is used for explainability in the `SHAPPipeline`, and is not required for training or inference pipelines.
 
+---
+
 </details>
 
 <details>
 <summary><span style="font-size: 20px">📊 Dataset</span></summary>
 
-___
+---
 
 - A valid dataset for training and inference must have a schema consistent with [Dataset Schema](metadata/dataset_schema.json). 
 - The columns in a usable dataset must be a subset of the columns in [Dataset Schema](metadata/dataset_schema.json). 
@@ -83,6 +95,8 @@ ___
 - Currently, support for other file formats is not provided.
 - The basename of a dataset file is important to extract "academic year" and "grade" using regex.
 - The basename must follow the pattern: `ay<academic_year>_grade<grade>.pkl`. Eg: `ay2223_grade3.pkl`.
+
+---
 
 </details>
 
@@ -94,8 +108,6 @@ ___
 - A new JSON Configuration file is used to define all aspects for training a model.
 - An existing JSON configuration file (from a previous experiment) is used to run inference on a new dataset.
 - `Config Schema` is shown below. Comments explain valid entries: **// datatype: description; example**.
-
----
 
 ```javascript
 {
@@ -175,10 +187,14 @@ ___
 }
 ```
 
+---
+
 </details>
 
 <details>
 <summary><span style="font-size: 20px">📉 Training</span></summary>
+
+---
 
 - To train a model, execute `main.py` using `train` mode as illustrated below.
 - All artifacts are saved in the created experiment directory (created using `config.exp.root_exps`).
@@ -193,10 +209,14 @@ mode (str): 'train'
 config_source (str): Path to config JSON file or directory of JSON configs. 
 ```
 
+---
+
 </details>
 
 <details>
 <summary><span style="font-size: 20px">🎯 Inference</span></summary>
+
+---
 
 - To run inference on a new dataset, execute `main.py` using `infer` mode as illustrated below.
 - Output dataframe with features and predicted probabilities is saved in `exp_dir`.
@@ -211,10 +231,14 @@ exp_dir (str): Path to the experiment directory (to use model and other optional
 inference_data_path (str): Path to the inference data file.
 ```
 
+---
+
 </details>
 
 <details>
 <summary><span style="font-size: 20px">💡 Explainability</span></summary>
+
+---
 
 - The `SHAPPipeline` explains model predictions using [SHAP](https://shap.readthedocs.io/en/latest/) scores.
 - Features present in `df_path` are manually grouped into [predictor groups](metadata/predictor_groups.json) to combine contributions.
@@ -233,11 +257,15 @@ df_explained = shap_pipeline.run()
 df_explained[["predictor_group_1", "predictor_group_1_top_driver"]].head()
 ```
 
+---
+
 </details>
 
 <details>
 <summary><span style="font-size: 20px">🙏 Acknowledgements</span></summary>
 
+---
 
+---
 
 </details>
