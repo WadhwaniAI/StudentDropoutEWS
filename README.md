@@ -8,13 +8,14 @@
 - Data collected via enrollment, daily attendance and semester assessments is used.
 - Enrollment data delineates a student's regional and socioeconomic factors.
 - Daily attendance data delineates a student's daily attendance (present, absent or missing entry).
-- Semester assessment data delineats a student's attendance and performance in examinations.
+- Semester assessment data delineates a student's attendance and performance in examinations.
 - The project has been developed using data provided by Vidya Samiksha Kendra (VSK), state of Gujarat, India.
-- Prior to usage, original data is assembled into a unified dataset with each row representing a student.
 - **Anyone** with similar data could use this project. The user will only have to modify [Dataset Schema](metadata/schema.json).
-- The project has been built for six grades (3 to 8). Each grade is dealt with separately.
-- 
-
+- Prior to usage, the original data is assembled into a unified dataset with each row representing a student.
+- The *Target* column for a given AY is populated using the enrollment data of the subsequent AY.
+- Input to the modeling process is the unified dataset with the target column.
+- Output is a dataframe with features and dropout probabilities as columns and rows as students.
+- EWS attemps to explain a model's predictions using [SHAP](https://shap.readthedocs.io/en/latest/) illustrated in `Explainability` section.
 
 </details>
 
