@@ -90,18 +90,18 @@ The ```metadata/``` directory contains mandatory auxiliary data aspects needed t
 <details>
 <summary><span style="font-size: 20px">📊 Dataset</span></summary>
 
-**Schema:**
-- A valid dataset (dataframe) for training and inference must have a schema consistent with [dataset schema](metadata/dataset_schema.json).
-- Consistency implies that the columns in the dataset are a subset of the columns mentioned in schema.
-- If a dataset has similar information but different column names, please modify [dataset schema](metadata/dataset_schema.json).
+- **Schema:**
+  - A valid dataset (dataframe) for training and inference must have a schema consistent with [dataset schema](metadata/dataset_schema.json).
+  - Consistency implies that the columns in the dataset are a subset of the columns mentioned in schema.
+  - If a dataset has similar information but different column names, please modify [dataset schema](metadata/dataset_schema.json).
 
-**Format:**
-- A dataset (dataframe) file must be of pickle type. Example: `dataset/ay2223_grade3.pkl`.
-- Currently, support for other file formats is not provided.
+- **Format:**
+  - A dataset (dataframe) file must be of pickle type. Example: `dataset/ay2223_grade3.pkl`.
+  - Currently, support for other file formats is not provided.
 
-**Nomenclature:**
-- The basename of a dataset file must follow the pattern: `ay<academic_year>_grade<grade>.pkl`. Example: `ay2223_grade3.pkl`
-- This is important to extract "academic year" and "grade" using regex.
+- **Nomenclature:**
+  - The basename of a dataset file must follow the pattern: `ay<academic_year>_grade<grade>.pkl`. Example: `ay2223_grade3.pkl`
+  - This is important to extract "academic year" and "grade" using regex.
 
 </details>
 
