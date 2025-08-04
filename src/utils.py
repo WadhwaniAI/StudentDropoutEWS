@@ -6,7 +6,7 @@ from pathlib import Path
 from datetime import datetime
 from pathlib import Path
 from munch import Munch, munchify
-from typing import Union, Dict, Any
+from typing import Union, Dict
 
 
 # Define the root of this repo (2 levels up from src/)

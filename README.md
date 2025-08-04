@@ -3,7 +3,7 @@
 
 ---
 
-- Students in India drop out of schools due to social, economic and geographical factors.
+- Students in India drop out of schools due to diverse social, economic and geographical factors.
 - Students enrolled in a given academic year (AY) but **failing to re-enroll** in the *next* AY are dropouts.
 - This project is an Early Warning System (EWS) using ML to predict, understand and mitigate student dropouts.
 - We formulate this as a Binary Classification ML problem (dropout: label 1, not-dropout: label 0).
@@ -108,7 +108,7 @@ The [metadata](metadata) directory contains mandatory data aspects needed to use
 
 - A new JSON Configuration file is used to define all aspects for training a model.
 - An existing JSON configuration file (from a previous experiment) is used to run inference on a new dataset.
-- `Config Schema` is shown below. Comments explain valid entries: **// datatype: description; example**.
+- [Config Schema](metadata/config_schema.json) is explained below. Comments explain valid entries: **// datatype: description; example**.
 
 ```javascript
 {
@@ -198,6 +198,7 @@ The [metadata](metadata) directory contains mandatory data aspects needed to use
 ---
 
 - To train a model, execute `main.py` using `train` mode as illustrated below.
+- Output artifacts include train and val dataframes with prediction columns, metric plots, and JSON with loss curve values.
 - All artifacts are saved in the created experiment directory (created using `config.exp.root_exps`).
 - If a directory of JSON configs is provided, experiments run in a loop.
 
