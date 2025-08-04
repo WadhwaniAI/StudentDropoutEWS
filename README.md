@@ -72,8 +72,8 @@ The [metadata](metadata) directory contains mandatory data aspects needed to use
 [Calendar of holidays](metadata/holidays_calendar.json)
 - This is a mandatory nested dictionary holding information about holidays in AYs. 
 - For example: `{"2223": {"6": {"sundays": [5, 12, 19, 26], "vacation": [1, 2]}}}`
-- It stores non-working days for each AY (e.g., "2223" for AY 2022-23) and for each month in the AY (e.g., "6", "7" for June, July). 
-- It maps to sub-categories like "sundays", "festive", "vacation", or custom labels (e.g., "pravesh utsav"), listing dates as integers.
+- Stores non-working days for each AY (e.g., "2223" for AY 2022-23) and month (e.g., "6" for June, "7" for July). 
+- Contains categories like "sundays", "festive", "vacation", or others (e.g., "pravesh utsav") listing dates as integers.
 - An example of this file for the AYs from 2022-23 to 2024-25 for the state of Gujarat is [here](metadata/holidays_calendar.json)
 - Please edit the dictionary within this file for the AYs of your interest.
 
