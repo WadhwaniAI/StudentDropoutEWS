@@ -103,8 +103,9 @@ The basename of any dataset file must follow the pattern: `ay<academic_year>_gra
 <details>
 <summary><span style="font-size: 24px">📘 Config</span></summary>
 
-- A JSON Configuration file is used to define all aspects for running an experiment. A template is shown below.
-- In the template, the comments explain the valid entries as **// datatype: description; example**
+- A new JSON Configuration file is used to define aspects for training a model.
+- An existing JSON configuration file (from a previous experiment directory) is used to run inference on a given dataset.
+- A `Config Schema` is shown below. The comments explain the valid entries as **// datatype: description; example**.
 
 ---
 
@@ -116,7 +117,7 @@ The basename of any dataset file must follow the pattern: `ay<academic_year>_gra
           "root_exps": "<path_to_experiment_outputs>"                // str: Directory to save all experiment outputs; Eg: "exps/baseline/grade3"
      },
      "data": {
-          "data_path": "<path_to_training_data>",                    // str: Pickle or CSV path of training data; Eg: "datasets/ay2223_grade3.pkl"
+          "file_path": "<path_to_training_data>",                    // str: Pickle or CSV path of training data; Eg: "datasets/ay2223_grade3.pkl"
           "index": "<unique_id_column>",                             // str: Unique ID column; Eg: "aadhaaruid"
           "label": "<target_column>",                                // str: Target label column name; Eg: "target"
           "holidays_calendar_path": "<path_to_holidays_calendar>",   // str: JSON with academic holidays metadata; Eg: "metadata/holidays_calendar.json"
@@ -191,14 +192,17 @@ The basename of any dataset file must follow the pattern: `ay<academic_year>_gra
 <details>
 <summary><span style="font-size: 24px">📉 Training</span></summary>
 
-The `training_pipeline` trains a model using the given config and saves outputs to the specified experiment directory.
+- To train a model, we execute `main.py` using `train` mode as illustrated below.
+- If a directory of JSON configs is provied, experiments run in a loop.
+- All artifacts are saved in the experimental directory (created using `config.exp.root_exps`).
 
 ```
-from training import training_pipeline
-training_summary, metrics_summary = training_pipeline(
-     config=config dictionary,
-     exp_dir=path/to/exp/dir
-)
+python -m src.main --config_source <path/to/config> --mode train
+
+Arguments:
+----------
+mode (str): 'train'
+config_source (str): Path to config JSON file or directory of JSON configs. 
 ```
 
 </details>
@@ -206,34 +210,17 @@ training_summary, metrics_summary = training_pipeline(
 <details>
 <summary><span style="font-size: 24px">🎯 Inference</span></summary>
 
-The ```inference_pipeline``` performs prediction on new data using the trained model from a given experiment directory. 
-It returns the input dataframe with predicted probabilities and binary labels (based on either learned or manual thresholds).
+- To run inference on a new dataset, we execute `main.py` using `'infer` mode as illustrated below.
+- Input dataframe is appended with predicted probabilities and saved in the given experimental directory.
 
 ```
-from inference import inference_pipeline
-results = inference_pipeline(
-     exp_dir=path/to/exp/dir,
-     inference_data_path="datasets/test_set.pkl",
-     manual_thresholds={"test": 0.75} # optional
-)
-# Access outputs
-probas = results["preds_proba_1"]     # Series of predicted probabilities
-labels = results["predictions"]       # Series of "dropout" / "notdropout" labels
-```
-
-</details>
-
-<details>
-<summary><span style="font-size: 24px">📉 Executing main.py</span></summary>
-
-This runs the training (and optionally inference) pipelines for given JSON configs. Example: Set cwd to repo root. Then:
-
-```
-python -m src.main --config_source <path/to/config>
+python -m src.main --config_source <path/to/config> --mode train
 
 Arguments:
 ----------
-config_source: Path to config JSON file or directory of JSON configs.
+mode (str): 'infer'
+exp_dir (str): Path to the experiment directory (from where all artifacts are used).
+inference_data_path (str): Path to the inference data file.
 ```
 
 </details>
