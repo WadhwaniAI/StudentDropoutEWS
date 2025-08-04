@@ -193,7 +193,7 @@ The basename of any dataset file must follow the pattern: `ay<academic_year>_gra
 <summary><span style="font-size: 24px">📉 Training</span></summary>
 
 - To train a model, execute `main.py` using `train` mode as illustrated below.
-- All artifacts are saved in the created experimental directory (created using `config.exp.root_exps`).
+- All artifacts are saved in the created experiment directory (created using `config.exp.root_exps`).
 - If a directory of JSON configs is provided, experiments run in a loop.
 
 ```
@@ -211,7 +211,7 @@ config_source (str): Path to config JSON file or directory of JSON configs.
 <summary><span style="font-size: 24px">🎯 Inference</span></summary>
 
 - To run inference on a new dataset, execute `main.py` using `infer` mode as illustrated below.
-- Input dataframe is appended with predicted probabilities and saved in `exp_dir`.
+- Output dataframe with features and predicted probabilities is saved in `exp_dir`.
 
 ```
 python -m src.main --mode infer --exp_dir <path/to/exp_dir> --inference_data_path <path/to/inference_data> 
