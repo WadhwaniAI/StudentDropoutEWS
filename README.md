@@ -103,9 +103,9 @@ The basename of any dataset file must follow the pattern: `ay<academic_year>_gra
 <details>
 <summary><span style="font-size: 24px">📘 Config</span></summary>
 
-- A new JSON Configuration file is used to define aspects for training a model.
-- An existing JSON configuration file (from a previous experiment directory) is used to run inference on a given dataset.
-- A `Config Schema` is shown below. The comments explain the valid entries as **// datatype: description; example**.
+- A new JSON Configuration file is used to define all aspects for training a model.
+- An existing JSON configuration file (from a previous experiment) is used to run inference on a new dataset.
+- `Config Schema` is shown below. Comments explain valid entries: **// datatype: description; example**.
 
 ---
 
