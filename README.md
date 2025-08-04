@@ -9,7 +9,7 @@
 - Enrollment data delineates a student's regional and socioeconomic factors.
 - Daily attendance data delineates a student's daily attendance (present, absent or missing entry).
 - Semester assessment data delineates a student's attendance and performance in examinations.
-- The project has been developed using data provided by Vidya Samiksha Kendra (VSK), state of Gujarat, India.
+- The project has been developed using data provided by *Vidya Samiksha Kendra (VSK), state of Gujarat, India*.
 - **Anyone** with similar data could use this project. The user will only have to modify [Dataset Schema](metadata/schema.json).
 - Prior to usage, the original data is assembled into a unified dataset with each row representing a student.
 - The *Target* column for a given AY is populated using the enrollment data of the subsequent AY.
