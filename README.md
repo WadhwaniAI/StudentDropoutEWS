@@ -197,7 +197,7 @@ The basename of any dataset file must follow the pattern: `ay<academic_year>_gra
 - If a directory of JSON configs is provided, experiments run in a loop.
 
 ```
-python -m src.main --config_source <path/to/config> --mode train
+python -m src.main --mode train --config_source <path/to/config> 
 
 Arguments:
 ----------
@@ -214,12 +214,12 @@ config_source (str): Path to config JSON file or directory of JSON configs.
 - Input dataframe is appended with predicted probabilities and saved in `exp_dir`.
 
 ```
-python -m src.main --config_source <path/to/config> --mode train
+python -m src.main --mode infer --exp_dir <path/to/exp_dir> --inference_data_path <path/to/inference_data> 
 
 Arguments:
 ----------
 mode (str): 'infer'
-exp_dir (str): Path to the experiment directory (from where all artifacts are used).
+exp_dir (str): Path to the experiment directory (to use model and other optional artifacts).
 inference_data_path (str): Path to the inference data file.
 ```
 
