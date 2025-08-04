@@ -70,7 +70,7 @@ $ pip install -r requirements.txt
 The [metadata](metadata) directory contains mandatory data aspects needed to use this repository.
 
 [Calendar of holidays](metadata/holidays_calendar.json)
-- This is a mandatory nested dictionary holding information about holidays in AYs. 
+- This is a mandatory nested JSON dictionary holding information about holidays in AYs. 
 - For example: `{"2223": {"6": {"sundays": [5, 12, 19, 26], "vacation": [1, 2]}}}`
 - Stores non-working dates for each AY (e.g., "2223"->AY 2022-23) and month (e.g., "6"->June, "7"->July). 
 - Dates are integers under categories like "sundays", "festive", "vacation", or others (e.g., "pravesh utsav").
@@ -84,6 +84,11 @@ The [metadata](metadata) directory contains mandatory data aspects needed to use
 - Description is a piece of text briefly explaining the information the column contains.
 - Grouping enables combined use of columns such as in common preprocessing operations.
 - Modify [Dataset Schema](metadata/schema.json) to use a dataset that has columns with different names.
+
+[Config Schema](metadata/config_schema.json)
+- This is a mandatory nested JSON dictionary illustrating the valid schema of a `Config` file.
+- A new Config (for training) or an existing Config (for inference) must follow this schema.
+- The `Config Schema` is explained in the **Config** section.
 
 [Predictor groups](metadata/predictor_groups.json)
 - This is a JSON dictionary categorizing similar features into predictor groups.
