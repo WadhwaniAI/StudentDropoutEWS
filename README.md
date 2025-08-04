@@ -4,7 +4,7 @@
 ---
 
 - Students in India drop out of schools due to social, economic and geographical factors.
-- Students enrolled in a given academic year (AY) but failing to re-enroll in the next AY are dropouts.
+- Students enrolled in a given academic year (AY) but **failing to re-enroll** in the *next* AY are dropouts.
 - This project is an Early Warning System (EWS) using ML to predict, understand and mitigate student dropouts.
 - We formulate this as a Binary Classification ML problem (dropout: label 1, not-dropout: label 0).
 - Data collected via enrollment, daily attendance and semester assessments is used.
