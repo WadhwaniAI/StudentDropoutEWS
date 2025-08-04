@@ -76,15 +76,17 @@ The ```metadata/``` directory contains mandatory auxiliary data aspects needed t
 - An example of this file for the academic years from 2022-23 to 2024-25 for the state of Gujarat is [here](metadata/holidays_calendar.json)
 - Please edit the dictionary within this file for the academic years of your interest.
 
-```metadata/schema.json```
-- This dictionary represents the schema for a dataset.
-- Each valid column name is a keys and value is a list of appropriate datatype and description.
-
-```metadata/column_groups.json```
-- This dictionary groups columns for combined use such as common preprocessing operations.
+[Dataset Schema](metadata/schema.json)
+- This is a mandatory JSON dictionary representing the schema of a usable (valid) dataset.
+- Each key is a column name and the corresponding value is a list of datatype, description, and grouping.
+- Valid datatypes are `str` for categorical columns, `float` for numerical columns, and `int` for target column.
+- Description is a piece of text briefly explaining the information the column describes.
+- Grouping enables combined use of columns such as for common preprocessing operations.
+- Modify [Dataset Schema](metadata/schema.json) to use a dataset that has columns with different names.
 
 ```metadata/predictor_groups.json```
 - This dictionary enlists predictor groups used to explain predictions and guide interventions using SHAP.
+
 </details>
 
 <details>
