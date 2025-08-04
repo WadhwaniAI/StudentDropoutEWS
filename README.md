@@ -20,34 +20,6 @@
 </details>
 
 <details>
-<summary><span style="font-size: 20px">🧠 Index</span></summary>
-
-- **Setup**  
-  Learn how to clone the repository, create a virtual environment, and install required packages.
-
-- **Metadata**  
-  Covers mandatory metadata such as calendar of holidays, dataset schema, column groups and predictor groups
-
-- **Mandatory aspects of a dataset file**  
-  Details the columns, formats, and naming conventions expected in input data files.
-
-- **Config template**  
-  Explains how the JSON configuration defines experiment parameters, datasets, and model settings.
-
-- **Training a model**  
-  Shows how to train a model based on a given Config and experiment (logging) directory.
-
-- **Inference**  
-  Shows how to generate predictions on new data using trained models and update config files as needed.
-
-- **Executing main.py**  
-  Understand how to run model training using the CLI, configure paths and options, evaluate over test datasets and compute drifts.
-
-- **Explainability**  
-  Shows how to generate predictor groups and their top driving features using SHAP scores for each student.
-</details>
-
-<details>
 <summary><span style="font-size: 20px">🔧 Setup</span></summary>
 
 - Clone the repository
@@ -62,6 +34,7 @@ $ conda create --name venv python==3.12
 $ conda activate venv
 $ pip install -r requirements.txt
 ```
+
 </details>
 
 <details>
