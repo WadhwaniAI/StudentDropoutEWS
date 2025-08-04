@@ -103,8 +103,7 @@ The basename of any dataset file must follow the pattern: `ay<academic_year>_gra
 <details>
 <summary><span style="font-size: 24px">📘 Config</span></summary>
 
-<small>
-- A JSON Configuration file is used to define all aspects for running an experiment. A template is shown below.
+A JSON Configuration file is used to define all aspects for running an experiment. A template is shown below.
 
 ---
 
@@ -186,7 +185,7 @@ The basename of any dataset file must follow the pattern: `ay<academic_year>_gra
      }
 }
 ```
-</small>
+
 </details>
 
 <details>
@@ -201,6 +200,7 @@ training_summary, metrics_summary = training_pipeline(
      exp_dir=path/to/exp/dir
 )
 ```
+
 </details>
 
 <details>
@@ -220,6 +220,7 @@ results = inference_pipeline(
 probas = results["preds_proba_1"]     # Series of predicted probabilities
 labels = results["predictions"]       # Series of "dropout" / "notdropout" labels
 ```
+
 </details>
 
 <details>
@@ -234,18 +235,13 @@ Arguments:
 ----------
 config_source: Path to config JSON file or directory of JSON configs.
 ```
+
 </details>
 
 <details>
 <summary><span style="font-size: 24px">💡 Explainability</span></summary>
 
-<small>
-
 The `SHAPPipeline` explains model predictions using SHAP values by grouping feature contributions and identifying the top predictor groups and drivers behind each prediction.
-
-</small>
-
-<small>
 
 ```
 from explainability.shap_pipeline import SHAPPipeline
@@ -260,5 +256,4 @@ df_explained = shap_pipeline.run()
 df_explained[["predictor_group_1", "predictor_group_1_top_driver"]].head()
 ```
 
-</small>
 </details>
