@@ -16,6 +16,7 @@
   - The input is a set of categorical and numerical features obtained from given datasets
   - The output is probability scores indicative of the risk of a student dropping out
 - Results shared include the prediction class and contributions of predictor groups and features to guide interventions.
+[who can you use this repo]
 
 </details>
 
