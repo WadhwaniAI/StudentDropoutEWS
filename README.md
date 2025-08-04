@@ -1,5 +1,5 @@
 <details>
-<summary><span style="font-size: 24px">🗂️ Project</span></summary>
+<summary><span style="font-size: 20px">🗂️ Project</span></summary>
 
 - EWS (Early Warning System) is a tabular binary classification problem to identify students at the risk of dropping out.
 - A student, identified using a unique Student ID is a
@@ -20,7 +20,7 @@
 </details>
 
 <details>
-<summary><span style="font-size: 24px">🧠 Index</span></summary>
+<summary><span style="font-size: 20px">🧠 Index</span></summary>
 
 - **Setup**  
   Learn how to clone the repository, create a virtual environment, and install required packages.
@@ -48,7 +48,7 @@
 </details>
 
 <details>
-<summary><span style="font-size: 24px">🔧 Setup</span></summary>
+<summary><span style="font-size: 20px">🔧 Setup</span></summary>
 
 - Clone the repository
 ```
@@ -65,7 +65,7 @@ $ pip install -r requirements.txt
 </details>
 
 <details>
-<summary><span style="font-size: 24px">🧩 Metadata</span></summary>
+<summary><span style="font-size: 20px">🧩 Metadata</span></summary>
 
 The ```metadata/``` directory contains mandatory auxiliary data aspects needed to train models, run inference, and obtain predictors.
 
@@ -88,7 +88,7 @@ The ```metadata/``` directory contains mandatory auxiliary data aspects needed t
 </details>
 
 <details>
-<summary><span style="font-size: 24px">📊 Dataset</span></summary>
+<summary><span style="font-size: 20px">📊 Dataset</span></summary>
 
 **Schema:**
 A dataframe to use in training and inference pipelines must have a schema consistent with `data/schema.json`.
@@ -101,7 +101,7 @@ The basename of any dataset file must follow the pattern: `ay<academic_year>_gra
 </details>
 
 <details>
-<summary><span style="font-size: 24px">📘 Config</span></summary>
+<summary><span style="font-size: 20px">📘 Config</span></summary>
 
 - A new JSON Configuration file is used to define all aspects for training a model.
 - An existing JSON configuration file (from a previous experiment) is used to run inference on a new dataset.
@@ -190,7 +190,7 @@ The basename of any dataset file must follow the pattern: `ay<academic_year>_gra
 </details>
 
 <details>
-<summary><span style="font-size: 24px">📉 Training</span></summary>
+<summary><span style="font-size: 20px">📉 Training</span></summary>
 
 - To train a model, execute `main.py` using `train` mode as illustrated below.
 - All artifacts are saved in the created experiment directory (created using `config.exp.root_exps`).
@@ -208,7 +208,7 @@ config_source (str): Path to config JSON file or directory of JSON configs.
 </details>
 
 <details>
-<summary><span style="font-size: 24px">🎯 Inference</span></summary>
+<summary><span style="font-size: 20px">🎯 Inference</span></summary>
 
 - To run inference on a new dataset, execute `main.py` using `infer` mode as illustrated below.
 - Output dataframe with features and predicted probabilities is saved in `exp_dir`.
@@ -226,11 +226,11 @@ inference_data_path (str): Path to the inference data file.
 </details>
 
 <details>
-<summary><span style="font-size: 24px">💡 Explainability</span></summary>
+<summary><span style="font-size: 20px">💡 Explainability</span></summary>
 
 - The `SHAPPipeline` explains model predictions using [SHAP](https://shap.readthedocs.io/en/latest/) scores.
-- Similar features are grouped using `metadata/predictor_groups.json` to combine contributions.
-- Output dataframe with predictor groups (in descending order of contribution) and top driving factor is saved in `exp_dir`.
+- Similar features are grouped using [predictor groups](metadata/predictor_groups.json) to combine contributions.
+- Output dataframe with columns pertaining to predictor groups and top driving factors is saved in `exp_dir`.
 
 ```
 from explainability.shap_pipeline import SHAPPipeline
