@@ -97,12 +97,12 @@ The ```metadata/``` directory contains mandatory auxiliary data aspects needed t
 - A valid dataset for training and inference must have a schema consistent with [dataset schema](metadata/dataset_schema.json). 
 - The columns in a usable dataset must be a subset of the columns in [dataset schema](metadata/dataset_schema.json). 
 - If the columns in the dataset have different names, please modify [dataset schema](metadata/dataset_schema.json) before use.
-</br>
+<br>
 **Format:**
 <br>
 - A dataset (dataframe) file must be of pickle type. Example: `dataset/ay2223_grade3.pkl`. 
 - Currently, support for other file formats is not provided.
-</br>
+<br>
 **Nomenclature:**
 The basename of a dataset file must follow the pattern: `ay<academic_year>_grade<grade>.pkl`. Example: `dataset/ay2223_grade3.pkl`. This is important to extract "academic year" and "grade" using regex.
 
