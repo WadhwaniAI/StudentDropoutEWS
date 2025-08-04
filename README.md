@@ -72,7 +72,7 @@ The [metadata](metadata) directory contains mandatory data aspects needed to use
 [Calendar of holidays](metadata/holidays_calendar.json)
 - This is a mandatory nested dictionary holding information about holidays in AYs. 
 - For example: `{"2223": {"6": {"sundays": [5, 12, 19, 26], "vacation": [1, 2]}}}`
-- Stores non-working days for each AY (e.g., "2223" for AY 2022-23) and month (e.g., "6"->June, "7"->July). 
+- Stores non-working dates for each AY (e.g., "2223"->AY 2022-23) and month (e.g., "6"->June, "7"->July). 
 - Dates are integers under categories like "sundays", "festive", "vacation", or others (e.g., "pravesh utsav").
 - An example of this file for the AYs from 2022-23 to 2024-25 for the state of Gujarat is [here](metadata/holidays_calendar.json).
 - Please edit the dictionary within this file for the AYs of your interest.
@@ -81,12 +81,14 @@ The [metadata](metadata) directory contains mandatory data aspects needed to use
 - This is a mandatory JSON dictionary representing the schema of a usable (valid) dataset.
 - Each key is a column name and the corresponding value is a list of datatype, description, and grouping.
 - Valid datatypes are `str` for categorical columns, `float` for numerical columns, and `int` for target column.
-- Description is a piece of text briefly explaining the information the column describes.
-- Grouping enables combined use of columns such as for common preprocessing operations.
+- Description is a piece of text briefly explaining the information the column contains.
+- Grouping enables combined use of columns such as in common preprocessing operations.
 - Modify [Dataset Schema](metadata/schema.json) to use a dataset that has columns with different names.
 
-```metadata/predictor_groups.json```
-- This dictionary enlists predictor groups used to explain predictions and guide interventions using SHAP.
+[Predictor groups](metadata/predictor_groups.json)
+- This is a JSON dictionary categorizing similar features into predictor groups.
+- Predictor groups are used to explain a model's predictions and guide interventions.
+- It is used for explainability in the `SHAPPipeline`, and is not required for training or inference pipelines.
 
 </details>
 
