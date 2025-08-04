@@ -228,16 +228,18 @@ inference_data_path (str): Path to the inference data file.
 <details>
 <summary><span style="font-size: 24px">💡 Explainability</span></summary>
 
-The `SHAPPipeline` explains model predictions using SHAP values by grouping feature contributions and identifying the top predictor groups and drivers behind each prediction.
+- The `SHAPPipeline` explains model predictions using [SHAP](https://shap.readthedocs.io/en/latest/) scores.
+- Similar features are grouped using `metadata/predictor_groups.json` to combine contributions.
+- Output dataframe with predictor groups (in descending order of contribution) and top driving factor is saved in `exp_dir`.
 
 ```
 from explainability.shap_pipeline import SHAPPipeline
 shap_pipeline = SHAPPipeline(
-     exp_dir=path/to/exp/dir,
-     df_path=path/to/df_with_predictions",
-     predictor_groups=path/to/predictor_groups.json,
-     target_recall=0.4,
-     target_ds_name="test"
+     exp_dir=path/to/exp/dir,                          // str: path to experiment directory (to use model and optional artifacts)
+     df_path=path/to/df_with_predictions",             // str: path to dataframe containing prediction columns
+     predictor_groups=path/to/predictor_groups.json,   // str: path to JSON defining groupings of features
+     threshold=0.4,                                    // float (optional): Threshold to generate prediction class column
+     target_recall=0.6                                 // float (optional): Recall on val set to compute threshold (if not provided / known)
 )
 df_explained = shap_pipeline.run()
 df_explained[["predictor_group_1", "predictor_group_1_top_driver"]].head()
