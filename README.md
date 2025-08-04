@@ -103,6 +103,7 @@ The basename of any dataset file must follow the pattern: `ay<academic_year>_gra
 <details>
 <summary><span style="font-size: 24px">📘 Config</span></summary>
 
+<small>
 - A JSON Configuration file is used to define all aspects for running an experiment. A template is shown below.
 
 ---
@@ -110,53 +111,53 @@ The basename of any dataset file must follow the pattern: `ay<academic_year>_gra
 ```javascript
 {
      "exp": {
-          "title": "<experiment_title>",                             // Descriptive name for the experiment. Eg: "baseline - grade3"
-          "project": "<project_name>",                               // Project grouping identifier. Eg: "ews"
-          "root_exps": "<path_to_experiment_outputs>"                // Directory to save all experiment outputs. Eg: "exps/baseline/grade3"
+          "title": "<experiment_title>",                             // str: Descriptive name for the experiment. Eg: "baseline - grade3"
+          "project": "<project_name>",                               // str: Project grouping identifier. Eg: "ews"
+          "root_exps": "<path_to_experiment_outputs>"                // str: Directory to save all experiment outputs. Eg: "exps/baseline/grade3"
      },
      "data": {
-          "training_data_path": "<path_to_training_data>",           // Pickle or CSV path for training data. Eg: "datasets/ay2223_grade3.pkl"
-          "inference_data_path": "<path_to_inference_data>",         // Path for data to infer on (optional). Eg: "datasets/ay2324_grade3.pkl"
-          "index": "<unique_id_column>",                             // Unique ID column. Eg: "aadhaaruid"
-          "label": "<target_column>",                                // Target label column name. Eg: "target"
-          "holidays_calendar_path": "<path_to_holidays_calendar>",   // JSON with academic holidays metadata. Eg: "metadata/holidays_calendar.json"
-          "column_filters": {
-               "in": { "<col>": ["<val1>", "<val2>"] },              // Include rows where column values are in list. Eg: { "schcat": ["1", "2"] }
-               "notin": { "<col>": ["<val1>", "<val2>"] }            // Exclude rows where column values are in list. Eg: { "schmgt": ["92", "93"] }
+          "training_data_path": "<path_to_training_data>",           // str: Pickle or CSV path for training data. Eg: "datasets/ay2223_grade3.pkl"
+          "inference_data_path": "<path_to_inference_data>",         // str: Path for data to infer on (optional). Eg: "datasets/ay2324_grade3.pkl"
+          "index": "<unique_id_column>",                             // str: Unique ID column. Eg: "aadhaaruid"
+          "label": "<target_column>",                                // str: Target label column name. Eg: "target"
+          "holidays_calendar_path": "<path_to_holidays_calendar>",   // str: JSON with academic holidays metadata. Eg: "metadata/holidays_calendar.json"
+          "column_filters": {                                        
+               "in": { "<col>": ["<val1>", "<val2>"] },              // dict[str, list[str]]: Include rows where column values are in list. Eg: { "schcat": ["1", "2"] }
+               "notin": { "<col>": ["<val1>", "<val2>"] }            // dict[str, list[str]]: Exclude rows where column values are in list. Eg: { "schmgt": ["92", "93"] }
           },
           "sample": {
-               "p": "<'actual' | float>",                            // Sampling ratio or 'actual' to keep original. Eg: 0.5 or "actual"
-               "seed": <int>                                         // Random seed for reproducibility. Eg: 5
+               "p": "<'actual' | float>",                            // str or float: Sampling ratio or 'actual' to keep original. Eg: 0.5 or "actual"
+               "seed": <int>                                         // int: Random seed for reproducibility. Eg: 5
           },
           "split": {
-               "train_size": <float>,                                // Train split ratio. Eg: 0.7
-               "random_state": <int>,                                // Random seed for split. Eg: 42
-               "shuffle": <true|false>                               // Shuffle before splitting. Eg: true
+               "train_size": <float>,                                // float: Train split ratio. Eg: 0.7
+               "random_state": <int>,                                // int: Random seed for split. Eg: 42
+               "shuffle": <true|false>                               // boolean: Shuffle before splitting. Eg: true
           },
           "engineer_features": {
-               "groups_of_months": { "<group>": [<months>] },        // Month groupings. Eg: { "full": [6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4] }
-               "combs_of_chars": [[<partn>, ["m", "p", "a"]]],       // Attendance char combinations per partition. Eg: [[1, ["m", "p", "a"]]]
+               "groups_of_months": { "<group>": [<months>] },        // dict[str, list[int]]: Month groupings. Eg: { "full": [6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4] }
+               "combs_of_chars": [[<partn>, [<permutations of 'a','m','p'>]]],       // list[list[int, list[str]]]: Attendance char combinations per partition. Eg: [[1, ["m", "p", "a", "am"]]]
                "partitions": [<int>],                                // No. of time partitions. Eg: [3]
                "disc_cols_miss_frxn": <float>,                       // Missingness threshold for discretization. Eg: 0.5
                "months_for_binary": [<months>],                      // Months used for binary features. Eg: [6, 7, 8, 9, 10]
                "absence_thresholds": [<ints>]                        // Thresholds to define binary absence. Eg: [10, 15, 30]
           },
           "drop_columns_or_groups": [
-               "<col_or_group1>", "<col_or_group2>"                  // Drop any columns or groups. Eg: "schoolid", "[full][#partns=3][partn_3, frac_p]"
+               "<col_or_group1>", "<col_or_group2>"                  // Drop any columns or groups. Eg: "schoolid", "[full][#partns=3][partn_3, frac_p], "exam_attnd_subwise"
           ]
      },
      "model": {
           "n_trials": <int>,                                         // No. of hyperparameter tuning trials. Eg: 50
           "calibration_nbins": <int>,                                // Bins for probability calibration. Eg: 20
           "params": {
-               "fixed": {                                            // Fixed parameters (Not to be tuned)
+               "fixed": {                                            // Fixed parameters (Are not tuned); Mandatory
                     "loss_function": "Logloss",                      // Objective function. Eg: "Logloss"
                     "random_seed": <int>,                            // Seed for model reproducibility. Eg: 0
                     "task_type": "<CPU|GPU>",                        // Hardware to use. Eg: "CPU"
                     "devices": "<GPU_ids>",                          // GPU device string (optional). Eg: "0", "0,1"
                     "auto_class_weights": "<a valid value>"          // Class imbalance handling. Eg: "Balanced"
                },
-               "tune": {                                             // Hyperparameter tuning
+               "tune": {                                             // Specify only if Hyperparameter tuning
                     "independent": {                                 // Independent hyperparameters
                          "<param_name>": {
                               "dtype": "<int|float|categorical>",     // Type of the hyperparameter. Eg: "float"
@@ -175,8 +176,8 @@ The basename of any dataset file must follow the pattern: `ay<academic_year>_gra
                               "dependent_on_value": ["<trig_val>"],   // Values that trigger it. Eg: ["Depthwise"]
                               "dtype": "<int|float>",
                               "tuning_space": {
-                                   "low": <num>,                      // Eg: 3
-                                   "high": <num>                      // Eg: 10
+                                   "low": <num>,                      // Eg: 3, 0.1
+                                   "high": <num>                      // Eg: 10, 1.1
                               }
                          }
                     }
@@ -185,6 +186,7 @@ The basename of any dataset file must follow the pattern: `ay<academic_year>_gra
      }
 }
 ```
+</small>
 </details>
 
 <details>
@@ -237,6 +239,7 @@ config_source: Path to config JSON file or directory of JSON configs.
 <details>
 <summary><span style="font-size: 24px">💡 Explainability</span></summary>
 
+<small>
 The `SHAPPipeline` explains model predictions using SHAP values by grouping feature contributions and identifying the top predictor groups and drivers behind each prediction.
 
 ```
@@ -251,4 +254,5 @@ shap_pipeline = SHAPPipeline(
 df_explained = shap_pipeline.run()
 df_explained[["predictor_group_1", "predictor_group_1_top_driver"]].head()
 ```
+</small>
 </details>
