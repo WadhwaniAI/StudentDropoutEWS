@@ -142,7 +142,7 @@ The basename of any dataset file must follow the pattern: `ay<academic_year>_gra
                "absence_thresholds": [<ints>]                        // list[int]: Thresholds (days of continuous absenteeism) to define binary absence. Eg: [10, 15, 30]
           },
           "drop_columns_or_groups": [
-               "<col_or_group1>", "<col_or_group2>"                  // list[str]: Drop any columns or groups; Eg: "schoolid", "[full][#partns=3][partn_3, frac_p], "exam_attnd_subwise"
+               "<col_or_group1>", "<col_or_group2>"                  // list[str]: Drop any columns or groups; Eg: ["schoolid", "[full][#partns=3][partn_3, frac_p], "exam_attnd_subwise"]
           ]
      },
      "model": {                                                      
