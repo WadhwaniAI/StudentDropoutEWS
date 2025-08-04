@@ -12,7 +12,7 @@
 - The project has been developed using data provided by *Vidya Samiksha Kendra (VSK), state of Gujarat, India*.
 - **Anyone** with similar data could use this project. The user will only have to modify [Dataset Schema](metadata/schema.json).
 - Prior to usage, the original data is assembled into a unified dataset with each row representing a student.
-- The *Target* column for a given AY is populated using the enrollment data of the subsequent AY.
+- A binary *Target* column for a given AY is populated using the enrollment data of the next AY.
 - Input to the modeling process is the unified dataset (with the target column).
 - Output is a dataframe with features and dropout probabilities as columns and rows as students.
 - EWS attemps to explain a model's predictions using [SHAP](https://shap.readthedocs.io/en/latest/) as illustrated in the `Explainability` section.
