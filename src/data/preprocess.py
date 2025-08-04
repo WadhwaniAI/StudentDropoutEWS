@@ -21,7 +21,7 @@ class DataPreprocessor:
           """
           self.schema_path = resolve_path(schema_path)
           self.schema = self._load_json(self.schema_path)
-          self.column_groups = generate_column_groups_from_schema(self.schema)
+          self.column_groups = generate_column_groups_from_schema(self.schema_path)
           self.all_attendance_cols = self.column_groups["all_attendances"]
           self.attendance_replacement_map = attendance_replacement_map or {"nan":"m", "5":"m", "0":"m", "1":"p", "2":"a"}
 

@@ -23,12 +23,12 @@
                "shuffle": "<true|false>"
           },
           "engineer_features": {
-               "groups_of_months": { "<group>": ["<months>"] },
-               "combs_of_chars": [["<partn>", ["m", "p", "a"]]],
+               "groups_of_months": { "<group>": ["<int>"] },
+               "combs_of_chars": [["<int>", ["m", "p", "a"]]],
                "partitions": ["<int>"],
                "disc_cols_miss_frxn": "<float>",
-               "months_for_binary": ["<months>"],
-               "absence_thresholds": ["<ints>"]
+               "months_for_binary": ["<int>"],
+               "absence_thresholds": ["<int>"]
           },
           "drop_columns_or_groups": [
                "<col_or_group1>", "<col_or_group2>"
@@ -42,10 +42,22 @@
                     "loss_function": "Logloss",
                     "random_seed": "<int>",
                     "task_type": "<CPU|GPU>",
-                    "devices": "<GPU_ids>",
-                    "auto_class_weights": "<a valid value>"
+                    "<devices>": "<GPU_ids>",                    
+                    "<auto_class_weights>": "<a valid value>",
+                    "<iterations>": "<int>",
+                    "<depth>": "<int>",
+                    "<leaf_estimation_iterations>": "<int>",
+                    "<learning_rate>": "<float>",
+                    "<l2_leaf_reg>": "<float>",
+                    "<bootstrap_type>": "<str>",
+                    "<grow_policy>": "<str>",
+                    "<leaf_estimation_method>": "<str>",
+                    "<boosting_type>": "<str>",
+                    "score_function": "<str>",
+                    "<bagging_temperature>": "<float>",
+                    "<subsample>": "<float>"
                },
-               "tune": {
+               "<tune>": {
                     "independent": {
                          "<param_name>": {
                               "dtype": "<int|float|categorical>",

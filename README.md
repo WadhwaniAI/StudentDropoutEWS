@@ -72,7 +72,8 @@ The [metadata](metadata) directory contains mandatory data aspects needed to use
 [Config Schema](metadata/config_schema.json)
 - This is a *mandatory* nested JSON dictionary illustrating the valid schema of a `Config` file.
 - A new Config (for training) or an existing Config (for inference) must follow this schema.
-- `Config Schema` is elaborated upon in the **Config** section.
+- In [Config Schema](metadata/config_schema.json), all *optional* parameters are denoted as `<key>` and valid datatypes are in placeholders.
+- `Config Schema` is further elaborated upon in the **Config** section.
 
 [Predictor groups](metadata/predictor_groups.json)
 - This is a JSON dictionary categorizing similar features into predictor groups.
@@ -132,7 +133,7 @@ The [metadata](metadata) directory contains mandatory data aspects needed to use
           "split": {
                "train_size": <float>,                                // float: Train split ratio; Eg: 0.7
                "random_state": <int>,                                // int: Random seed for split; Eg: 42
-               "shuffle": <true|false>                               // boolean: Shuffle before splitting into train and val; Eg: true
+               "shuffle": <true|false>                               // bool: Shuffle before splitting into train and val; Eg: true
           },
           "engineer_features": {
                "groups_of_months": { "<group>": [<months>] },        // dict[str, list[int]]: Month groupings; Eg: { "full": [6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4] }
@@ -157,7 +158,7 @@ The [metadata](metadata) directory contains mandatory data aspects needed to use
                     "devices": "<GPU_ids>",                          // str: GPU ID device string (optional); Eg: "0", "0,1"
                     "auto_class_weights": "<a valid value>"          // str: Class imbalance handling; Eg: "Balanced"
                },
-               "tune": {                                             // Specify only for Hyperparameter tuning
+               "<tune>": {                                           // [Optional] Specify only for Hyperparameter tuning
                     "independent": {                                 // Independent hyperparameters
                          "<param_name>": {
                               "dtype": "<int|float|categorical>",    // str: DataType of the hyperparameter; Eg: "float"
@@ -165,7 +166,7 @@ The [metadata](metadata) directory contains mandatory data aspects needed to use
                                    "low": <num>,                     // int or float (as per dtype): Min val of the tuning space; Eg: 0.01
                                    "high": <num>,                    // int or float (as per dtype): Max val of the tuning space; Eg: 1.0
                                    "step": <optional_int>,           // int: Step size (optional); Eg: 2
-                                   "log": <optional_bool>,           // boolean: Log scale to use or not?; Eg: true
+                                   "log": <optional_bool>,           // bool: Log scale to use or not?; Eg: true
                                    "choices": ["<cat1>", "<cat2>"]   // list[str]: Categories (if categorical); Eg: ["Ordered", "Plain"]
                               }
                          }

@@ -5,8 +5,9 @@ import pandas as pd
 import re
 from pathlib import Path
 from sklearn.model_selection import train_test_split
-from typing import List, Dict, Tuple, Optional
+from typing import Union, List, Dict, Tuple, Optional
 from collections import defaultdict
+from collections.abc import Mapping
 
 
 def determine_columns_to_drop(
@@ -145,20 +146,24 @@ def public_private_school_filter(
      return df[is_public], df[~is_public]
 
 
-def generate_column_groups_from_schema(dataset_schema_path):
-    """
-    Generates column groups by reading group info from the dataset schema.
-    :param dataset_schema_path: Path to the dataset_schema.json (with group info).
-    :return: A dictionary mapping each group to its list of columns.
-    """
-    with open(dataset_schema_path, 'r') as f:
-        schema = json.load(f)
+def generate_column_groups_from_schema(schema_input: Union[str, Path, Mapping]):
+     """
+     Generates column groups by reading group info from a dataset schema..
+     :param schema_input: Path to the dataset_schema.json (str or pathlib.Path) or a schema dictionary/mapping (dict, Munch, etc.).
+     :return: A dictionary mapping each group to its list of columns.
+     """
+     schema = {}
+     if isinstance(schema_input, (str, Path)):
+          with open(schema_input, 'r') as f:
+               schema = json.load(f)
+     elif isinstance(schema_input, Mapping):
+          schema = schema_input
+     else:
+          raise TypeError("Input must be a file path (str or pathlib.Path) or a mapping (e.g., dict).")
 
-    # Use defaultdict to simplify appending to lists for each group.
-    column_groups = defaultdict(list)
-    for column, attributes in schema.items():
-        # If group information exists as the third attribute, append the column.
-        if len(attributes) > 2 and attributes[2]:
-            column_groups[attributes[2]].append(column)
+     column_groups = defaultdict(list)
+     for column, attributes in schema.items():
+          if len(attributes) > 2 and attributes[2]:
+               column_groups[attributes[2]].append(column)
 
-    return dict(column_groups)
+     return dict(column_groups)

@@ -1,7 +1,7 @@
 import argparse
 from src.pipelines.training_pipeline import TrainingPipeline
 from src.pipelines.inference_pipeline import InferencePipeline
-from src.data.utils import get_config_files
+from src.utils import get_config_files
 
 
 def main():

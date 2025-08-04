@@ -1,6 +1,6 @@
-import json
 from typing import Union, Dict, Any
 from munch import Munch, munchify
+from src.utils import load_config
 
 
 class ConfigManager:
@@ -9,15 +9,15 @@ class ConfigManager:
      a validated Munch object for experiments.
      """
      def __init__(
-               self, config_input: Union[str, Dict, Munch], template_schema: Union[str, Dict, Munch]="metadata/config_schema.json"
+               self, config_input: Union[str, Dict, Munch], config_schema: Union[str, Dict, Munch]="metadata/config_schema.json"
      ):
           """
-          Initializes the manager, loads config & template, and runs validation.
+          Initializes the manager, loads config & schema, and runs validation.
           :param config_input (Union[str, Dict, Munch]): The configuration, as a path, dict, or Munch.
-          :param template_schema (Union[str, Dict, Munch]): The schema to validate against.
+          :param config_schema (Union[str, Dict, Munch]): The schema to validate against.
           """
-          self.template = self._load_config(template_schema)
-          self.config = self._load_config(config_input)
+          self.schema = load_config(config_schema)
+          self.config = load_config(config_input)
           self.errors = []
           self._validate()
 
@@ -26,31 +26,16 @@ class ConfigManager:
           """Returns True if the current configuration is valid against the schema."""
           return not self.errors
 
-     def _load_config(self, config_input: Union[str, Dict, Munch]) -> Munch:
-          """Loads a configuration and ensures it is returned as a Munch object."""
-          if isinstance(config_input, str):
-               try:
-                    with open(config_input, 'r') as f:
-                         return munchify(json.load(f))
-               except FileNotFoundError:
-                    raise FileNotFoundError(f"Config file not found: '{config_input}'")
-               except json.JSONDecodeError:
-                    raise ValueError(f"Could not parse JSON from file: '{config_input}'")
-          elif isinstance(config_input, (dict, Munch)):
-               return munchify(config_input)
-          else:
-               raise TypeError("Input must be a dictionary, Munch object, or a file path (string).")
-
      @staticmethod
-     def _get_expected_type(template_value: Any) -> type:
-          """Infers the expected Python type from a template's placeholder value."""
-          if isinstance(template_value, (dict, Munch)): return (dict, Munch)
-          if isinstance(template_value, list): return list
-          if isinstance(template_value, str):
-               if "<int>" in template_value or "<num>" in template_value: return int
-               if "<float>" in template_value: return float
-               if "<true|false>" in template_value or "<bool>" in template_value: return bool
-               if "'actual' | float" in template_value: return (str, float)
+     def _get_expected_type(schema_value: Any) -> type:
+          """Infers the expected Python type from a schema's placeholder value."""
+          if isinstance(schema_value, (dict, Munch)): return (dict, Munch)
+          if isinstance(schema_value, list): return list
+          if isinstance(schema_value, str):
+               if "<int>" in schema_value or "<num>" in schema_value: return int
+               if "<float>" in schema_value: return float
+               if "<true|false>" in schema_value or "<bool>" in schema_value: return bool
+               if "'actual' | float" in schema_value: return (str, float)
           return str
 
      @staticmethod
@@ -67,40 +52,59 @@ class ConfigManager:
                     source_dict[key] = value
           return source_dict
 
-     def _recursive_validate(self, user_conf: Munch, template: Munch, path: str):
+     def _recursive_validate(self, user_conf: Munch, schema: Munch, path: str):
           """
-          Recursively compares the user config against the template.
+          Recursively compares the user config against the schema, handling mandatory and optional (<key>) parameters.
           :param user_conf (Munch): The user's configuration.
-          :param template (Munch): The template schema to validate against.
+          :param schema (Munch): The schema to validate against.
+          :param path (str): The current dot-notation path for error reporting.
           """
-          for key in template.keys():
-               if key.startswith("<") and key.endswith(">"): continue
-               if key not in user_conf:
-                    self.errors.append(f"Missing key at '{path}': '{key}'")
+          # Check for MISSING MANDATORY keys (by iterating through the schema)
+          for schema_key in schema.keys():
+               if schema_key.startswith("<") and schema_key.endswith(">"):
+                    continue
+               if schema_key not in user_conf:
+                    self.errors.append(f"Missing key at '{path}': '{schema_key}'")
+
+          # Validate all keys PRESENT in the user's config
           for key, user_val in user_conf.items():
                current_path = f"{path}.{key}"
-               template_key = key
-               if key not in template:
-                    dynamic_key = next((tk for tk in template.keys() if tk.startswith("<")), None)
-                    if dynamic_key: template_key = dynamic_key
+               schema_val = None
+
+               if key in schema:
+                    schema_val = schema[key]
+               else:
+                    optional_key = f"<{key}>"
+                    if optional_key in schema:
+                         schema_val = schema[optional_key]
                     else:
-                         self.errors.append(f"Extra key not in template at '{path}': '{key}'")
-                         continue
-               template_val = template[template_key]
-               expected_type = self._get_expected_type(template_val)
+                         # This finds a generic placeholder like '<param_name>'
+                         generic_placeholder = next((k for k in schema.keys() if k.startswith("<")), None)
+                         if generic_placeholder:
+                              schema_val = schema[generic_placeholder]
+
+               # If no schema rule was found after all strategies, it's an extra key
+               if schema_val is None:
+                    self.errors.append(f"Extra key not in schema at '{path}': '{key}'")
+                    continue
+
+               # Now that we have the correct schema rule, validate the type
+               expected_type = self._get_expected_type(schema_val)
                if not isinstance(user_val, expected_type) and user_val is not None:
                     expected_name = getattr(expected_type, '__name__', str(expected_type))
                     self.errors.append(
                          f"Type mismatch at '{current_path}': Expected {expected_name}, got {type(user_val).__name__}."
                     )
-                    continue
+                    continue # Skip deeper validation if type is wrong
+
+               # If the value is a dictionary, recurse deeper
                if isinstance(user_val, Munch):
-                    self._recursive_validate(user_val, template_val, current_path)
+                    self._recursive_validate(user_val, schema_val, current_path)
 
      def _validate(self) -> bool:
           """Internal method to clear errors and re-run the validation logic."""
           self.errors = []
-          self._recursive_validate(self.config, self.template, "root")
+          self._recursive_validate(self.config, self.schema, "root")
           return self.is_valid
 
      def update(self, additions: Union[Dict, Munch]):
@@ -136,7 +140,7 @@ if __name__ == '__main__':
      }
 
      print("--- 1. Loading an initially invalid config ---")
-     # This config is missing several keys required by the template
+     # This config is missing several keys required by the schema
      manager = ConfigManager(valid_config_dict)
      
      try:
