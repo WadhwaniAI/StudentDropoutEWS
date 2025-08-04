@@ -23,12 +23,10 @@
 <summary><span style="font-size: 20px">🧠 Index</span></summary>
 
 - **Setup**  
-  - Learn how to clone the repository, create a virtual environment, and install required packages.
-  - abc
+  Learn how to clone the repository, create a virtual environment, and install required packages.
 
 - **Metadata**  
-  - Covers mandatory metadata such as calendar of holidays, dataset schema, column groups and predictor groups
-  - abc
+  Covers mandatory metadata such as calendar of holidays, dataset schema, column groups and predictor groups
 
 - **Mandatory aspects of a dataset file**  
   Details the columns, formats, and naming conventions expected in input data files.
@@ -95,20 +93,13 @@ The ```metadata/``` directory contains mandatory auxiliary data aspects needed t
 <br>
 
 **Schema:** 
-
-- A valid dataset for training and inference must have a schema consistent with [dataset schema](metadata/dataset_schema.json).
-- Consistency implies that the columns in the dataset are a subset of the columns in the schema.
-- If the columns in the datasethave different names, please modify [dataset schema](metadata/dataset_schema.json).
+A valid dataset for training and inference must have a schema consistent with [dataset schema](metadata/dataset_schema.json). Consistency implies that the columns in the dataset are a subset of the columns in the schema. If the columns in the dataset have different names, please modify [dataset schema](metadata/dataset_schema.json) before use.
 
 **Format:**
-
-- A dataset (dataframe) file must be of pickle type. Example: `dataset/ay2223_grade3.pkl`.
-- Currently, support for other file formats is not provided.
+A dataset (dataframe) file must be of pickle type. Example: `dataset/ay2223_grade3.pkl`. Currently, support for other file formats is not provided.
 
 **Nomenclature:**
-
-- The basename of a dataset file must follow the pattern: `ay<academic_year>_grade<grade>.pkl`. Example: `ay2223_grade3.pkl`
-- This is important to extract "academic year" and "grade" using regex.
+The basename of a dataset file must follow the pattern: `ay<academic_year>_grade<grade>.pkl`. Example: `dataset/ay2223_grade3.pkl`. This is important to extract "academic year" and "grade" using regex.
 
 </details>
 
