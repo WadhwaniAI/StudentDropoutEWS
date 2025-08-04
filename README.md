@@ -67,9 +67,10 @@ $ pip install -r requirements.txt
 <details>
 <summary><span style="font-size: 20px">🧩 Metadata</span></summary>
 
-The ```metadata/``` directory contains mandatory auxiliary data aspects needed to train models, run inference, and obtain predictors.
+The [metadata](metadata) directory contains mandatory data aspects needed to use this repository.
 
-```metadata/holidays_calendar.json```
+[Calendar of holidays](metadata/holidays_calendar.json)
+- This is a mandatory dictionary
 - Example: `{"2223": {"6": {"sundays": [5, 12], "vacation": [1, 2], "pravesh utsav": [13, 14]}}}`
 - This nested dictionary stores non-working day metadata for each academic year (e.g., "2223" representing academic year 2022-23), and for each month within the year ("6", "7" representing June and July.) 
 - It maps to sub-categories like "sundays", "festive", "vacation", or custom labels (e.g., "pravesh utsav"), listing relevant dates as integers.
