@@ -210,8 +210,8 @@ config_source (str): Path to config JSON file or directory of JSON configs.
 <details>
 <summary><span style="font-size: 24px">🎯 Inference</span></summary>
 
-To run inference on a new dataset, execute `main.py` using `'infer` mode as illustrated below.
-Input dataframe is appended with predicted probabilities and saved in the given experimental directory.
+- To run inference on a new dataset, execute `main.py` using `'infer` mode as illustrated below.
+- Input dataframe is appended with predicted probabilities and saved in the given experimental directory (`exp_dir`).
 
 ```
 python -m src.main --config_source <path/to/config> --mode train
