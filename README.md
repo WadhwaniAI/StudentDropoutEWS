@@ -73,7 +73,9 @@ The [metadata](metadata) directory contains mandatory data aspects needed to use
 
 <details>
 <summary><span style="font-size: 20px">📊 Dataset</span></summary>
----
+
+___
+
 - A valid dataset for training and inference must have a schema consistent with [Dataset Schema](metadata/dataset_schema.json). 
 - The columns in a usable dataset must be a subset of the columns in [Dataset Schema](metadata/dataset_schema.json). 
 - If the names of columns in the dataset are different, please modify [Dataset Schema](metadata/dataset_schema.json) before use.
