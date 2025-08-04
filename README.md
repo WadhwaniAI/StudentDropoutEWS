@@ -1,7 +1,7 @@
 <details>
 <summary><span style="font-size: 20px">🗂️ Overview</span></summary>
 
-- Students in India drop out of schools due to various factors.
+- Students in India drop out of schools due to social, economic and geographical factors.
 - Students enrolled in a given academic year (AY) but failing to re-enroll in the next AY are dropouts.
 - This project is an Early Warning System (EWS) using ML to predict, understand and mitigate student dropouts.
 - We formulate this as a Binary Classification ML problem (dropout: label 1, not-dropout: label 0).
@@ -13,9 +13,9 @@
 - **Anyone** with similar data could use this project. The user will only have to modify [Dataset Schema](metadata/schema.json).
 - Prior to usage, the original data is assembled into a unified dataset with each row representing a student.
 - The *Target* column for a given AY is populated using the enrollment data of the subsequent AY.
-- Input to the modeling process is the unified dataset with the target column.
+- Input to the modeling process is the unified dataset (with the target column).
 - Output is a dataframe with features and dropout probabilities as columns and rows as students.
-- EWS attemps to explain a model's predictions using [SHAP](https://shap.readthedocs.io/en/latest/) illustrated in `Explainability` section.
+- EWS attemps to explain a model's predictions using [SHAP](https://shap.readthedocs.io/en/latest/) as illustrated in the `Explainability` section.
 
 </details>
 
