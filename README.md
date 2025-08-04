@@ -93,7 +93,8 @@ The ```metadata/``` directory contains mandatory auxiliary data aspects needed t
 <br>
 
 **Schema:** 
-A valid dataset for training and inference must have a schema consistent with [dataset schema](metadata/dataset_schema.json). Consistency implies that the columns in the dataset are a subset of the columns in the schema. If the columns in the dataset have different names, please modify [dataset schema](metadata/dataset_schema.json) before use.
+<br>
+A valid dataset for training and inference must have a schema consistent with [dataset schema](metadata/dataset_schema.json). The columns in the dataset must be a subset of the columns in the schema. If the columns in the dataset have different names, please modify [dataset schema](metadata/dataset_schema.json) before use.
 
 **Format:**
 A dataset (dataframe) file must be of pickle type. Example: `dataset/ay2223_grade3.pkl`. Currently, support for other file formats is not provided.
