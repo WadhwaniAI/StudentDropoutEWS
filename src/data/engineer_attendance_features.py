@@ -2,7 +2,7 @@ import itertools
 import re
 import numpy as np
 import pandas as pd
-from typing import Dict, List
+from typing import Dict, List, Optional
 from .utils import determine_columns_to_drop, split_features_by_dtype, holidays_academic_year_wise
 from src.utils import resolve_path
 
@@ -13,7 +13,7 @@ class EngineerAttendanceFeatures:
                holidays_calendar_path: str="metadata/holidays_calendar.json", 
                all_attendance_pattern: str=r"^\d+_\d+$",
                index: str="aadhaaruid", 
-               label: str="target"
+               label: Optional[str]="target"
      ):
           """
           Initializes the feature engineer with holiday mappings and allowed missing attendance threshold.          
@@ -21,7 +21,7 @@ class EngineerAttendanceFeatures:
           :param disc_cols_miss_frxn: Maximum allowed fraction of 'm' (missing) values in valid columns.
           :param all_attendance_pattern: Regex pattern to match valid attendance column names (e.g., '12_15').
           :param index: Name of the index column in the DataFrame.
-          :param label: Name of the label column in the DataFrame.
+          :param label: Optional. Name of the label column if present in the DataFrame.
           """
           self.holidays = holidays_academic_year_wise(resolve_path(holidays_calendar_path)) 
           self.index = index

@@ -36,14 +36,14 @@ def determine_columns_to_drop(
 
 
 def split_features_by_dtype(
-          df: pd.DataFrame, index: str="aadhaaruid", label: str="target", 
+          df: pd.DataFrame, index: str="aadhaaruid", label: Optional[str]="target", 
 ) -> Tuple[List[str], List[str]]:
      """
-     Identify columns as Categorical with dtype 'object' and Numerical with dtype np.float64 only     
+     Identify columns as Categorical with dtype 'object' and Numerical with dtype np.float64 only.     
      Excludes index and label columns from both.
      :param df: Input DataFrame
-     :param label: Name of label/target column to exclude
      :param index: Name of index column to exclude
+     :param label: Optional. Name of label/target column to exclude
      Returns: Tuple of (categorical_features, numerical_features)
      """
      exclude = {label, index}

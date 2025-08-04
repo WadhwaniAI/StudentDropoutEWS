@@ -14,7 +14,7 @@ class BinaryModelEvaluator:
 
      def __init__(self, df, label_col, proba_1_col, ds_name="dataset", save_dir=None, manual_thresholds: dict=None):
           """          
-          :param df (pd.DataFrame): DataFrame containing predictions and labels.
+          :param df (pd.DataFrame): DataFrame containing predictions and optionally labels.
           :param label_col (str): Name of the label column.
           :param proba_1_col (str): Name of the column containing probabilities for class 1.
           :param ds_name (str): Name of the dataset for labeling plots.
@@ -32,13 +32,23 @@ class BinaryModelEvaluator:
                os.makedirs(save_dir, exist_ok=True)
 
           self.y_score = self.df[self.proba_1_col].astype(float).values
-          self.y_true = self.df[self.label_col].astype(int).values
-          assert set(np.unique(self.y_true)).issubset({0, 1}), f"Label column {label_col} must be binary (0 or 1)"
+          
+          # Check if the label column exists in the DataFrame
+          if self.label_col in self.df.columns:
+               self.y_true = self.df[self.label_col].astype(int).values
+               assert set(np.unique(self.y_true)).issubset({0, 1}), f"Label column {label_col} must be binary (0 or 1)"
+          else:
+               # If not present, set y_true to None
+               self.y_true = None
+
           self.thresholds_info = {}
           self.metrics = {}
 
      def compute_thresholds(self):
           """Compute thresholds for max F1 and max lift."""
+          # Guard clause: only run if labels are available
+          if self.y_true is None:
+               return
           ps, rs, ts = precision_recall_curve(self.y_true, self.y_score)
           f1s = 2 * ps * rs / (ps + rs + 1e-10)
           self.thresholds_info['max_f1'] = ts[np.argmax(f1s)]
@@ -54,6 +64,9 @@ class BinaryModelEvaluator:
 
      def _k_recall_curve(self, num_points=100):
           """Compute lift and recall curves for varying k."""
+          # Guard clause: only run if labels are available
+          if self.y_true is None:
+               return np.array([]), np.array([]), np.array([])
           df_sorted = self.df.sort_values(self.proba_1_col, ascending=False)
           total = len(df_sorted)
           ks, recalls, lifts = [], [], []
@@ -72,7 +85,7 @@ class BinaryModelEvaluator:
      def _finalize_plot(self):
           """Standardize plot formatting and force square shape."""
           ax = plt.gca()
-          ax.set_aspect('equal', adjustable='box')  # Make the plotting area square
+          ax.set_aspect('equal', adjustable='box')
           if ax.get_legend_handles_labels()[0]:
                plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
           plt.tight_layout(pad=1.5)
@@ -87,6 +100,7 @@ class BinaryModelEvaluator:
 
      def plot_precision_recall(self):
           """Plot precision vs recall."""
+          if self.y_true is None: return
           ps, rs, ts = precision_recall_curve(self.y_true, self.y_score)
           ap = round(auc(rs, ps), 3)
           plt.figure(figsize=(7, 6))
@@ -105,6 +119,7 @@ class BinaryModelEvaluator:
 
      def plot_roc(self):
           """Plot ROC curve."""
+          if self.y_true is None: return
           fpr, tpr, _ = roc_curve(self.y_true, self.y_score)
           auc_val = auc(fpr, tpr)
           plt.figure(figsize=(7, 6))
@@ -121,6 +136,7 @@ class BinaryModelEvaluator:
 
      def plot_calibration(self):
           """Plot calibration curve."""
+          if self.y_true is None: return
           prob_true, prob_pred = calibration_curve(self.y_true, self.y_score, n_bins=20, strategy='uniform')
           plt.figure(figsize=(7, 6))
           plt.plot(prob_pred, prob_true, marker='o', label='Model')
@@ -135,7 +151,8 @@ class BinaryModelEvaluator:
      def plot_proba_distribution(self, with_labels=True):
           """Plot probability score histogram."""
           plt.figure(figsize=(7, 6))
-          if with_labels:
+          # Only use hue if labels are available and requested
+          if with_labels and self.y_true is not None:
                sns.histplot(self.df, x=self.proba_1_col, hue=self.label_col, bins=50, legend=True)
                plt.title(f"{self.ds_name}: Proba dist with labels")
           else:
@@ -145,11 +162,15 @@ class BinaryModelEvaluator:
           plt.ylabel("Count")
           plt.yscale("log")
           self._finalize_plot()
-          self._maybe_savefig("proba_dist" + ("_with_labels" if with_labels else ""))
+          savefig_key = "proba_dist"
+          if with_labels and self.y_true is not None:
+               savefig_key += "_with_labels"
+          self._maybe_savefig(savefig_key)
           plt.close()
 
      def plot_error_distribution(self):
           """Plot error scores (proba - label)."""
+          if self.y_true is None: return
           self.df["error"] = self._compute_error_scores()
           plt.figure(figsize=(7, 6))
           sns.histplot(self.df, x="error", hue=self.label_col, bins=50, legend=True)
@@ -163,6 +184,7 @@ class BinaryModelEvaluator:
 
      def plot_ppv_npv_vs_threshold(self):
           """Plot PPV and NPV vs threshold."""
+          if self.y_true is None: return
           thresholds = np.linspace(0, 1, 100)
           ppvs, npvs = [], []
           for t in thresholds:
@@ -197,6 +219,7 @@ class BinaryModelEvaluator:
 
      def plot_recall_at_k(self, num_points=100):
           """Plot recall and lift vs proportion of population (k)."""
+          if self.y_true is None: return
           lifts, recalls, ks = self._k_recall_curve(num_points=num_points)
           plt.figure(figsize=(7, 6))
           plt.plot(ks, recalls, label='Recall@k')
@@ -210,10 +233,13 @@ class BinaryModelEvaluator:
 
      def _compute_error_scores(self):
           """Compute error scores from probabilities and labels."""
+          if self.y_true is None: return None
           return np.where(self.y_true == 1, self.y_score, (1 - self.y_score)) - self.y_true
 
      def summary_metrics(self):
           """Return summary classification metrics."""
+          if self.y_true is None:
+               return {} # Return empty dict if no labels
           if 'max_f1' not in self.thresholds_info:
                self.compute_thresholds()
           thresh = self.thresholds_info.get('max_f1', 0.5)
@@ -231,13 +257,18 @@ class BinaryModelEvaluator:
 
      def plot_all(self):
           """Run all plots with threshold computation."""
-          self.compute_thresholds()
-          self.plot_precision_recall()
-          self.plot_roc()
-          self.plot_calibration()
-          self.plot_proba_distribution(with_labels=True)
+          # Check for labels before running label-dependent plots
+          if self.y_true is not None:
+               self.compute_thresholds()
+               self.plot_precision_recall()
+               self.plot_roc()
+               self.plot_calibration()
+               self.plot_error_distribution()
+               self.plot_ppv_npv_vs_threshold()
+               self.plot_recall_at_k()
+               # This one can be run with or without labels
+               self.plot_proba_distribution(with_labels=True)
+          
+          # These plots do not require labels and can always run
           self.plot_proba_distribution(with_labels=False)
-          self.plot_error_distribution()
-          self.plot_ppv_npv_vs_threshold()
           self.plot_dropout_rate_vs_threshold()
-          self.plot_recall_at_k()
