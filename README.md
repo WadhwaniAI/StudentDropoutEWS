@@ -43,7 +43,7 @@ $ pip install -r requirements.txt
 The [metadata](metadata) directory contains mandatory data aspects needed to use this repository.
 
 [Calendar of holidays](metadata/holidays_calendar.json)
-- This is a mandatory nested JSON dictionary holding information about holidays in AYs. 
+- This is a *mandatory* nested JSON dictionary holding information about holidays in AYs. 
 - For example: `{"2223": {"6": {"sundays": [5, 12, 19, 26], "vacation": [1, 2]}}}`
 - Stores non-working dates for each AY (e.g., "2223"->AY 2022-23) and month (e.g., "6"->June, "7"->July). 
 - Dates are integers under categories like "sundays", "festive", "vacation", or others (e.g., "pravesh utsav").
@@ -52,7 +52,7 @@ The [metadata](metadata) directory contains mandatory data aspects needed to use
 - This file could either be manually populated from a PDF or derived from a CSV notified by the administration.
 
 [Dataset Schema](metadata/schema.json)
-- This is a mandatory JSON dictionary representing the schema of a usable (valid) dataset.
+- This is a *mandatory* JSON dictionary representing the schema of a usable (valid) dataset.
 - Each key is a column name and the corresponding value is a list of datatype, description, and grouping.
 - Valid datatypes are `str` for categorical columns, `float` for numerical columns, and `int` for target column.
 - Description is a piece of text briefly explaining the information the column contains.
@@ -60,7 +60,7 @@ The [metadata](metadata) directory contains mandatory data aspects needed to use
 - Modify [Dataset Schema](metadata/schema.json) to use a dataset that has columns with different names.
 
 [Config Schema](metadata/config_schema.json)
-- This is a mandatory nested JSON dictionary illustrating the valid schema of a `Config` file.
+- This is a *mandatory* nested JSON dictionary illustrating the valid schema of a `Config` file.
 - A new Config (for training) or an existing Config (for inference) must follow this schema.
 - `Config Schema` is elaborated upon in the **Config** section.
 
