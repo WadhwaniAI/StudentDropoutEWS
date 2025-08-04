@@ -88,7 +88,7 @@ The [metadata](metadata) directory contains mandatory data aspects needed to use
 [Config Schema](metadata/config_schema.json)
 - This is a mandatory nested JSON dictionary illustrating the valid schema of a `Config` file.
 - A new Config (for training) or an existing Config (for inference) must follow this schema.
-- The `Config Schema` is explained in the **Config** section.
+- `Config Schema` is elaborated upon in the **Config** section.
 
 [Predictor groups](metadata/predictor_groups.json)
 - This is a JSON dictionary categorizing similar features into predictor groups.
