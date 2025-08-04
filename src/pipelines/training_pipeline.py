@@ -26,7 +26,7 @@ class TrainingPipeline(BasePipeline):
           self.config = ConfigManager(config_input=self.config_path).get_validated_config()
           
           self.exp_dir = f"{self.config.exp.root_exps}/{self.config.exp.title}_{get_timestamp()}"
-          self.data_path = self.config.data.file_path
+          self.data_path = self.config.data.training_data_path
 
      def _post_load_and_preprocess_hook(self):
           """(Hook Implementation) No action needed after loading for training."""

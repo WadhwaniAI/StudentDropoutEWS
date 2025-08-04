@@ -117,7 +117,7 @@ The basename of any dataset file must follow the pattern: `ay<academic_year>_gra
           "root_exps": "<path_to_experiment_outputs>"                // str: Directory to save all experiment outputs; Eg: "exps/baseline/grade3"
      },
      "data": {
-          "file_path": "<path_to_training_data>",                    // str: Pickle or CSV path of training data; Eg: "datasets/ay2223_grade3.pkl"
+          "training_data_path": "<path_to_training_data>",           // str: Pickle or CSV path of training data; Eg: "datasets/ay2223_grade3.pkl"
           "index": "<unique_id_column>",                             // str: Unique ID column; Eg: "aadhaaruid"
           "label": "<target_column>",                                // str: Target label column name; Eg: "target"
           "holidays_calendar_path": "<path_to_holidays_calendar>",   // str: JSON with academic holidays metadata; Eg: "metadata/holidays_calendar.json"

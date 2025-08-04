@@ -5,7 +5,7 @@
           "root_exps": "<path_to_experiment_outputs>"
      },
      "data": {
-          "file_path": "<path_to_training_data>",
+          "training_data_path": "<path_to_training_data>",
           "index": "<unique_id_column>",
           "label": "<target_column>",
           "holidays_calendar_path": "<path_to_holidays_calendar>",
