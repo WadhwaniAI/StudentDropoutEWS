@@ -3,11 +3,11 @@ import shutil
 import wandb
 from typing import Any, Dict, Tuple
 from .base_pipeline import BasePipeline
-from src.config_manager import ConfigManager
+from src.configs.config_manager import ConfigManager
 from src.models.model import CatBoostBinaryClassifier
 from src.models.utils import save_model_features, loss_curves
 from src.data.utils import sample_and_split
-from src.utils import get_timestamp, load_config
+from src.utils import get_timestamp
 
 
 # --- Constants ---

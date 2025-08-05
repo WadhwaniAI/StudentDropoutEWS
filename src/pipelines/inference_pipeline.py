@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 from typing import Any, Dict, Tuple
 from .base_pipeline import BasePipeline
-from src.config_manager import ConfigManager
+from src.configs.config_manager import ConfigManager
 from src.models.model import CatBoostBinaryClassifier
 from src.models.utils import get_model_features
 

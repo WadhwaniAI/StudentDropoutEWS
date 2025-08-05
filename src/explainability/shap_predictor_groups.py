@@ -7,7 +7,7 @@ from typing import Dict, List, Union
 from sklearn.metrics import precision_recall_curve
 from src.models.model import CatBoostBinaryClassifier
 from src.models.utils import get_model_features
-from src.utils import load_config
+from src.configs.utils import load_config
 
 
 class SHAPPipeline:

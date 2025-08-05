@@ -1,6 +1,6 @@
 from typing import Union, Dict, Any
 from munch import Munch, munchify
-from src.utils import load_config
+from .utils import load_config
 
 
 class ConfigManager:
