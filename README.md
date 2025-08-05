@@ -9,13 +9,13 @@
 - **Dropout indicators** are present in social traits, attendance patterns and performance in assessments.
 - This project is an **Early Warning System (EWS)** using ML to predict, cognize and mitigate student dropouts.
 - We formulate this as a *Binary Classification* ML problem (dropout: label 1, not-dropout: label 0).
-- Data collected via enrollment, daily attendance and semester assessments is used.
+- Data collected via enrollment, daily attendance and semester assessments is currently used.
 - Enrollment data delineates a student's regional and socioeconomic factors.
 - Daily attendance data delineates a student's daily attendance (present, absent or missing entry).
 - Semester assessment data delineates a student's attendance and performance in examinations.
 - The project has been developed using data provided by *Vidya Samiksha Kendra (VSK), state of Gujarat, India*.
 - **Anyone** with similar data could use this project. The user will only have to modify [Dataset Schema](metadata/schema.json).
-- Prior to usage, the original data is assembled into a unified dataset with each row representing a student.
+- Prior to usage, the original data is assembled into a *unified dataset* with each row representing a student.
 - A binary *Target* column for a given AY is populated using the enrollment data of the next AY.
 - **Input** to the modeling process is the unified dataset (with the target column).
 - **Output** is a dataframe with features and dropout probabilities as columns and rows as students.
