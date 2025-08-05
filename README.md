@@ -271,7 +271,7 @@ df_explained[["predictor_group_1", "predictor_group_1_top_driver"]].head()
 ---
 
 - We extend our sincere gratitude to *Vidya Samiksha Kendra (VSK), state of Gujarat, India* for their support. 
-- All the original data that was used to build the project had been provided by VSK.
+- All the original data that was used to build the project has been provided by VSK.
 - We would like to thank *UNICEF India* for expert guidance to drive Model Explainability for interventions.
 
 ---
