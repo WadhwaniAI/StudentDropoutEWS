@@ -7,7 +7,7 @@
 - Students enrolled in a given academic year (AY) but **failing to re-enroll** in the *next* AY are dropouts.
 - *Less education* creates unskilled labour and is linked to poor health thus impeding a nation's development.
 - **Dropout indicators** are present in social traits, attendance patterns and performance in assessments.
-- This project is an **Early Warning System (EWS)** using ML to predict, understand and mitigate student dropouts.
+- This project is an **Early Warning System (EWS)** using ML to predict, cognize and mitigate student dropouts.
 - We formulate this as a *Binary Classification* ML problem (dropout: label 1, not-dropout: label 0).
 - Data collected via enrollment, daily attendance and semester assessments is used.
 - Enrollment data delineates a student's regional and socioeconomic factors.
