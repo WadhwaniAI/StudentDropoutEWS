@@ -1,12 +1,14 @@
 <details>
-<summary><span style="font-size: 20px">🗂️ Overview</span></summary>
+<summary><span style="font-size: 20px">🗂️ OVERVIEW</span></summary>
 
 ---
 
 - Students in India drop out of schools due to diverse social, economic and geographical factors.
 - Students enrolled in a given academic year (AY) but **failing to re-enroll** in the *next* AY are dropouts.
-- This project is an Early Warning System (EWS) using ML to predict, understand and mitigate student dropouts.
-- We formulate this as a Binary Classification ML problem (dropout: label 1, not-dropout: label 0).
+- *Less education* creates unskilled labour and is linked to poor health thus impeding a nation's development.
+- **Dropout indicators** are present in social traits, attendance patterns and performance in assessments.
+- This project is an **Early Warning System (EWS)** using ML to predict, understand and mitigate student dropouts.
+- We formulate this as a *Binary Classification* ML problem (dropout: label 1, not-dropout: label 0).
 - Data collected via enrollment, daily attendance and semester assessments is used.
 - Enrollment data delineates a student's regional and socioeconomic factors.
 - Daily attendance data delineates a student's daily attendance (present, absent or missing entry).
@@ -15,16 +17,16 @@
 - **Anyone** with similar data could use this project. The user will only have to modify [Dataset Schema](metadata/schema.json).
 - Prior to usage, the original data is assembled into a unified dataset with each row representing a student.
 - A binary *Target* column for a given AY is populated using the enrollment data of the next AY.
-- Input to the modeling process is the unified dataset (with the target column).
-- Output is a dataframe with features and dropout probabilities as columns and rows as students.
-- EWS attempts to explain a model's predictions using [SHAP](https://shap.readthedocs.io/en/latest/) as illustrated in the `Explainability` section.
+- **Input** to the modeling process is the unified dataset (with the target column).
+- **Output** is a dataframe with features and dropout probabilities as columns and rows as students.
+- EWS attempts to *explain a model's predictions* using [SHAP](https://shap.readthedocs.io/en/latest/) as illustrated in the `Explainability` section.
 
 ---
 
 </details>
 
 <details>
-<summary><span style="font-size: 20px">🔧 Setup</span></summary>
+<summary><span style="font-size: 20px">🔧 SETUP</span></summary>
 
 ---
 
@@ -46,7 +48,7 @@ $ pip install -r requirements.txt
 </details>
 
 <details>
-<summary><span style="font-size: 20px">🧩 Metadata</span></summary>
+<summary><span style="font-size: 20px">🧩 METADATA</span></summary>
 
 ---
 
@@ -85,7 +87,7 @@ The [metadata](metadata) directory contains mandatory data aspects needed to use
 </details>
 
 <details>
-<summary><span style="font-size: 20px">📊 Dataset</span></summary>
+<summary><span style="font-size: 20px">📊 DATASET</span></summary>
 
 ---
 
@@ -102,7 +104,7 @@ The [metadata](metadata) directory contains mandatory data aspects needed to use
 </details>
 
 <details>
-<summary><span style="font-size: 20px">📘 Config</span></summary>
+<summary><span style="font-size: 20px">📘 CONFIG</span></summary>
 
 ---
 
@@ -193,7 +195,7 @@ The [metadata](metadata) directory contains mandatory data aspects needed to use
 </details>
 
 <details>
-<summary><span style="font-size: 20px">📉 Training</span></summary>
+<summary><span style="font-size: 20px">📉 TRAINING</span></summary>
 
 ---
 
@@ -216,7 +218,7 @@ config_source (str): Path to config JSON file or directory of JSON configs.
 </details>
 
 <details>
-<summary><span style="font-size: 20px">🎯 Inference</span></summary>
+<summary><span style="font-size: 20px">🎯 INFERENCE</span></summary>
 
 ---
 
@@ -238,7 +240,7 @@ inference_data_path (str): Path to the inference data file.
 </details>
 
 <details>
-<summary><span style="font-size: 20px">💡 Explainability</span></summary>
+<summary><span style="font-size: 20px">💡 EXPLAINABILITY</span></summary>
 
 ---
 
@@ -264,7 +266,7 @@ df_explained[["predictor_group_1", "predictor_group_1_top_driver"]].head()
 </details>
 
 <details>
-<summary><span style="font-size: 20px">🙏 Acknowledgements [wip]</span></summary>
+<summary><span style="font-size: 20px">🙏 ACKNOWLEDGEMENTS [wip]</span></summary>
 
 ---
 
