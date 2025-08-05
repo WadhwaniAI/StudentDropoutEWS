@@ -9,8 +9,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 
-def replace_value_in_nested_dict(d, target, replacement):
-    
+def replace_value_in_nested_dict(d, target, replacement):    
      """
      Replaces a target value in a nested dictionary with a replacement value.
      :param d (dict): input dictionary.
@@ -18,7 +17,6 @@ def replace_value_in_nested_dict(d, target, replacement):
      :param replacement (Any): value to replace the target with.
      Returns: New dictionary with target value replaced with replacement value.
      """
-
      # Create a new dictionary to avoid modifying the original one during recursion
      new_dict = {}
 

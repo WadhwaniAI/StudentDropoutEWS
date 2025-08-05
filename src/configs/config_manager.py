@@ -5,8 +5,7 @@ from .utils import load_config
 
 class ConfigManager:
      """
-     A class to load, validate, update, and manage a configuration, providing
-     a validated Munch object for experiments.
+     A class to load, validate, update, and manage a configuration, providing a validated Munch object for experiments.
      """
      def __init__(
                self, config_input: Union[str, Dict, Munch], config_schema: Union[str, Dict, Munch]="metadata/config_schema.json"
