@@ -1,18 +1,19 @@
+from pathlib import Path
 from typing import Union, Dict, Any
 from munch import Munch, munchify
 from .utils import load_config
+from src.utils import custom_json_formatter
 
 
 class ConfigManager:
-     """
-     A class to load, validate, update, and manage a configuration, providing a validated Munch object for experiments.
-     """
+     """A class to load, validate, update, and manage a Config, providing a validated Munch object for experiments."""
+
      def __init__(
                self, config_input: Union[str, Dict, Munch], config_schema: Union[str, Dict, Munch]="metadata/config_schema.json"
      ):
           """
           Initializes the manager, loads config & schema, and runs validation.
-          :param config_input (Union[str, Dict, Munch]): The configuration, as a path, dict, or Munch.
+          :param config_input (Union[str, Dict, Munch]): The Config, as a path, dict, or Munch.
           :param config_schema (Union[str, Dict, Munch]): The schema to validate against.
           """
           self.schema = load_config(config_schema)
@@ -22,7 +23,7 @@ class ConfigManager:
 
      @property
      def is_valid(self) -> bool:
-          """Returns True if the current configuration is valid against the schema."""
+          """Returns True if the current Config is valid against the schema."""
           return not self.errors
 
      @staticmethod
@@ -41,7 +42,7 @@ class ConfigManager:
      def _deep_update(source_dict: Munch, update_dict: Munch) -> Munch:
           """
           Recursively updates a Munch object with values from another.
-          :param source_dict (Munch): The original configuration to update.
+          :param source_dict (Munch): The original Config to update.
           :param update_dict (Munch): The new keys and values to include.
           """
           for key, value in update_dict.items():
@@ -54,7 +55,7 @@ class ConfigManager:
      def _recursive_validate(self, user_conf: Munch, schema: Munch, path: str):
           """
           Recursively compares the user config against the schema, handling mandatory and optional (<key>) parameters.
-          :param user_conf (Munch): The user's configuration.
+          :param user_conf (Munch): The user's Config.
           :param schema (Munch): The schema to validate against.
           :param path (str): The current dot-notation path for error reporting.
           """
@@ -107,18 +108,30 @@ class ConfigManager:
           return self.is_valid
 
      def update(self, additions: Union[Dict, Munch]):
-          """Deeply updates the configuration with new values and re-validates."""
+          """Deeply updates the Config with new values and re-validates."""
           self.config = self._deep_update(self.config, munchify(additions))
           self._validate()
 
+     def save(self, path: str, indent: int = 5):
+          """
+          Validates and saves the current Config using custom JSON formatting.
+          :param path (str): The full path where the Config file will be saved.
+          :param indent (int): The number of spaces to use for indentation.
+          Raises ValueError: If the Config is invalid against the schema.
+          """
+          config_to_save = self.get_validated_config()
+          Path(path).parent.mkdir(parents=True, exist_ok=True)
+          with open(path, "w") as f:
+               f.write(custom_json_formatter(config_to_save, indent=indent))
+          print(f"✅ Config successfully saved to: {path}")
+
      def get_validated_config(self) -> Munch:
           """
-          Returns the config if it is valid, otherwise raises a ValueError.
-          This is the primary method to get a configuration for an experiment run.
-          Raises ValueError: If the configuration is invalid against the schema.
-          Return (Munch): The validated configuration object.
+          The primary method to get a Config for an experiment run.
+          Return (Munch): The validated Config munch (dictionary) object.
+          Raises ValueError: If the Config is invalid against the schema.
           """
           if not self.is_valid:
                error_summary = "\n- ".join(self.errors)
-               raise ValueError(f"Configuration is invalid. Please fix the following errors:\n- {error_summary}")
+               raise ValueError(f"Config is invalid. Please fix the following errors:\n- {error_summary}")
           return self.config
