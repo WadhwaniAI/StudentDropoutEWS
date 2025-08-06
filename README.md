@@ -188,7 +188,7 @@ The [metadata](metadata) directory contains mandatory files that define the sche
                               }
                          }
                     },
-                    "dependent": {                                   // Dependent hyperparameters
+                    "dependent": {                                   // Dependent hyperparameters on
                          "<param_name>": {
                               "dependent_on_param": "<other_param>", // str: Param this depends on; Eg: "grow_policy"
                               "dependent_on_value": ["<trig_val>"],  // list[str]: Values that trigger it; Eg: ["Depthwise"]
