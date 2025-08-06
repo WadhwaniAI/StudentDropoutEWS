@@ -48,7 +48,7 @@ $ cd StudentDropoutEWS
 ```bash
 $ conda create --name venv python==3.12
 $ conda activate venv
-(venv) $ pip install -r requirements.txt
+$ pip install -r requirements.txt
 ```
 
 ---
@@ -83,9 +83,9 @@ The [metadata](metadata) directory contains mandatory files that define the sche
 - This is a *mandatory* nested JSON dictionary illustrating the valid schema of a `Config` file.
 - A new Config (for training) or an existing Config (for inference) must follow this schema.
 - In [Config Schema](metadata/config_schema.json), all *optional* parameters are denoted as `<key>` and valid datatypes are in placeholders.
-- [Config Schema](metadata/config_schema.json) is **not** to be deleted.
+- [Config Schema](metadata/config_schema.json) is **not to be deleted**.
   - A copy of this file needs to be made by the user for their own experiments.
-- `Config Schema` is further elaborated upon in the **Config** section.
+- [Config Schema](metadata/config_schema.json) is elaborated upon in the **Config** section of this README.
 
 [Predictor groups](metadata/predictor_groups.json)
 - This is a JSON dictionary categorizing similar features into predictor groups.
@@ -124,7 +124,6 @@ The [metadata](metadata) directory contains mandatory files that define the sche
 - A new JSON Configuration file is used to define all aspects for training a model.
 - An existing JSON configuration file (from a previous experiment) is used to run inference on a new dataset.
 - [Config Schema](metadata/config_schema.json) is explained below. Comments explain valid entries: **// datatype: description; example**.
-
 ```javascript
 {
      "exp": {
@@ -217,7 +216,8 @@ The [metadata](metadata) directory contains mandatory files that define the sche
 (venv) $ python -m src.main \
      --mode train \
      --config_source path/to/config_or_config_dir
-
+```
+```bash
 Arguments:
 ----------
 mode (str): Must be set to "train" to activate TRAINING mode.
@@ -240,11 +240,12 @@ config_source (str): Path to either a single config file or a directory containi
 
 - To run inference on a new dataset with a trained model, run `main.py` in `infer` mode:
 ```bash
-(venv) $ python -m src.main \
+python -m src.main \
      --mode infer \
      --exp_dir path/to/exp_dir \
      --inference_data_path path/to/inference_data.pkl
-
+```
+```bash
 Arguments:
 ----------
 mode (str): Must be set to "infer" to activate INFERENCE mode.
@@ -271,7 +272,8 @@ inference_data_path (str): Path to the inference dataset file in pickle format.
     --predictor_groups path/to/predictor_groups.json \
     [--threshold 0.6] \
     [--target_recall 0.4]
-
+```
+```bash
 Arguments:
 ----------
 mode (str): Must be set to "explain" to activate explainability mode.
