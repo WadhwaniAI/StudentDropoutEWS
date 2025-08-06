@@ -10,7 +10,7 @@
 
 ### Motivation
 - **Dropout indicators** are present in social traits, attendance patterns and performance in assessments.
-- This project aims to build an **Early Warning System (EWS)** using machine learning (ML) techniques to predict students who are at risk of dropping out of school.
+- This project aims to build an **Early Warning System (EWS)** using *machine learning (ML)* techniques to predict students who are at risk of dropping out of school.
 - These predictions could potentially be used to cognize and design interventions to mitigate student dropouts.
 
 ### Data Sources
@@ -65,7 +65,7 @@ The [metadata](metadata) directory contains mandatory files that define the sche
 [Calendar of holidays](metadata/holidays_calendar.json)
 - This is a *mandatory* nested JSON dictionary holding information about holidays in AYs. 
 - Example format: `{"2223": {"6": {"sundays": [5, 12, 19, 26], "vacation": [1, 2]}}}`
-  - Stores non-working dates for each AY (e.g., "2223"->AY 2022-23) and month (e.g., "6"->June, "7"->July). 
+  - Stores non-working dates for each AY (e.g., "2223" for AY 2022-23) and month (e.g., "6" for June, and "7" for July). 
   - Dates are integers under categories like "sundays", "festive", "vacation", or others (e.g., "pravesh utsav").
 - An example of this file for the AYs from 2022-23 to 2024-25 for the state of Gujarat is [here](metadata/holidays_calendar.json).
 - Please edit the dictionary within this file for the AYs of your interest.
@@ -104,13 +104,13 @@ The [metadata](metadata) directory contains mandatory files that define the sche
 
 ---
 
-- A valid dataset for training and inference must have a schema consistent with [Dataset Schema](metadata/dataset_schema.json). 
-- The columns in a usable dataset must be a subset of the columns in [Dataset Schema](metadata/dataset_schema.json). 
-- If the names of columns in the dataset are different, please modify [Dataset Schema](metadata/dataset_schema.json) before use.
+- A valid dataset for training and inference must have a schema *consistent* with [Dataset Schema](metadata/dataset_schema.json). 
+  - The columns in a dataset must be a subset of the columns in [Dataset Schema](metadata/dataset_schema.json). 
+  - If the names of columns in the dataset are different, please modify [Dataset Schema](metadata/dataset_schema.json) before use.
 - The format of an input dataset file must be pickle. Example: `dataset/ay2223_grade3.pkl`. 
-- Currently, support for other file formats is not provided.
-- The basename of a dataset file is important to extract "academic year" and "grade" using regex.
-- The basename must follow the pattern: `ay<academic_year>_grade<grade>.pkl`. Eg: `ay2223_grade3.pkl`.
+  - Currently, support for other file formats is not provided.
+- The stem of a dataset file name is important to extract "academic year" and "grade" using regex.
+  - It must follow the pattern: `ay<academic_year>_grade<grade>`. Eg: `ay2223_grade3`.
 
 ---
 
