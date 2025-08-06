@@ -3,23 +3,30 @@
 
 ---
 
-- Students in India drop out of schools due to diverse social, economic and geographical factors.
+### Problem
+- Many students in India drop out of schools due to diverse social, economic and geographical factors.
 - Students enrolled in a given academic year (AY) but **failing to re-enroll** in the *next* AY are dropouts.
-- *Less education* creates unskilled labour and is linked to poor health thus impeding a nation's development.
+- *Education gaps* lead to unskilled labour and are linked to poor health—impeding a nation's development.
+
+### Motivation
 - **Dropout indicators** are present in social traits, attendance patterns and performance in assessments.
-- This project is an **Early Warning System (EWS)** using ML to predict, cognize and mitigate student dropouts.
-- We formulate this as a *Binary Classification* ML problem (dropout: label 1, not-dropout: label 0).
-- Data collected via enrollment, daily attendance and semester assessments is currently used.
-- Enrollment data delineates a student's regional and socioeconomic factors.
-- Daily attendance data delineates a student's daily attendance (present, absent or missing entry).
-- Semester assessment data delineates a student's attendance and performance in examinations.
-- The project has been developed using data provided by *Vidya Samiksha Kendra (VSK), state of Gujarat, India*.
-- **Anyone** with similar data could use this project. The user will only have to modify [Dataset Schema](metadata/schema.json).
-- Prior to usage, the original data is assembled into a *unified dataset* with each row representing a student.
-- A binary *Target* column for a given AY is populated using the enrollment data of the next AY.
-- **Input** to the modeling process is the unified dataset (with the target column).
-- **Output** is a dataframe with features and dropout probabilities as columns and rows as students.
-- EWS attempts to *explain a model's predictions* using [SHAP](https://shap.readthedocs.io/en/latest/) as illustrated in the `Explainability` section.
+- This project aims to build an **Early Warning System (EWS)** using machine learning (ML) techniques to predict students who are at a risk of dropping out of school.
+- These predictions could potentially be used to cognize and design interventions to mitigate student dropouts.
+
+### Data Sources
+- The project has been developed using data provided by *Vidya Samiksha Kendra (VSK)—Samagra Shiksha, Department of Education, state of Gujarat, India*
+  - Enrollment data: Delineates a student's regional and socioeconomic factors.
+  - Daily attendance data: Delineates a student's daily attendance (present, absent or missing entry).
+  - Semester assessment data: Delineates a student's attendance and performance in examinations.
+- The three data sources are merged into a *unified dataset* with each row representing records pertaining to one student.
+- **Customizable** Anyone with similar data could use this project by suitably modifying the [Dataset Schema](metadata/dataset_schema.json).
+
+### Formulation
+- EWS is formulated as a *Binary Classification* ML problem (dropout: label 1, not-dropout: label 0).
+- For a given AY, a binary *Target* for each student is derived using the enrollment data from the following AY.
+- The **Input** to the pipeline is the unified dataset (with the target column).
+- The resulting **Output** is a dataframe with dropout probabilities for each student that also includes the final set of features.
+- [SHAP](https://shap.readthedocs.io/en/latest/) is used to *explain the model's predictions*.
 
 ---
 
@@ -31,16 +38,17 @@
 ---
 
 - Clone the repository
-```
+```bash
 $ git clone https://github.com/WadhwaniAI/StudentDropoutEWS.git
 $ git checkout main
 $ cd StudentDropoutEWS
 ```
+
 - Create a virtual environment and install the required packages
-```
+```bash
 $ conda create --name venv python==3.12
 $ conda activate venv
-$ pip install -r requirements.txt
+(venv) $ pip install -r requirements.txt
 ```
 
 ---
@@ -52,35 +60,40 @@ $ pip install -r requirements.txt
 
 ---
 
-The [metadata](metadata) directory contains mandatory data aspects needed to use this repository.
+The [metadata](metadata) directory contains mandatory files that define the schema necessary to use this repository.
 
 [Calendar of holidays](metadata/holidays_calendar.json)
 - This is a *mandatory* nested JSON dictionary holding information about holidays in AYs. 
-- For example: `{"2223": {"6": {"sundays": [5, 12, 19, 26], "vacation": [1, 2]}}}`
-- Stores non-working dates for each AY (e.g., "2223"->AY 2022-23) and month (e.g., "6"->June, "7"->July). 
-- Dates are integers under categories like "sundays", "festive", "vacation", or others (e.g., "pravesh utsav").
+- Example format: `{"2223": {"6": {"sundays": [5, 12, 19, 26], "vacation": [1, 2]}}}`
+  - Stores non-working dates for each AY (e.g., "2223"->AY 2022-23) and month (e.g., "6"->June, "7"->July). 
+  - Dates are integers under categories like "sundays", "festive", "vacation", or others (e.g., "pravesh utsav").
 - An example of this file for the AYs from 2022-23 to 2024-25 for the state of Gujarat is [here](metadata/holidays_calendar.json).
 - Please edit the dictionary within this file for the AYs of your interest.
-- This file could either be manually populated from a PDF or derived from a CSV notified by the administration.
+- This file could either be manually populated from a PDF or parsed from a CSV notified by the administration.
 
-[Dataset Schema](metadata/schema.json)
-- This is a *mandatory* JSON dictionary representing the schema of a usable (valid) dataset.
+[Dataset Schema](metadata/dataset_schema.json)
+- This is a *mandatory* JSON dictionary defining the structure of a usable dataset.
 - Each key is a column name and the corresponding value is a list of datatype, description, and grouping.
 - Valid datatypes are `str` for categorical columns, `float` for numerical columns, and `int` for target column.
 - Description is a piece of text briefly explaining the information the column contains.
 - Grouping enables combined use of columns such as in common preprocessing operations.
-- Modify [Dataset Schema](metadata/schema.json) if a dataset has different column names, datatypes, descriptions or groupings.
+- Modify [Dataset Schema](metadata/dataset_schema.json) if a dataset has different column names, datatypes, descriptions or groupings.
 
 [Config Schema](metadata/config_schema.json)
 - This is a *mandatory* nested JSON dictionary illustrating the valid schema of a `Config` file.
 - A new Config (for training) or an existing Config (for inference) must follow this schema.
 - In [Config Schema](metadata/config_schema.json), all *optional* parameters are denoted as `<key>` and valid datatypes are in placeholders.
+- [Config Schema](metadata/config_schema.json) is **not** to be deleted.
+  - A copy of this file needs to be made by the user for their own experiments.
 - `Config Schema` is further elaborated upon in the **Config** section.
 
 [Predictor groups](metadata/predictor_groups.json)
 - This is a JSON dictionary categorizing similar features into predictor groups.
 - Predictor groups are used to explain a model's predictions and guide interventions.
-- It is used for explainability in the `SHAPPipeline`, and is not required for training or inference pipelines.
+- Features are manually organized into predictor groups—there is no script to generate them.
+- The features in [Predictor groups](metadata/predictor_groups.json) must be a subset of the features used in modeling.
+- They are used in [PredictorGroupExplainer](src/explainability/predictor_group_explainer.py). They are not required in the training or inference pipelines.
+- Modify [Predictor groups](metadata/predictor_groups.json) for different group explanations.
 
 ---
 
@@ -199,19 +212,22 @@ The [metadata](metadata) directory contains mandatory data aspects needed to use
 
 ---
 
-- To train a model, execute `main.py` using `train` mode as illustrated below.
-- Output artifacts include train and val dataframes with prediction columns, metric plots, and JSON with loss curve values.
-- All artifacts are saved in the created experiment directory (created using `config.exp.root_exps`).
-- If a directory of JSON configs is provided, experiments run in a loop.
-
-```
-python -m src.main --mode train --config_source <path/to/config> 
+- To train a model, run `main.py` in `train` mode:
+```bash
+(venv) $ python -m src.main \
+     --mode train \
+     --config_source path/to/config_or_config_dir
 
 Arguments:
 ----------
-mode (str): 'train'
-config_source (str): Path to config JSON file or directory of JSON configs. 
+mode (str): Must be set to "train" to activate TRAINING mode.
+config_source (str): Path to either a single config file or a directory containing multiple config JSONs.
 ```
+- Training generates the following artifacts in the experiment directory (created using `config.exp.root_exps`):
+  - Training and validation dataframes with dropout predictions
+  - Metric plots, and
+  - JSON file containing loss values over epochs.
+- If a directory of JSON configs is provided, experiments run in a loop.
 
 ---
 
@@ -222,18 +238,20 @@ config_source (str): Path to config JSON file or directory of JSON configs.
 
 ---
 
-- To run inference on a new dataset, execute `main.py` using `infer` mode as illustrated below.
-- Output dataframe with features and predicted probabilities is saved in `exp_dir`.
-
-```
-python -m src.main --mode infer --exp_dir <path/to/exp_dir> --inference_data_path <path/to/inference_data> 
+- To run inference on a new dataset with a trained model, run `main.py` in `infer` mode:
+```bash
+(venv) $ python -m src.main \
+     --mode infer \
+     --exp_dir path/to/exp_dir \
+     --inference_data_path path/to/inference_data.pkl
 
 Arguments:
 ----------
-mode (str): 'infer'
-exp_dir (str): Path to the experiment directory (to use model and other optional artifacts).
-inference_data_path (str): Path to the inference data file.
+mode (str): Must be set to "infer" to activate INFERENCE mode.
+exp_dir (str): Path to a previous experiment directory (to use trained model and config).  
+inference_data_path (str): Path to the inference dataset file in pickle format.
 ```
+- Inference generates and saves a dataframe with features and predicted probabilities in exp_dir.
 
 ---
 
@@ -244,23 +262,26 @@ inference_data_path (str): Path to the inference data file.
 
 ---
 
-- The `SHAPPipeline` explains model predictions using [SHAP](https://shap.readthedocs.io/en/latest/) scores.
-- Features present in `df_path` are manually grouped into [predictor groups](metadata/predictor_groups.json) to combine contributions.
-- Output dataframe with columns pertaining to predictor groups and top driving factors is saved in `exp_dir`.
+- To explain results, run `main.py` in `explain` mode:
+```bash
+(venv) $ python -m src.main \
+    --mode explain \
+    --exp_dir path/to/exp_dir \
+    --df_path path/to/input_data.pkl \
+    --predictor_groups path/to/predictor_groups.json \
+    [--threshold 0.6] \
+    [--target_recall 0.4]
 
+Arguments:
+----------
+mode (str): Must be set to "explain" to activate explainability mode.
+exp_dir (str): Path to the experiment directory with trained model, config and optional artifacts.
+df_path (str): Path to the results dataset (containing prediction columns) to be explained (`.pkl` format).
+predictor_groups (str OR Dict[str, List[str]]): Path to the JSON file containing mapping of features to groups OR the loaded dictionary.
+threshold (float): (Optional) Manually specify the threshold for binary classification to generate output predictions.
+target_recall (float): (Optional) Recall on validation set to compute threshold (if not provided/known)
 ```
-from explainability.shap_pipeline import SHAPPipeline
-shap_pipeline = SHAPPipeline(
-     exp_dir=path/to/exp/dir,                          // str: path to experiment directory (to use model and optional artifacts)
-     df_path=path/to/df_with_predictions",             // str: path to dataframe containing prediction columns
-     predictor_groups=path/to/predictor_groups.json,   // str: path to JSON defining groupings of features
-     threshold=0.4,                                    // float (optional): Threshold to generate prediction class column
-     target_recall=0.6                                 // float (optional): Recall on val set to compute threshold (if not provided/known)
-)
-df_explained = shap_pipeline.run()
-df_explained[["predictor_group_1", "predictor_group_1_top_driver"]].head()
-```
-
+- The resulting output of this pipeline is a dataframe saved in `exp_dir` with SHAP values for each predictor group and top driving feature(s) for each prediction.
 ---
 
 </details>

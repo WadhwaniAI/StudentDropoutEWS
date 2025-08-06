@@ -4,7 +4,7 @@ import wandb
 from typing import Any, Dict, Tuple
 from .base_pipeline import BasePipeline
 from src.configs.config_manager import ConfigManager
-from src.models.model import CatBoostBinaryClassifier
+from src.models.model import EWSModel
 from src.models.utils import save_model_features, loss_curves
 from src.data.utils import sample_and_split
 from src.utils import get_timestamp
@@ -55,7 +55,7 @@ class TrainingPipeline(BasePipeline):
      def _train_model(self):
           """Initializes and trains the model."""
           save_model_features(exp_dir=self.exp_dir, cat_features=self.cat_features, num_features=self.num_features)
-          self.model = CatBoostBinaryClassifier(exp_dir=self.exp_dir, cat_features=self.cat_features, config=self.config)
+          self.model = EWSModel(exp_dir=self.exp_dir, cat_features=self.cat_features, config=self.config)
           
           best_params, val_thresh_max_f1, val_thresh_max_lift = self.model.fit(
                x_train=self.datasets[TRAIN_SPLIT][self.cat_features + self.num_features], 

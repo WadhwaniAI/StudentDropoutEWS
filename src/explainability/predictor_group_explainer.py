@@ -10,9 +10,9 @@ from src.models.utils import get_model_features
 from src.configs.utils import load_config
 
 
-class SHAPPipeline:
+class PredictorGroupExplainer:
      """
-     SHAPPipeline analyzes model predictions and explains them using SHAP values for a given experimental directory and dataset.
+     PredictorGroupExplainer analyzes model predictions and explains them using SHAP values for a given experimental directory and dataset.
      This class is tailored for experiments organized in a directory (`exp_dir`) with saved model, config, and features.
      Returns a dataframe with predictor group contributions, and top driving factors.
      """
@@ -22,7 +22,7 @@ class SHAPPipeline:
           threshold: float=None, target_recall: float=None
      ):
           """
-          Initializes the SHAPPipeline with paths, thresholds, features, and model.
+          Initializes the PredictorGroupExplainer with paths, thresholds, features, and model.
           :param exp_dir (str): Path to experiment directory containing model, config, and metadata.
           :param df_path (str): Path to the dataset to explain.
           :param predictor_groups (str | dict): JSON file path or dict defining predictor groupings.
@@ -43,12 +43,42 @@ class SHAPPipeline:
           # Load metadata
           self.cat_features, self.num_features = get_model_features(self.exp_dir)
           self.all_features = self.cat_features + self.num_features
+          self._validate_predictor_groups()
           self.model = self._load_model()
           self.df = self._load_dataframe()
           self.config = load_config(os.path.join(exp_dir, "config.json"))
 
           if self.threshold is None:
                self.threshold = self._compute_threshold()
+
+     def _validate_predictor_groups(self) -> None:
+          seen_features = set()
+          duplicate_features = set()
+          invalid_features = set()
+
+          for group, feats in self.predictor_groups.items():
+               # Check group name is a non-empty string
+               if not isinstance(group, str) or not group.strip():
+                    raise ValueError(f"Predictor group name must be a non-empty string. Found: {group!r}")
+
+               # Check group is not empty
+               if not feats:
+                    raise ValueError(f"Predictor group '{group}' is empty.")
+
+               for feat in feats:
+                    # Check if feature exists in model features
+                    if feat not in self.all_features:
+                         invalid_features.add(feat)
+
+                    # Check for duplicate features across groups
+                    if feat in seen_features:
+                         duplicate_features.add(feat)
+                    seen_features.add(feat)
+
+          if invalid_features:
+               raise ValueError(f"The following features in predictor_groups are not in the model features: {sorted(invalid_features)}")
+          if duplicate_features:
+               raise ValueError(f"The following features occur in multiple predictor groups: {sorted(duplicate_features)}")
 
      def _compute_threshold(self) -> float:
           """Compute threshold based on target recall or best F1 on val set."""

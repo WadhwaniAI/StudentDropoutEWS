@@ -91,7 +91,7 @@ class BinaryModelEvaluator:
           plt.tight_layout(pad=1.5)
           plt.grid()
 
-     def _maybe_savefig(self, key):
+     def _save_show_fig(self, key):
           """Save or show the figure."""
           if self.save_dir:
                plt.savefig(os.path.join(self.save_dir, f"{self.ds_name}_{key}.png"), dpi=300, bbox_inches="tight")
@@ -114,7 +114,7 @@ class BinaryModelEvaluator:
           plt.ylabel("Precision")
           plt.title(f"{self.ds_name}: Precision-Recall curve")
           self._finalize_plot()
-          self._maybe_savefig("precision_recall")
+          self._save_show_fig("precision_recall")
           plt.close()
 
      def plot_roc(self):
@@ -131,7 +131,7 @@ class BinaryModelEvaluator:
           plt.ylabel("True Positive Rate")
           plt.title(f"{self.ds_name}: ROC curve")
           self._finalize_plot()
-          self._maybe_savefig("roc_curve")
+          self._save_show_fig("roc_curve")
           plt.close()
 
      def plot_calibration(self):
@@ -145,7 +145,7 @@ class BinaryModelEvaluator:
           plt.ylabel("True positive rate")
           plt.title(f"{self.ds_name}: Calibration curve")
           self._finalize_plot()
-          self._maybe_savefig("calibration")
+          self._save_show_fig("calibration")
           plt.close()
 
      def plot_proba_distribution(self, with_labels=True):
@@ -165,7 +165,7 @@ class BinaryModelEvaluator:
           savefig_key = "proba_dist"
           if with_labels and self.y_true is not None:
                savefig_key += "_with_labels"
-          self._maybe_savefig(savefig_key)
+          self._save_show_fig(savefig_key)
           plt.close()
 
      def plot_error_distribution(self):
@@ -179,7 +179,7 @@ class BinaryModelEvaluator:
           plt.yscale("log")
           plt.title(f"{self.ds_name}: Error Score (proba - label)")
           self._finalize_plot()
-          self._maybe_savefig("error_dist")
+          self._save_show_fig("error_dist")
           plt.close()
 
      def plot_ppv_npv_vs_threshold(self):
@@ -200,7 +200,7 @@ class BinaryModelEvaluator:
           plt.title(f"{self.ds_name}: PPV & NPV vs Threshold")
           plt.ylim(-0.05, 1.05)
           self._finalize_plot()
-          self._maybe_savefig("ppv_npv_vs_threshold")
+          self._save_show_fig("ppv_npv_vs_threshold")
           plt.close()
 
      def plot_dropout_rate_vs_threshold(self):
@@ -214,7 +214,7 @@ class BinaryModelEvaluator:
           plt.yscale("log")
           plt.title(f"{self.ds_name}: Dropout rate vs threshold")
           self._finalize_plot()
-          self._maybe_savefig("dropout_rate_vs_threshold")
+          self._save_show_fig("dropout_rate_vs_threshold")
           plt.close()
 
      def plot_recall_at_k(self, num_points=100):
@@ -228,7 +228,7 @@ class BinaryModelEvaluator:
           plt.ylabel('Value')
           plt.title(f"{self.ds_name}: Recall@k and Lift@k")
           self._finalize_plot()
-          self._maybe_savefig("recall_at_k")
+          self._save_show_fig("recall_at_k")
           plt.close()
 
      def _compute_error_scores(self):

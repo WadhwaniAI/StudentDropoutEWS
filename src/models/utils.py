@@ -59,11 +59,11 @@ def filter_valid_params(params: dict) -> dict:
 
 
 def get_model_features(dir: str) -> tuple:
-     """Loads and returns categorical, numerical, and combined features from a directory."""
-     with open(f"{dir}/num_features.pkl", "rb") as f:
-          num_features = pickle.load(f)
+     """Loads and returns categorical and numerical from a previous experiment directory."""
      with open(f"{dir}/cat_features.pkl", "rb") as f:
           cat_features = pickle.load(f)
+     with open(f"{dir}/num_features.pkl", "rb") as f:
+          num_features = pickle.load(f)
      return cat_features, num_features
 
 

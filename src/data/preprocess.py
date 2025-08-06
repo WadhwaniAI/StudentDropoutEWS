@@ -34,11 +34,13 @@ class DataPreprocessor:
                self, df: pd.DataFrame, column_filters: Optional[Dict[str, List[str]]]=None,
                index: str="aadhaaruid", label: Optional[str]="target"
      ) -> Tuple[pd.DataFrame, Dict[str, List[str]]]:
-          """Lowercases column names, removes duplicates, casts dtypes, fixes exam attendance, and applies filters.
+          """
+          Lowercases column names, removes duplicates, casts dtypes, fixes exam attendance, and applies filters.
           :param df (pd.DataFrame): Input DataFrame to preprocess.
           :param index (str): Column name to use as index.
           :param label (str): Optional. Column name for the target variable if present in the DataFrame.
-          Returns: Tuple (Preprocessed DataFrame (pd.DataFrame), Filtered column_groups (dict))"""
+          Returns: Tuple (Preprocessed DataFrame (pd.DataFrame), Filtered column_groups (dict))
+          """
           # Lowercasing column names
           df.columns = map(str.lower, df.columns)
 
@@ -81,8 +83,10 @@ class DataPreprocessor:
           return self.df, self.column_groups
 
      def _apply_column_filters(self, column_filters: dict) -> None:
-          """Applies filtering based on column_filters with 'in' and/or 'notin' keys.
-          :param column_filters: Dict with optional 'in' and 'notin' sub-dicts specifying filtering logic."""
+          """
+          Applies filtering based on column_filters with 'in' and/or 'notin' keys.
+          :param column_filters: Dict with optional 'in' and 'notin' sub-dicts specifying filtering logic.
+          """
           for mode, op in {'in': lambda x, y: x.isin(y), 'notin': lambda x, y: ~x.isin(y)}.items():
                for col, values in column_filters.get(mode, {}).items():
                     if col in self.df.columns:
@@ -92,13 +96,15 @@ class DataPreprocessor:
      def _validate_and_filter_metadata(
                self, df: pd.DataFrame, schema: dict, column_groups: dict, reserved_columns: Set[str]=None
      ) -> Tuple[dict, dict]:
-          """Validate and filter schema and feature group metadata based on DataFrame columns.
+          """
+          Validate and filter schema and feature group metadata based on DataFrame columns.
           :param df: Input DataFrame
           :param schema: Original schema dictionary
           :param column_groups: Original column_groups dictionary
           :param reserved_columns: Columns to exclude from validation
           Returns: Tuple of (Filtered schema dictionary, Filtered column_groups dictionary)
-          Raises: ValueError if required columns are missing"""
+          Raises: ValueError if required columns are missing
+          """
           reserved_columns = reserved_columns or set()
           df_columns = set(df.columns)
 

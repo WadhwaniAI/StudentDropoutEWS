@@ -1,26 +1,26 @@
 {
-     "geographical factors": [
+     "geographical_factors": [
           "districtid",
           "blockid",
           "clusterid"
      ],
-     "social factors": [
+     "social_factors": [
           "genderid",
           "religionid",
           "socialcatid",
           "disability",
           "subcaste"
      ],
-     "economic factors": [
+     "economic_factors": [
           "bpl",
           "whetherhomeless"
      ],
-     "school factors": [
+     "school_factors": [
           "schmgt",
           "schcat",
           "medium"
      ],
-     "attendance factors": [
+     "attendance_factors": [
           "[full][#partns=3][partn_1, frac_a]",
           "[full][#partns=3][partn_1, frac_m]",
           "[full][#partns=3][partn_1, frac_p]",
@@ -41,7 +41,7 @@
           "binary_absence_50",
           "binary_absence_60"
      ],
-     "sat factors": [
+     "sat_factors": [
           "english_score",
           "english_attnd",
           "evs_score",

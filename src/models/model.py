@@ -10,7 +10,7 @@ from .utils import (
 from .calibration import IsotonicCalibrator
 
 
-class CatBoostBinaryClassifier:
+class EWSModel:
      """Wrapper for CatBoost binary classification with tuning and calibration."""
 
      def __init__(self, exp_dir: str, cat_features: list, config: dict) -> None:
@@ -26,11 +26,7 @@ class CatBoostBinaryClassifier:
           self.best_params = config.model.params.fixed
           self.trial_params = {}
 
-          self.model = CatBoostClassifier(
-               train_dir=exp_dir,
-               cat_features=cat_features,
-               **self.best_params
-          )
+          self.model = CatBoostClassifier(train_dir=exp_dir, cat_features=cat_features, **self.best_params)
           self.calibrator = IsotonicCalibrator(f"{self.exp_dir}/isotonic_regression.pkl")
 
      def fit(self, x_train, y_train, x_val, y_val):
