@@ -6,6 +6,8 @@
 ### Problem
 - Many students in India drop out of schools due to diverse social, economic and geographical factors.
 - Students enrolled in a given academic year (AY) but **failing to re-enroll** in the *next* AY are dropouts.
+  - This definition does not account for the students who drop out within an AY.
+  - *As long as a student re-enrolls, the student is not a dropout.* 
 - *Education gaps* lead to unskilled labour and are linked to poor health—impeding a nation's development.
 
 ### Motivation
@@ -63,7 +65,7 @@ pip install -r requirements.txt
 The [metadata](metadata) directory contains mandatory files that define the schema necessary to use this repository.
 
 [Calendar of holidays](metadata/holidays_calendar.json)
-- This is a *mandatory* nested JSON dictionary holding information about holidays in AYs. 
+- This is a *mandatory* nested JSON dictionary that holds information about holidays in AYs. 
 - Example format: `{"2223": {"6": {"sundays": [5, 12, 19, 26], "vacation": [1, 2]}}}`
   - Stores non-working dates for each AY (e.g., "2223" for AY 2022-23) and month (e.g., "6" for June, and "7" for July). 
   - Dates are integers under categories like "sundays", "festive", "vacation", or others (e.g., "pravesh utsav").
@@ -72,28 +74,29 @@ The [metadata](metadata) directory contains mandatory files that define the sche
 - This file could either be manually populated from a PDF or parsed from a CSV notified by the administration.
 
 [Dataset Schema](metadata/dataset_schema.json)
-- This is a *mandatory* JSON dictionary defining the structure of a usable dataset.
-- Each key is a column name and the corresponding value is a list of datatype, description, and grouping.
-- Valid datatypes are `str` for categorical columns, `float` for numerical columns, and `int` for target column.
-- Description is a piece of text briefly explaining the information the column contains.
-- Grouping enables combined use of columns such as in common preprocessing operations.
-- Modify [Dataset Schema](metadata/dataset_schema.json) if a dataset has different column names, datatypes, descriptions or groupings.
+- This is a *mandatory* JSON dictionary that defines the structure of a usable dataset.
+- Each key is a column name and its corresponding value is a list containing:
+  - Datatype: `str` (categorical), `float` (numerical), and `int` (target)
+  - Description: A piece of text briefly explaining the column and what it contains, and
+  - Grouping: The logical group it belongs to (used in preprocessing)
+- Modify [Dataset Schema](metadata/dataset_schema.json) if your dataset has different column names, datatypes, descriptions or groupings.
 
 [Config Schema](metadata/config_schema.json)
-- This is a *mandatory* nested JSON dictionary illustrating the valid schema of a `Config` file.
-- A new Config (for training) or an existing Config (for inference) must follow this schema.
-- In [Config Schema](metadata/config_schema.json), all *optional* parameters are denoted as `<key>` and valid datatypes are in placeholders.
-- [Config Schema](metadata/config_schema.json) is **not to be deleted**.
+- This is a *mandatory* nested JSON dictionary that defines the structure of a `Config` file used for training or inference.
+- A new `Config` file needs to be created by the user for every training run, and an existing one is used to infer on a new dataset.
+- In [Config Schema](metadata/config_schema.json), all *optional* parameters are denoted within `<key>` and the placeholders indicate valid datatypes.
+- [Config Schema](metadata/config_schema.json) **should not be deleted or edited**.
   - A copy of this file needs to be made by the user for their own experiments.
-- [Config Schema](metadata/config_schema.json) is elaborated upon in the **Config** section of this README.
+- [Config Schema](metadata/config_schema.json) is elaborated upon in the **CONFIG** section of this README.
 
 [Predictor groups](metadata/predictor_groups.json)
-- This is a JSON dictionary categorizing similar features into predictor groups.
+- This is an *optional* JSON dictionary logically categorizing similar features into predictor groups.
+  - They are not required for the training or inference pipelines.
+  - They are required only for *explainability*.
 - Predictor groups are used to explain a model's predictions and guide interventions.
-- Features are manually organized into predictor groups—there is no script to generate them.
-- The features in [Predictor groups](metadata/predictor_groups.json) must be a subset of the features used in modeling.
-- They are used in [PredictorGroupExplainer](src/explainability/predictor_group_explainer.py). They are not required in the training or inference pipelines.
-- Modify [Predictor groups](metadata/predictor_groups.json) for different group explanations.
+- Features are manually organized into predictor groups—currently there is no script to generate them.
+  - The features in [Predictor groups](metadata/predictor_groups.json) must be a subset of the features used in modeling.
+- Please modify [Predictor groups](metadata/predictor_groups.json) for different group explanations.
 
 ---
 
@@ -104,13 +107,13 @@ The [metadata](metadata) directory contains mandatory files that define the sche
 
 ---
 
-- A valid dataset for training and inference must have a schema *consistent* with [Dataset Schema](metadata/dataset_schema.json). 
-  - The columns in a dataset must be a subset of the columns in [Dataset Schema](metadata/dataset_schema.json). 
-  - If the names of columns in the dataset are different, please modify [Dataset Schema](metadata/dataset_schema.json) before use.
-- The format of an input dataset file must be pickle. Example: `dataset/ay2223_grade3.pkl`. 
+- A valid dataset for training and inference must conform to the [Dataset Schema](metadata/dataset_schema.json). 
+  - The columns of your dataset must be a subset of the columns in [Dataset Schema](metadata/dataset_schema.json).
+  - If your dataset has different column names, please modify [Dataset Schema](metadata/dataset_schema.json) accordingly before use.
+- Dataset files must be in a pickle (`.pkl`) format only (e.g., `dataset/ay2223_grade3.pkl`).
   - Currently, support for other file formats is not provided.
-- The stem of a dataset file name is important to extract "academic year" and "grade" using regex.
-  - It must follow the pattern: `ay<academic_year>_grade<grade>`. Eg: `ay2223_grade3`.
+- The stemname of a dataset filepath is used to extract metadata like the "academic year" and "grade".
+  - It must follow the pattern: `ay<academic_year>_grade<grade>`. Eg: `dataset/ay2223_grade3.pkl`.
 
 ---
 
