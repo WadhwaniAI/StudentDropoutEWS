@@ -10,22 +10,22 @@
 
 ### Motivation
 - **Dropout indicators** are present in social traits, attendance patterns and performance in assessments.
-- This project aims to build an **Early Warning System (EWS)** using machine learning (ML) techniques to predict students who are at a risk of dropping out of school.
+- This project aims to build an **Early Warning System (EWS)** using machine learning (ML) techniques to predict students who are at risk of dropping out of school.
 - These predictions could potentially be used to cognize and design interventions to mitigate student dropouts.
 
 ### Data Sources
-- The project has been developed using data provided by *Vidya Samiksha Kendra (VSK)—Samagra Shiksha, Department of Education, state of Gujarat, India*
+- The project has been developed using the following data that was provided by *Vidya Samiksha Kendra (VSK)—Samagra Shiksha, Department of Education, state of Gujarat, India*.
   - Enrollment data: Delineates a student's regional and socioeconomic factors.
   - Daily attendance data: Delineates a student's daily attendance (present, absent or missing entry).
   - Semester assessment data: Delineates a student's attendance and performance in examinations.
-- The three data sources are merged into a *unified dataset* with each row representing records pertaining to one student.
-- **Customizable** Anyone with similar data could use this project by suitably modifying the [Dataset Schema](metadata/dataset_schema.json).
+- Data from the three sources is merged into a *unified dataset* with each row representing information pertaining to one student.
+- **Customizable**: Anyone with similar data could use this project by suitably modifying the [Dataset Schema](metadata/dataset_schema.json).
 
 ### Formulation
 - EWS is formulated as a *Binary Classification* ML problem (dropout: label 1, not-dropout: label 0).
-- For a given AY, a binary *Target* for each student is derived using the enrollment data from the following AY.
+- For a given AY, a binary *Target* for each student is derived using the enrollment data of the following AY.
 - The **Input** to the pipeline is the unified dataset (with the target column).
-- The resulting **Output** is a dataframe with dropout probabilities for each student that also includes the final set of features.
+- The resulting **Output** is a dataframe that includes the final set of features used in modeling and dropout probabilities for each student.
 - [SHAP](https://shap.readthedocs.io/en/latest/) is used to *explain the model's predictions*.
 
 ---
@@ -39,16 +39,16 @@
 
 - Clone the repository
 ```bash
-$ git clone https://github.com/WadhwaniAI/StudentDropoutEWS.git
-$ git checkout main
-$ cd StudentDropoutEWS
+git clone https://github.com/WadhwaniAI/StudentDropoutEWS.git
+git checkout main
+cd StudentDropoutEWS
 ```
 
 - Create a virtual environment and install the required packages
 ```bash
-$ conda create --name venv python==3.12
-$ conda activate venv
-$ pip install -r requirements.txt
+conda create --name ews python==3.12
+conda activate ews
+pip install -r requirements.txt
 ```
 
 ---
@@ -213,7 +213,7 @@ The [metadata](metadata) directory contains mandatory files that define the sche
 
 - To train a model, run `main.py` in `train` mode:
 ```bash
-(venv) $ python -m src.main \
+python -m src.main \
      --mode train \
      --config_source path/to/config_or_config_dir
 ```
@@ -265,7 +265,7 @@ inference_data_path (str): Path to the inference dataset file in pickle format.
 
 - To explain results, run `main.py` in `explain` mode:
 ```bash
-(venv) $ python -m src.main \
+python -m src.main \
     --mode explain \
     --exp_dir path/to/exp_dir \
     --df_path path/to/input_data.pkl \
