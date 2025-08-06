@@ -5,7 +5,7 @@ import shap
 import numpy as np
 from typing import Dict, List, Union
 from sklearn.metrics import precision_recall_curve
-from src.models.model import CatBoostBinaryClassifier
+from src.models.model import EWSModel
 from src.models.utils import get_model_features
 from src.configs.utils import load_config
 
@@ -99,7 +99,7 @@ class PredictorGroupExplainer:
 
      def _load_model(self):
           """Loads the trained CatBoost model from file."""
-          clf = CatBoostBinaryClassifier(self.exp_dir, self.cat_features, self.config)
+          clf = EWSModel(self.exp_dir, self.cat_features, self.config)
           clf.model.load_model(os.path.join(self.exp_dir, "model.cbm"))
           return clf.model
 
