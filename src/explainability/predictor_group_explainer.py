@@ -3,6 +3,7 @@ import os
 import pandas as pd
 import shap
 import numpy as np
+import warnings
 from typing import Dict, List, Union
 from sklearn.metrics import precision_recall_curve
 from src.models.model import EWSModel
@@ -43,42 +44,68 @@ class PredictorGroupExplainer:
           # Load metadata
           self.cat_features, self.num_features = get_model_features(self.exp_dir)
           self.all_features = self.cat_features + self.num_features
-          self._validate_predictor_groups()
-          self.model = self._load_model()
-          self.df = self._load_dataframe()
+          self._validate_and_prune_predictor_groups()
           self.config = load_config(os.path.join(exp_dir, "config.json"))
+          self.model = self._load_model()
+          self.df = self._load_dataframe()          
 
           if self.threshold is None:
                self.threshold = self._compute_threshold()
 
-     def _validate_predictor_groups(self) -> None:
+     def _validate_and_prune_predictor_groups(self) -> None:
+          """
+          Validates predictor groups, warns about and removes features not present in the model.
+          Raises errors for fatal issues like duplicates or empty resulting groups.
+          """
           seen_features = set()
           duplicate_features = set()
           invalid_features = set()
 
+          # First pass: Collect all issues
           for group, feats in self.predictor_groups.items():
-               # Check group name is a non-empty string
                if not isinstance(group, str) or not group.strip():
                     raise ValueError(f"Predictor group name must be a non-empty string. Found: {group!r}")
 
-               # Check group is not empty
                if not feats:
                     raise ValueError(f"Predictor group '{group}' is empty.")
 
                for feat in feats:
-                    # Check if feature exists in model features
                     if feat not in self.all_features:
                          invalid_features.add(feat)
 
-                    # Check for duplicate features across groups
                     if feat in seen_features:
                          duplicate_features.add(feat)
                     seen_features.add(feat)
 
-          if invalid_features:
-               raise ValueError(f"The following features in predictor_groups are not in the model features: {sorted(invalid_features)}")
+          # Handle fatal errors first
           if duplicate_features:
                raise ValueError(f"The following features occur in multiple predictor groups: {sorted(duplicate_features)}")
+
+          # Handle non-fatal invalid features
+          if invalid_features:
+               # Warn the user about the missing features
+               warnings.warn(
+                    f"The following features in predictor_groups are not in the model's features "
+                    f"and will be ignored: {sorted(invalid_features)}",
+                    UserWarning
+               )
+
+               # --- This is the new pruning logic ---
+               pruned_groups = {}
+               for group, feats in self.predictor_groups.items():
+                    # Keep only the features that are valid
+                    valid_feats_in_group = [f for f in feats if f not in invalid_features]
+
+                    # If the group is not empty after pruning, add it to our new dict
+                    if valid_feats_in_group:
+                         pruned_groups[group] = valid_feats_in_group
+               
+               # Overwrite the original groups with the pruned version
+               self.predictor_groups = pruned_groups
+
+          # Final check: After pruning, are there any features left at all?
+          if not self.predictor_groups:
+               raise ValueError("After removing features not present in the model, no valid feature groups remain. Please check your predictor_groups.")
 
      def _compute_threshold(self) -> float:
           """Compute threshold based on target recall or best F1 on val set."""
@@ -86,7 +113,7 @@ class PredictorGroupExplainer:
           val_df = pd.read_pickle(val_path)
           assert "preds_proba_1" in val_df.columns, "Validation dataframe must contain 'preds_proba_1' column."
           probas = val_df["preds_proba_1"].astype(np.float64).values
-          labels = val_df[self.config.data.label_col].astype(int).values
+          labels = val_df[self.config.data.label].astype(int).values
 
           precisions, recalls, thresholds = precision_recall_curve(labels, probas)
 
