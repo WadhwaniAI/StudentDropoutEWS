@@ -1,5 +1,4 @@
 catboost~=1.2.3
-evidently~=0.4.37
 matplotlib~=3.8.3
 munch~=4.0.0
 numpy~=1.25.0
