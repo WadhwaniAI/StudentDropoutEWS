@@ -1,7 +1,7 @@
 {
-     "aadhaaruid": [
+     "studentid": [
           "str",
-          "unique aadhaar ID of a student"
+          "unique student ID of a student"
      ],
      "target": [
           "int",
