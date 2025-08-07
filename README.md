@@ -4,19 +4,19 @@
 ---
 
 ### Problem
-- Many students in India drop out of schools due to diverse social, economic and geographical factors.
+- Many students in India drop out of school due to diverse social, economic, and geographical factors.
 - Students enrolled in a given academic year (AY) but **failing to re-enroll** in the *next* AY are dropouts.
-- *Education gaps* lead to unskilled labour and are linked to poor health—impeding a nation's development.
+- *Education gaps* lead to unskilled labour and are linked to poor health, impeding a nation's development.
 
 ### Motivation
-- **Dropout indicators** are present in social traits, attendance patterns and performance in assessments.
+- **Dropout indicators** are present in social traits, attendance patterns, and performance in assessments.
 - This project aims to build an **Early Warning System (EWS)** using *machine learning (ML)* techniques to predict students who are at risk of dropping out of school.
 - These predictions could potentially be used to cognize and design interventions to mitigate student dropouts.
 
 ### Data Sources
 - The project has been developed using the following data that was provided by *Vidya Samiksha Kendra (VSK)—Samagra Shiksha, Department of Education, state of Gujarat, India*.
   - Enrollment data: Delineates a student's regional and socioeconomic factors.
-  - Daily attendance data: Delineates a student's daily attendance (present, absent or missing entry).
+  - Daily attendance data: Delineates a student's daily attendance (present, absent, or missing entry).
   - Semester assessment data: Delineates a student's attendance and performance in examinations.
 - Data from the three sources is merged into a *unified dataset* with each row representing information pertaining to one student.
 - **Customizable**: Anyone with similar data could use this project by suitably modifying the [Dataset Schema](metadata/dataset_schema.json).
@@ -205,7 +205,7 @@ target_recall (float): (Optional) Recall on validation set to compute threshold 
 
 ---
 
-We acknowledge with gratitude the collaborative partnership that has made EWS possible. This project is a pioneering initiative between Vidya Samiksha Kendra (VSK)-Gujarat, Wadhwani Institute for Artificial Intelligence (Wadhwani AI), and UNICEF to harness Machine Learning to mitigate school dropouts. We express our sincere appreciation for VSK, specifically the MIS Department, for providing comprehensive student data and program support, without which this transformative project would not have been realized. EWS demonstrates the power of collaborative innovation in education, uniting government institutions, technology leaders, and program partners to create meaningful impact for Gujarat's children.
+We acknowledge with gratitude the collaborative partnership that has made EWS possible. This project is a pioneering initiative between Vidya Samiksha Kendra (VSK)-Gujarat, Wadhwani Institute for Artificial Intelligence (Wadhwani AI), and UNICEF to harness Machine Learning to mitigate school dropouts. We express our sincere appreciation for VSK, specifically the MIS Department, for providing comprehensive student data and program support, without which this transformative project would not have been realized. EWS demonstrates the power of collaborative innovation in education, uniting government institutions, technology leaders, and program partners to create a meaningful impact for Gujarat's children.
 
 ---
 
@@ -216,10 +216,17 @@ We acknowledge with gratitude the collaborative partnership that has made EWS po
 
 ---
 
-- As things stands now, this repository will **NOT** be maintained.
+- As things stand now, this repository will **NOT** be maintained.
 - However, if you are interested in collaborating, please reach out to us at *education@wadhwaniai.org*. We would be happy to discuss and explore potential opportunities. 
 
 
 ---
+
+</details>
+
+<details>
+<summary><span style="font-size: 20px">🛡️ LICENSE</span></summary>
+
+- This project is licensed under the [Apache License 2.0](LICENSE) © 2025 Wadhwani Institute for Artificial Intelligence (Wadhwani AI)
 
 </details>
