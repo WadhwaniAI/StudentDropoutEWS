@@ -1,6 +1,5 @@
-<details>
-
 **This README explains the [Config Schema](config_schema.json).**
+
 ---
 
 - A new JSON Configuration file is used to define all aspects for training a model.
@@ -86,5 +85,3 @@
 ```
 
 ---
-
-</details>
