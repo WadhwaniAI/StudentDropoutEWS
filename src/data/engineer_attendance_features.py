@@ -12,7 +12,7 @@ class EngineerAttendanceFeatures:
                self, 
                holidays_calendar_path: str="metadata/holidays_calendar.json", 
                all_attendance_pattern: str=r"^\d+_\d+$",
-               index: str="aadhaaruid", 
+               index: str="studentid", 
                label: Optional[str]="target"
      ):
           """

@@ -1,13 +1,12 @@
 <details>
-<summary><span style="font-size: 20px">📘 CONFIG</span></summary>
 
-**This README explains in detail the [Config Schema](metadata/config_schema.json).**
+**This README explains the [Config Schema](config_schema.json).**
 ---
 
 - A new JSON Configuration file is used to define all aspects for training a model.
 - An existing JSON configuration file (from a previous experiment) is used to run inference on a new dataset.
-- In [Config Schema](metadata/config_schema.json), all *optional* parameters are denoted within `<key>` and the placeholders indicate valid datatypes.
-- [Config Schema](metadata/config_schema.json) is explained below. Comments explain valid entries: **// datatype: description; example**.
+- In [Config Schema](config_schema.json), all *optional* parameters are denoted within `<key>` and the placeholders indicate valid datatypes.
+- [Config Schema](config_schema.json) is explained below. Comments explain valid entries: **// datatype: description; example**.
 ```javascript
 {
      "exp": {

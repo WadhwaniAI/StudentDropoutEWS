@@ -32,7 +32,7 @@ class DataPreprocessor:
 
      def preprocess(
                self, df: pd.DataFrame, column_filters: Optional[Dict[str, List[str]]]=None,
-               index: str="aadhaaruid", label: Optional[str]="target"
+               index: str="studentid", label: Optional[str]="target"
      ) -> Tuple[pd.DataFrame, Dict[str, List[str]]]:
           """
           Lowercases column names, removes duplicates, casts dtypes, fixes exam attendance, and applies filters.
