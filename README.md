@@ -208,7 +208,7 @@ target_recall (float): (Optional) Recall on validation set to compute threshold 
 
 ---
 
-We acknowledge with gratitude the collaborative partnership that has made EWS possible. This project is a pioneering initiative between VSK, Wadhwani Institute for Artificial Intelligence (Wadhwani AI), and UNICEF to harness Machine Learning to mitigate school dropouts. We express our sincere appreciation for VSK, specifically the MIS Department, for providing comprehensive student data and program support, without which this transformative project would not have been realized. EWS demonstrates the power of collaborative innovation in education, uniting government institutions, technology and program partners for Gujarat's children.
+We acknowledge with gratitude the collaborative partnership that has made EWS possible. This project is a pioneering initiative between VSK, Wadhwani Institute for Artificial Intelligence (Wadhwani AI), and UNICEF to harness Machine Learning to mitigate school dropouts. We express our sincere appreciation for VSK, specifically the MIS Department, for providing comprehensive student data and program support, without which this transformative project would not have been realized. EWS demonstrates the power of collaborative innovation in education, uniting government institutions, technology, and program partners for Gujarat's children.
 
 ---
 
