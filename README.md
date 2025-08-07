@@ -6,8 +6,6 @@
 ### Problem
 - Many students in India drop out of schools due to diverse social, economic and geographical factors.
 - Students enrolled in a given academic year (AY) but **failing to re-enroll** in the *next* AY are dropouts.
-  - This definition does not account for the students who drop out within an AY.
-  - *As long as a student re-enrolls, the student is not a dropout.* 
 - *Education gaps* lead to unskilled labour and are linked to poor health—impeding a nation's development.
 
 ### Motivation
@@ -62,7 +60,7 @@ pip install -r requirements.txt
 
 ---
 
-The [metadata](metadata) directory contains mandatory files that define the schema necessary to use this repository.
+The [metadata](metadata) directory contains various schemas necessary to use this repository.
 
 [Calendar of holidays](metadata/holidays_calendar.json)
 - This is a *mandatory* nested JSON dictionary that holds information about holidays in AYs. 
@@ -71,7 +69,7 @@ The [metadata](metadata) directory contains mandatory files that define the sche
   - Dates are integers under categories like "sundays", "festive", "vacation", or others (e.g., "pravesh utsav").
 - An example of this file for the AYs from 2022-23 to 2024-25 for the state of Gujarat is [here](metadata/holidays_calendar.json).
 - Please edit the dictionary within this file for the AYs of your interest.
-- This file could either be manually populated from a PDF or parsed from a CSV notified by the administration.
+- This file could either be manually populated from a PDF or parsed from a CSV of holidays for any AY.
 
 [Dataset Schema](metadata/dataset_schema.json)
 - This is a *mandatory* JSON dictionary that defines the structure of a usable dataset.
@@ -93,12 +91,11 @@ The [metadata](metadata) directory contains mandatory files that define the sche
   - They are not required for the training or inference pipelines.
   - They are required only for *explainability*.
 - Predictor groups are used to explain a model's predictions and guide interventions.
-- Features are manually organized into predictor groups—currently there is no script to generate them.
+- Features may be manually organized into predictor groups depending on which aspects are most relevant for explanation. 
   - The features in [Predictor groups](metadata/predictor_groups.json) must be a subset of the features used in modeling.
   - We use programmatic inputs and guidance from *VSK* and *UNICEF India* to aggregate features into logical groups.
-    - For example, features representing the location are grouped as "geographical_factors" group, and features representing attendance are grouped as "attendance_factors".
-    - **Note:** Different strategies could be adopted to implement this aggregation.
-- Please modify [Predictor groups](metadata/predictor_groups.json) for different group explanations.
+    - For example, features representing the location are grouped as "geographical_factors", and features representing attendance are grouped as "attendance_factors".
+    - **Note:** Different strategies could be adopted to implement this aggregation and modify [Predictor groups](metadata/predictor_groups.json) based on your unique needs.
 
 ---
 
@@ -114,7 +111,7 @@ The [metadata](metadata) directory contains mandatory files that define the sche
   - If your dataset has different column names, please modify [Dataset Schema](metadata/dataset_schema.json) accordingly before use.
 - Dataset files must be in a pickle (`.pkl`) format only (e.g., `dataset/ay2223_grade3.pkl`).
   - Currently, support for other file formats is not provided.
-- The stemname of a dataset filepath is used to extract metadata like the "academic year" and "grade".
+- The stem of a dataset file path is used to extract metadata like the "academic year" and "grade".
   - It must follow the pattern: `ay<academic_year>_grade<grade>`. Eg: `dataset/ay2223_grade3.pkl`.
 
 ---
@@ -167,7 +164,7 @@ mode (str): Must be set to "infer" to activate INFERENCE mode.
 exp_dir (str): Path to a previous experiment directory (to use trained model and config).  
 inference_data_path (str): Path to the inference dataset file in pickle format.
 ```
-- Inference generates and saves a dataframe with features and predicted probabilities in exp_dir.
+- Inference generates and saves a dataframe with features and predicted probabilities in `exp_dir`.
 
 ---
 
@@ -208,7 +205,7 @@ target_recall (float): (Optional) Recall on validation set to compute threshold 
 
 ---
 
-We acknowledge with gratitude the collaborative partnership that has made EWS possible. This project is a pioneering initiative between VSK, Wadhwani Institute for Artificial Intelligence (Wadhwani AI), and UNICEF to harness Machine Learning to mitigate school dropouts. We express our sincere appreciation for VSK, specifically the MIS Department, for providing comprehensive student data and program support, without which this transformative project would not have been realized. EWS demonstrates the power of collaborative innovation in education, uniting government institutions, technology, and program partners for Gujarat's children.
+We acknowledge with gratitude the collaborative partnership that has made EWS possible. This project is a pioneering initiative between Vidya Samiksha Kendra (VSK)-Gujarat, Wadhwani Institute for Artificial Intelligence (Wadhwani AI), and UNICEF to harness Machine Learning to mitigate school dropouts. We express our sincere appreciation for VSK, specifically the MIS Department, for providing comprehensive student data and program support, without which this transformative project would not have been realized. EWS demonstrates the power of collaborative innovation in education, uniting government institutions, technology leaders, and program partners to create meaningful impact for Gujarat's children.
 
 ---
 
@@ -219,9 +216,8 @@ We acknowledge with gratitude the collaborative partnership that has made EWS po
 
 ---
 
-- As things stands now, this repository will not be maintained by Wadhwani AI.
-- However, if you would like to collaborate, please reach out to us on *(enter email address)*.
-  - We would be happy to discuss and explore opportunities!
+- As things stands now, this repository will **NOT** be maintained.
+- However, if you are interested in collaborating, please reach out to us at *education@wadhwaniai.org*. We would be happy to discuss and explore potential opportunities. 
 
 Thankyou.
 

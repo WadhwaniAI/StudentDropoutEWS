@@ -6,11 +6,13 @@
 - An existing JSON configuration file (from a previous experiment) is used to run inference on a new dataset.
 - In [Config Schema](config_schema.json), all *optional* parameters are denoted within `<key>` and the placeholders indicate valid datatypes.
 - [Config Schema](config_schema.json) is explained below. Comments explain valid entries: **// datatype: description; example**.
+- [Config Schema](config_schema.json) **should not be deleted or edited**.
+  - A copy of this file needs to be made by the user for their own experiments.
 ```javascript
 {
      "exp": {
           "title": "<experiment_title>",                             // str: Descriptive name for the experiment; Eg: "baseline_grade3"
-          "project": "<project_name>",                               // str: Project name on W&B for logging; Eg: "ews"
+          "project": "<project_name>",                               // str: Project name on Weights & Biases (W&B) for logging; Eg: "ews"
           "root_exps": "<path_to_experiment_outputs>"                // str: Directory to save all experiment outputs; Eg: "exps/baseline/grade3"
      },
      "data": {
@@ -46,8 +48,8 @@
      "model": {                                                      // The section defines all the modeling-related aspects.
           "n_trials": <int>,                                         // int: Number of hyperparameter tuning trials (gets used only if we tune else is ignored); Eg: 50
           "calibration_nbins": <int>,                                // int: Bins for calibration of probability scores; Eg: 20
-          "params": {                                                // Defines all CatBoost training parameters.
-               "fixed": {                                            // Fixed parameters (Are not tuned); Mandatory. When "tune" is not present in the Config, all CatBoost parameters need specified here.
+          "params": {                                                // Defines all model training parameters.
+               "fixed": {                                            // Fixed parameters (Are not tuned); Mandatory. When "tune" is not present in the Config, all model parameters need to be specified here.
                     "loss_function": "Logloss",                      // str: Objective function; Eg: "Logloss"
                     "random_seed": <int>,                            // int: Seed for model reproducibility; Eg: 0
                     "task_type": "<CPU|GPU>",                        // str: Hardware to use; Eg: "CPU"
@@ -55,7 +57,7 @@
                     "auto_class_weights": "<a valid value>"          // str: Class imbalance handling; Eg: "Balanced"
                },
                "<tune>": {                                           // [Optional] Specify only for Hyperparameter tuning needs to be done.
-                    "independent": {                                 // Independent hyperparameters: Their presence does not depend on the presence or absence of any other CatBoost parameter.
+                    "independent": {                                 // Independent hyperparameters: Their presence does not depend on the presence or absence of any other model parameter.
                          "<param_name>": {
                               "dtype": "<int|float|categorical>",    // str: DataType of the hyperparameter; Eg: "float"
                               "tuning_space": {
