@@ -1,0 +1,16 @@
+# Byte-compiled / optimized / DLL files
+**/__pycache__/
+*.py[cod]
+
+# W&B logs
+wandb/
+.wandb/
+
+# Data files (example: ignore all .pkl files)
+data/**/*.pkl
+
+# notebooks
+*.ipynb
+
+# Ignore any file or folder with 'demo' in the name
+**/*[dD][eE][mM][oO]*

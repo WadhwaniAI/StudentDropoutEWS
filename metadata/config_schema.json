@@ -1,0 +1,87 @@
+{
+     "exp": {
+          "title": "<experiment_title>",
+          "project": "<project_name>",
+          "root_exps": "<path_to_experiment_outputs>"
+     },
+     "data": {
+          "training_data_path": "<path_to_training_data>",
+          "index": "<unique_id_column>",
+          "label": "<target_column>",
+          "holidays_calendar_path": "<path_to_holidays_calendar>",
+          "column_filters": {
+               "in": { "<col>": ["<val1>", "<val2>"] },
+               "notin": { "<col>": ["<val1>", "<val2>"] }
+          },
+          "sample": {
+               "p": "<'actual' | float>",
+               "seed": "<int>"
+          },
+          "split": {
+               "train_size": "<float>",
+               "random_state": "<int>",
+               "shuffle": "<true|false>"
+          },
+          "engineer_features": {
+               "groups_of_months": { "<group>": ["<int>"] },
+               "combs_of_chars": [["<int>", ["m", "p", "a"]]],
+               "partitions": ["<int>"],
+               "disc_cols_miss_frxn": "<float>",
+               "months_for_binary": ["<int>"],
+               "absence_thresholds": ["<int>"]
+          },
+          "drop_columns_or_groups": [
+               "<col_or_group1>", "<col_or_group2>"
+          ]
+     },
+     "model": {
+          "n_trials": "<int>",
+          "calibration_nbins": "<int>",
+          "params": {
+               "fixed": {
+                    "loss_function": "Logloss",
+                    "random_seed": "<int>",
+                    "task_type": "<CPU|GPU>",
+                    "<devices>": "<GPU_ids>",                    
+                    "<auto_class_weights>": "<a valid value>",
+                    "<iterations>": "<int>",
+                    "<depth>": "<int>",
+                    "<leaf_estimation_iterations>": "<int>",
+                    "<learning_rate>": "<float>",
+                    "<l2_leaf_reg>": "<float>",
+                    "<bootstrap_type>": "<str>",
+                    "<grow_policy>": "<str>",
+                    "<leaf_estimation_method>": "<str>",
+                    "<boosting_type>": "<str>",
+                    "score_function": "<str>",
+                    "<bagging_temperature>": "<float>",
+                    "<subsample>": "<float>"
+               },
+               "<tune>": {
+                    "independent": {
+                         "<param_name>": {
+                              "dtype": "<int|float|categorical>",
+                              "tuning_space": {
+                                   "low": "<num>",
+                                   "high": "<num>",
+                                   "step": "<optional_int>",
+                                   "log": "<optional_bool>",
+                                   "choices": ["<cat1>", "<cat2>"]
+                              }
+                         }
+                    },
+                    "dependent": {
+                         "<param_name>": {
+                              "dependent_on_param": "<other_param>",
+                              "dependent_on_value": ["<trig_val>"],
+                              "dtype": "<int|float>",
+                              "tuning_space": {
+                                   "low": "<num>",
+                                   "high": "<num>"
+                              }
+                         }
+                    }
+               }
+          }
+     }
+}

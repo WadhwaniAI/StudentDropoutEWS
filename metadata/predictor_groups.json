@@ -1,0 +1,59 @@
+{
+     "geographical_factors": [
+          "districtid",
+          "blockid",
+          "clusterid"
+     ],
+     "social_factors": [
+          "genderid",
+          "disability"
+     ],
+     "economic_factors": [
+          "bpl",
+          "whetherhomeless"
+     ],
+     "school_factors": [
+          "schmgt",
+          "schcat",
+          "medium"
+     ],
+     "attendance_factors": [
+          "[full][#partns=3][partn_1, frac_a]",
+          "[full][#partns=3][partn_1, frac_m]",
+          "[full][#partns=3][partn_1, frac_p]",
+          "[full][#partns=3][partn_2, frac_a]",
+          "[full][#partns=3][partn_2, frac_m]",
+          "[full][#partns=3][partn_2, frac_p]",
+          "[full][#partns=3][partn_3, frac_a]",
+          "[full][#partns=3][partn_3, frac_m]",
+          "[full][#partns=3][partn_3, frac_p]",
+          "[full][last_a]",
+          "[full][last_m]",
+          "[full][last_p]",
+          "binary_absence_10",
+          "binary_absence_15",
+          "binary_absence_20",
+          "binary_absence_30",
+          "binary_absence_40",
+          "binary_absence_50",
+          "binary_absence_60"
+     ],
+     "sat_factors": [
+          "english_score",
+          "english_attnd",
+          "evs_score",
+          "evs_attnd",
+          "gujarati_score",
+          "gujarati_attnd",
+          "hindi_score",
+          "hindi_attnd",
+          "maths_score",
+          "maths_attnd",
+          "sanskrit_score",
+          "sanskrit_attnd",
+          "science_score",
+          "science_attnd",
+          "social science_score",
+          "social science_attnd"
+     ]
+}
