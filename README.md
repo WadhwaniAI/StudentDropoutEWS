@@ -219,7 +219,6 @@ We acknowledge with gratitude the collaborative partnership that has made EWS po
 - As things stands now, this repository will **NOT** be maintained.
 - However, if you are interested in collaborating, please reach out to us at *education@wadhwaniai.org*. We would be happy to discuss and explore potential opportunities. 
 
-Thankyou.
 
 ---
 
