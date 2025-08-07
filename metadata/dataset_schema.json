@@ -17,11 +17,6 @@
           "homelessness status of a student",
           "socioeconomic"
      ],
-     "religionid": [
-          "str",
-          "religion ID of a student",
-          "socioeconomic"
-     ],
      "class": [
           "float",
           "class / grade of a student",
@@ -67,11 +62,6 @@
           "age of a student",
           "student_specific"
      ],
-     "socialcatid": [
-          "str",
-          "ID of the social category of a student",
-          "socioeconomic"
-     ],
      "freetransportfacility": [
           "str",
           "ID of the free transport facility availed by a student",
@@ -91,11 +81,6 @@
           "str",
           "ID of the disability status of a student",
           "student_specific"
-     ],
-     "subcaste": [
-          "str",
-          "ID of the subcaste of a student",
-          "socioeconomic"
      ],
      "6_1": [
           "str",

@@ -6,10 +6,7 @@
      ],
      "social_factors": [
           "genderid",
-          "religionid",
-          "socialcatid",
-          "disability",
-          "subcaste"
+          "disability"
      ],
      "economic_factors": [
           "bpl",
