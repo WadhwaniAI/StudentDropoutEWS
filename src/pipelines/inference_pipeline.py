@@ -6,6 +6,7 @@ from .base_pipeline import BasePipeline
 from src.configs.config_manager import ConfigManager
 from src.models.model import EWSModel
 from src.models.utils import get_model_features
+from src import constants
 
 
 class InferencePipeline(BasePipeline):
@@ -18,11 +19,11 @@ class InferencePipeline(BasePipeline):
           self.data_path = inference_data_path
           
           # Use ConfigManager to load and validate the config from the experiment directory
-          config_path = os.path.join(self.exp_dir, "config.json")
+          config_path = os.path.join(self.exp_dir, constants.ModelArtifacts.CONFIG)
           self.config = ConfigManager(config_input=config_path).get_validated_config()
           
           self.cat_features, self.num_features = get_model_features(dir=self.exp_dir)
-          with open(os.path.join(self.exp_dir, "summary_metrics.json"), "r") as f:
+          with open(os.path.join(self.exp_dir, constants.ModelArtifacts.SUMMARY_METRICS), "r") as f:
                self.summary_metrics = json.load(f)
 
      def _post_load_and_preprocess_hook(self):
@@ -38,8 +39,8 @@ class InferencePipeline(BasePipeline):
      def _manual_thresholds(self) -> Dict[str, float]:
           """Defines thresholds based on metrics loaded from the training run."""
           return {
-               "val_max_f1": self.summary_metrics.get("val_threshold_max_f1"),
-               "val_max_lift": self.summary_metrics.get("val_threshold_max_lift")
+               constants.SummaryMetricKeys.MANUAL_THRESHOLD_MAX_F1: self.summary_metrics.get(constants.SummaryMetricKeys.VAL_THRESHOLD_MAX_F1),
+               constants.SummaryMetricKeys.MANUAL_THRESHOLD_MAX_LIFT: self.summary_metrics.get(constants.SummaryMetricKeys.VAL_THRESHOLD_MAX_LIFT)
           }
 
      def _finalize(self):

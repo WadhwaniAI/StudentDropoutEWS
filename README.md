@@ -73,15 +73,15 @@ The [metadata](metadata) directory contains various schemas necessary to use thi
 
 [Dataset Schema](metadata/dataset_schema.json)
 - This is a *mandatory* JSON dictionary that defines the structure of a usable dataset.
-- Each key is a column name and its corresponding value is a list containing:
-  - Datatype: `str` (categorical), `float` (numerical), and `int` (target)
-  - Description: A piece of text briefly explaining the column and what it contains, and
-  - Grouping: The logical group it belongs to (used in preprocessing)
-- Modify [Dataset Schema](metadata/dataset_schema.json) if your dataset has different column names, datatypes, descriptions or groupings.
+- This is explained in detail [here](metadata/DATASET_SCHEMA_README.md).
+
+[Attendance Replacement Map](metadata/attendance_replacement_map.json)
+- This is a *mandatory* JSON file that defines the semantic mapping for raw attendance values.
+- It is used to convert different raw data values (e.g., `"1"`, `"2"`, `"nan"`) into the standardized internal representations for `"present"`, `"absent"`, and `"missing"`.
+- The keys in this file **must** be `"present"`, `"absent"`, and `"missing"`. The validation logic strictly checks for these keys, which correspond to the `constants.Attendance.Status` class in `constants.py`, ensuring consistency.
 
 [Config Schema](metadata/config_schema.json)
 - This is a *mandatory* nested JSON dictionary that defines the structure of a `Config` file used for training or inference.
-- A new `Config` file needs to be created by the user for every training run, and an existing one is used to infer on a new dataset.
 - [Config Schema](metadata/config_schema.json) **should not be deleted or edited**.
   - A copy of this file needs to be made by the user for their own experiments.
 - This is explained in detail [here](metadata/CONFIG_README.md).

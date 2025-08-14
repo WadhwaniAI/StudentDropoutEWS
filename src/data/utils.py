@@ -5,9 +5,51 @@ import pandas as pd
 import re
 from pathlib import Path
 from sklearn.model_selection import train_test_split
-from typing import Union, List, Dict, Tuple, Optional
+from typing import Union, List, Dict, Tuple, Optional, Mapping
 from collections import defaultdict
 from collections.abc import Mapping
+from src import constants
+
+
+def build_attendance_replacement_map(
+     source: Union[str, Path, Dict[str, List[str]]]
+) -> Dict[str, str]:
+     """
+     Builds a replacement map from a semantic attendance map.
+
+     The source can be a file path or a pre-loaded dictionary. It transforms
+     a map like `{"present": ["1"]}` into a replacement map like `{"1": "p"}`
+     using the characters defined in `constants.Attendance.Status`.
+
+     :param source: Path to the semantic JSON map or the dictionary itself.
+     :return: A dictionary mapping raw values to replacement characters.
+     """
+     if isinstance(source, (str, Path)):
+          with open(source, "r") as f:
+               semantic_map = json.load(f)
+     elif isinstance(source, dict):
+          semantic_map = source
+     else:
+          raise TypeError(f"Source must be a path or a dictionary, not {type(source).__name__}")
+
+     status_map = {
+          k.lower(): v
+          for k, v in vars(constants.Attendance.Status).items()
+          if not k.startswith("__")
+     }
+
+     allowed_keys = set(status_map.keys())
+     if set(semantic_map.keys()) != allowed_keys:
+          raise ValueError(
+               "Invalid keys in attendance replacement map. "
+               f"Expected exactly {sorted(list(allowed_keys))}, but found {sorted(list(semantic_map.keys()))}."
+          )
+
+     return {
+          value: status_map[status_name]
+          for status_name, values in semantic_map.items()
+          for value in values
+     }
 
 
 def determine_columns_to_drop(
@@ -47,8 +89,8 @@ def split_features_by_dtype(
      Returns: Tuple of (categorical_features, numerical_features)
      """
      exclude = {label, index}
-     categorical_features = [col for col in df.select_dtypes(include='object').columns if col not in exclude]
-     numerical_features = [col for col in df.select_dtypes(include=np.float64).columns if col not in exclude]
+     categorical_features = [col for col in df.select_dtypes(include=constants.DtypeCastMap.STR).columns if col not in exclude]
+     numerical_features = [col for col in df.select_dtypes(include=constants.DtypeCastMap.FLOAT).columns if col not in exclude]
 
      return categorical_features, numerical_features
 
