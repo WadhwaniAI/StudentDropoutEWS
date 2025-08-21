@@ -29,7 +29,7 @@ class DataPreprocessor:
 
           self.schema = self._load_json(self.schema_path)
           self.column_groups = generate_column_groups_from_schema(self.schema_path)
-          self.all_attendance_cols = self.column_groups["all_attendances"]
+          self.all_attendance_cols = self.column_groups[constants.ColumnGroups.ALL_ATTENDANCES]
           self.attendance_replacement_map = (
                attendance_replacement_map 
                or build_attendance_replacement_map(
@@ -85,9 +85,9 @@ class DataPreprocessor:
           # Replace values in attendance columns
           df.loc[:, self.all_attendance_cols] = df.loc[:, self.all_attendance_cols].replace(self.attendance_replacement_map)
 
-          # Rectify attendance using exam scores
-          for col_attnd in self.column_groups["exam_attnd_subwise"]:
-               col_score = col_attnd.replace("attnd", "score")
+          # Rectify exam attendance using exam scores
+          for col_attnd in self.column_groups[constants.ColumnGroups.EXAM_ATTND_SUBWISE]:
+               col_score = col_attnd.replace(constants.ColumnGroups.ATTND, constants.ColumnGroups.SCORE)
                if col_score in df.columns:
                     df.loc[:, col_attnd] = df[col_score].apply(
                          lambda x: (
@@ -96,6 +96,9 @@ class DataPreprocessor:
                               else constants.Attendance.Status.ABSENT
                          )
                     )
+          
+          # fillna with 0 in exam_scores after using them to rectify exam_attendance
+          df.loc[:, self.column_groups[constants.ColumnGroups.EXAM_SCORE_SUBWISE]] = df.loc[:, self.column_groups[constants.ColumnGroups.EXAM_SCORE_SUBWISE]].fillna(0)
 
           # Fill missing values with 'm' for attendance columns
           df.loc[:, self.all_attendance_cols] = df.loc[:, self.all_attendance_cols].fillna(constants.Attendance.Status.MISSING)
@@ -106,7 +109,8 @@ class DataPreprocessor:
                if col not in self.all_attendance_cols
           ]
           df.loc[:, str_cols_to_fill] = df.loc[:, str_cols_to_fill].fillna("nan")
-          df.loc[:, dtype_map.get(constants.DtypeCastMap.FLOAT, [])] = df.loc[:, dtype_map.get(constants.DtypeCastMap.FLOAT, [])].fillna(0.0)
+          float_cols = dtype_map.get(constants.DtypeCastMap.FLOAT, [])
+          df.loc[:, float_cols] = df.loc[:, float_cols].fillna(df.loc[:, float_cols].mean())
 
           self.df = df
 

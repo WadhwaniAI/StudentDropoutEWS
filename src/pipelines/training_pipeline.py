@@ -35,7 +35,7 @@ class TrainingPipeline(BasePipeline):
           shutil.copyfile(self.config_path, os.path.join(self.exp_dir, constants.ModelArtifacts.CONFIG))
           wandb.init(
                project=self.config.exp.project, config=self.config, 
-               name=os.path.basename(self.exp_dir), config_exclude_keys=[constants.wandb.EXCLUDE_KEYS]
+               name=os.path.basename(self.exp_dir), config_exclude_keys=[constants.WandB.EXCLUDE_KEYS]
           )
      
      def _sample_and_split(self):

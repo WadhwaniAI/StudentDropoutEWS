@@ -19,13 +19,13 @@ class BinaryModelEvaluator:
      """Summary metrics and plotting for binary classifiers."""
 
      def __init__(
-          self,
-          df,
-          label_col,
-          proba_1_col,
-          ds_name="dataset",
-          save_dir=None,
-          manual_thresholds: dict = None,
+               self,
+               df: pd.DataFrame,
+               proba_1_col: str,
+               label_col: str = None,
+               ds_name: str = "dataset",
+               save_dir: str = None,
+               manual_thresholds: dict = None,
      ):
           """
           :param df (pd.DataFrame): DataFrame containing predictions and optionally labels.

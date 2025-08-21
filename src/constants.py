@@ -46,6 +46,8 @@ class ColumnGroups:
     EXAM_SCORE_SUBWISE = "exam_score_subwise"
     EXAM_ATTND_SUBWISE = "exam_attnd_subwise"
     MONTH_AGG_ATTND = "month_agg_attnd"
+    ATTND = "attnd"
+    SCORE = "score"
 
 class DtypeCastMap:
      """Data type casting map for preprocessing."""
@@ -145,7 +147,7 @@ class SplitNames:
     VALIDATION = "val"
     TEST = "test"
 
-class wandb:
+class WandB:
     """Constants related to Weights & Biases integration."""
     PROJECT = "project"
     EXCLUDE_KEYS = "exp"

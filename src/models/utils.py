@@ -127,5 +127,6 @@ def get_optimal_thresholds(
           thresh_lift = t[np.argmin(np.abs(r[:-1] - r_lift))]
      except:
           thresh_lift = None
+          print(f"Warning: No threshold found for max lift {r_lift}")
 
      return thresh_f1, thresh_lift

@@ -33,7 +33,7 @@
                "random_state": <int>,                                // int: Random seed for split; Eg: 42
                "shuffle": <true|false>                               // bool: Shuffle before splitting into train and val; Eg: true
           },
-          "engineer_features": {                                     // The key set of parameters that define feature engieering.
+          "engineer_features": {                                     // The key set of parameters that define feature engineering.
                "groups_of_months": { "<group>": [<months>] },        // dict[str, list[int]]: Month groupings; Eg: { "full": [6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4] }
                "combs_of_chars": [[<max len>, ['a','m','p']]],       // list[list[int, list[str]]]: Max length of permutation, subset of ("a", "m", "p") to use; Eg: [[1, ["m", "p", "a"]]]
                "partitions": [<int>],                                // int: Number of partitions to split each month group; Eg: [3]

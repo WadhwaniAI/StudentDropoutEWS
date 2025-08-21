@@ -6,11 +6,11 @@ The Dataset Schema is a mandatory JSON file that defines the expected structure,
 
 ### 1. Schema Structure
 
-Each entry in the schema corresponds to a column in your dataset. The key is the column name (which must be lowercased), and the value is a list containing 2 or 3 elements:
+Each entry in the schema corresponds to a column in your dataset. The key is the column name (which must be lowercased), and the value is a list containing:
 
 1.  **Data Type (`str`)**: The expected data type of the column. This must be one of the values defined in `constants.DtypeCastMap`.
 2.  **Description (`str`)**: A brief, human-readable description of what the column represents.
-3.  **Column Group (`str`, Optional)**: A logical group name. This is used for validation and applying group-specific logic during preprocessing. This must be one of the values from `constants.ColumnGroups`.
+3.  **Column Group (`str`, Optional)**: A logical group name. This is used for validation and applying group-specific logic during preprocessing. This must be one of the values from `constants.ColumnGroups`—This need not be specified for the label and index columns.
 
 **Example:**
 ```json
