@@ -46,7 +46,7 @@ class BinaryModelEvaluator:
                os.makedirs(save_dir, exist_ok=True)
 
           self.y_score = self.df[self.proba_1_col].astype(float).values
-
+          
           # Check if the label column exists in the DataFrame
           if self.label_col in self.df.columns:
                self.y_true = self.df[self.label_col].astype(int).values
