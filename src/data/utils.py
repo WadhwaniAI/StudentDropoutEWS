@@ -78,7 +78,9 @@ def determine_columns_to_drop(
 
 
 def split_features_by_dtype(
-          df: pd.DataFrame, index: str="aadhaaruid", label: Optional[str]="target", 
+          df: pd.DataFrame, 
+          index: Optional[str] = constants.ColumnNames.INDEX, 
+          label: Optional[str] = constants.ColumnNames.LABEL, 
 ) -> Tuple[List[str], List[str]]:
      """
      Identify columns as Categorical with dtype 'object' and Numerical with dtype np.float64 only.     
