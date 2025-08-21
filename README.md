@@ -240,6 +240,6 @@ We acknowledge with gratitude the collaborative partnership that has made EWS po
 <details>
 <summary><span style="font-size: 20px">🛡️ LICENSE</span></summary>
 
-- This project is licensed under the [Apache License 2.0](LICENSE) © 2025 Wadhwani Institute for Artificial Intelligence (Wadhwani AI)
+- This project is licensed under the [Apache License 2.0](LICENSE) © 2025 Wadhwani Institute for Artificial Intelligence (Wadhwani AI).
 
 </details>
