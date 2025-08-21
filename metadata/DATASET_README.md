@@ -18,7 +18,7 @@ Each entry in the schema corresponds to a column in your dataset. The key is the
      "string",
      "below poverty line status of a student",
      "socioeconomic"
-],
+]
 ```
 
 ---
