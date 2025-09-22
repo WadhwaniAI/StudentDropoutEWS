@@ -8,11 +8,8 @@ from src.data.preprocess import DataPreprocessor
 from src.data.engineer_attendance_features import EngineerAttendanceFeatures
 from src.analysis.metrics import BinaryModelEvaluator
 from src.data.utils import extract_academic_year_from_path
+from src import constants
 
-
-# --- Constants ---
-METRICS_FILENAME = "summary_metrics.json"
-JSON_INDENT = 5 # Set to 5-space indent
 
 class BasePipeline(abc.ABC):
      """An abstract base class for ML pipelines, containing shared logic."""
@@ -29,7 +26,7 @@ class BasePipeline(abc.ABC):
           self.cat_features: List[str] = []
           self.num_features: List[str] = []
           self.summary_metrics: Dict[str, Any] = {}
-          self.json_indent: int = JSON_INDENT
+          self.json_indent: int = constants.ConfigSchema.JSON_INDENT
 
      def _load_and_preprocess(self):
           """(Shared) Loads and preprocesses data using the Template Method pattern."""
@@ -70,8 +67,12 @@ class BasePipeline(abc.ABC):
                self.datasets[split] = df_preds
                
                evaluator = BinaryModelEvaluator(
-                    df=df_preds, label_col=self.config.data.label, proba_1_col="preds_proba_1", 
-                    ds_name=split, save_dir=self.exp_dir, manual_thresholds=self._manual_thresholds
+                    df=df_preds, 
+                    label_col=self.config.data.label, 
+                    proba_1_col=constants.ColumnNames.PROBA_1, 
+                    ds_name=split, 
+                    save_dir=self.exp_dir, 
+                    manual_thresholds=self._manual_thresholds
                )
                evaluator.plot_all()
                self.summary_metrics.update(evaluator.summary_metrics())
@@ -79,8 +80,8 @@ class BasePipeline(abc.ABC):
      def _save_artifacts(self):
           """(Shared) Saves final datasets and summary metrics to disk."""
           for split_name, final_df in self.datasets.items():
-               final_df.to_pickle(f"{self.exp_dir}/{split_name}.pkl")
-          with open(os.path.join(self.exp_dir, METRICS_FILENAME), "w") as f:
+               final_df.to_pickle(f"{self.exp_dir}/{split_name}{constants.FileExtensions.PICKLE}")
+          with open(os.path.join(self.exp_dir, constants.ModelArtifacts.SUMMARY_METRICS), "w") as f:
                json.dump(self.summary_metrics, f, indent=self.json_indent)
 
      @property

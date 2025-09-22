@@ -5,6 +5,7 @@ from src.pipelines.training_pipeline import TrainingPipeline
 from src.pipelines.inference_pipeline import InferencePipeline
 from src.explainability.predictor_group_explainer import PredictorGroupExplainer
 from src.configs.utils import get_config_files
+from src import constants
 
 
 def parse_args():
@@ -13,17 +14,23 @@ def parse_args():
      :return: Argument parser instance with populated arguments.
      """
      parser = argparse.ArgumentParser(description="Run ML pipelines.")
-     parser.add_argument("--mode", type=str, required=True, choices=["train", "infer", "explain"], help="Mode to run: 'train', 'infer', or 'explain'.")
+     parser.add_argument(
+          constants.CliArgs.MODE, 
+          type=str, 
+          required=True, 
+          choices=[constants.CliModes.TRAIN, constants.CliModes.INFER, constants.CliModes.EXPLAIN], 
+          help="Mode to run: 'train', 'infer', or 'explain'."
+     )
 
-     parser.add_argument("--config_source", type=str, help="Path to config file or directory (required in 'train' mode).") # train
+     parser.add_argument(constants.CliArgs.CONFIG_SOURCE, type=str, help="Path to config file or directory (required in 'train' mode).") # train
 
-     parser.add_argument("--exp_dir", type=str, help="Experiment directory with model and config (for 'infer' and 'explain').") # infer, explain
-     parser.add_argument("--inference_data_path", type=str, help="Dataset to run inference on (for 'infer').") # infer
+     parser.add_argument(constants.CliArgs.EXP_DIR, type=str, help="Experiment directory with model and config (for 'infer' and 'explain').") # infer, explain
+     parser.add_argument(constants.CliArgs.INFERENCE_DATA_PATH, type=str, help="Dataset to run inference on (for 'infer').") # infer
 
-     parser.add_argument("--df_path", type=str, help="Dataset to run SHAP explanations on (for 'explain').") # explain
-     parser.add_argument("--predictor_groups", type=str, help="Path to predictor group JSON file (for 'explain').") # explain
-     parser.add_argument("--target_recall", type=float, help="Recall target used to compute threshold (optional, for 'explain').") # explain
-     parser.add_argument("--threshold", type=float, help="Custom threshold override for classification (optional, for 'explain').") # explain
+     parser.add_argument(constants.CliArgs.DF_PATH, type=str, help="Dataset to run SHAP explanations on (for 'explain').") # explain
+     parser.add_argument(constants.CliArgs.PREDICTOR_GROUPS, type=str, help="Path to predictor group JSON file (for 'explain').") # explain
+     parser.add_argument(constants.CliArgs.TARGET_RECALL, type=float, help="Recall target used to compute threshold (optional, for 'explain').") # explain
+     parser.add_argument(constants.CliArgs.THRESHOLD, type=float, help="Custom threshold override for classification (optional, for 'explain').") # explain
 
      return parser
 
@@ -75,7 +82,7 @@ def explain(exp_dir: str, df_path: str, predictor_groups: str, threshold: float=
           target_recall=target_recall
      )
      df_explained = explainer.run()
-     out_path = os.path.join(exp_dir, f"{Path(df_path).stem}_explained_output.pkl")
+     out_path = os.path.join(exp_dir, f"{Path(df_path).stem}{constants.ModelArtifacts.EXPLAINED_OUTPUT_SUFFIX}{constants.FileExtensions.PICKLE}")
      df_explained.to_pickle(out_path)
      print(f"✅ Explanation complete. Output saved to: {out_path}")
 
@@ -85,19 +92,19 @@ def main():
      parser = parse_args()
      args = parser.parse_args()
 
-     if args.mode == "train":
+     if args.mode == constants.CliModes.TRAIN:
           if not args.config_source:
-               parser.error("--config_source is required for 'train'.")
+               parser.error(f"{constants.CliArgs.CONFIG_SOURCE} is required for '{constants.CliModes.TRAIN}'.")
           training(args.config_source)
 
-     elif args.mode == "infer":
+     elif args.mode == constants.CliModes.INFER:
           if not args.exp_dir or not args.inference_data_path:
-               parser.error("--exp_dir and --inference_data_path are required for 'infer'.")
+               parser.error(f"{constants.CliArgs.EXP_DIR} and {constants.CliArgs.INFERENCE_DATA_PATH} are required for '{constants.CliModes.INFER}'.")
           inference(args.exp_dir, args.inference_data_path)
 
-     elif args.mode == "explain":
+     elif args.mode == constants.CliModes.EXPLAIN:
           if not args.exp_dir or not args.df_path or not args.predictor_groups:
-               parser.error("--exp_dir, --df_path, and --predictor_groups are required for 'explain'.")
+               parser.error(f"{constants.CliArgs.EXP_DIR}, {constants.CliArgs.DF_PATH}, and {constants.CliArgs.PREDICTOR_GROUPS} are required for '{constants.CliModes.EXPLAIN}'.")
           explain(
                exp_dir=args.exp_dir,
                df_path=args.df_path,

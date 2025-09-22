@@ -8,12 +8,8 @@ from src.models.model import EWSModel
 from src.models.utils import save_model_features, loss_curves
 from src.data.utils import sample_and_split
 from src.utils import get_timestamp
+from src import constants
 
-
-# --- Constants ---
-CONFIG_FILENAME = "config.json"
-TRAIN_SPLIT = "train"
-VAL_SPLIT = "val"
 
 class TrainingPipeline(BasePipeline):
      """Encapsulates the model training pipeline, inheriting from BasePipeline."""
@@ -36,10 +32,10 @@ class TrainingPipeline(BasePipeline):
      def _setup_experiment(self):
           """Creates experiment directory, saves config, and initializes wandb."""
           os.makedirs(self.exp_dir, exist_ok=True)
-          shutil.copyfile(self.config_path, os.path.join(self.exp_dir, CONFIG_FILENAME))
+          shutil.copyfile(self.config_path, os.path.join(self.exp_dir, constants.ModelArtifacts.CONFIG))
           wandb.init(
                project=self.config.exp.project, config=self.config, 
-               name=os.path.basename(self.exp_dir), config_exclude_keys=['exp']
+               name=os.path.basename(self.exp_dir), config_exclude_keys=[constants.WandB.EXCLUDE_KEYS]
           )
      
      def _sample_and_split(self):
@@ -49,7 +45,7 @@ class TrainingPipeline(BasePipeline):
                sample_seed=self.config.data.sample.seed, train_size=self.config.data.split.train_size, 
                split_seed=self.config.data.split.random_state, shuffle=self.config.data.split.shuffle,
           )
-          self.datasets = {TRAIN_SPLIT: df_train, VAL_SPLIT: df_val}
+          self.datasets = {constants.SplitNames.TRAIN: df_train, constants.SplitNames.VALIDATION: df_val}
           self.df = None # No longer needed after splitting
      
      def _train_model(self):
@@ -58,25 +54,29 @@ class TrainingPipeline(BasePipeline):
           self.model = EWSModel(exp_dir=self.exp_dir, cat_features=self.cat_features, config=self.config)
           
           best_params, val_thresh_max_f1, val_thresh_max_lift = self.model.fit(
-               x_train=self.datasets[TRAIN_SPLIT][self.cat_features + self.num_features], 
-               y_train=self.datasets[TRAIN_SPLIT][self.config.data.label],
-               x_val=self.datasets[VAL_SPLIT][self.cat_features + self.num_features], 
-               y_val=self.datasets[VAL_SPLIT][self.config.data.label]
+               x_train=self.datasets[constants.SplitNames.TRAIN][self.cat_features + self.num_features], 
+               y_train=self.datasets[constants.SplitNames.TRAIN][self.config.data.label],
+               x_val=self.datasets[constants.SplitNames.VALIDATION][self.cat_features + self.num_features], 
+               y_val=self.datasets[constants.SplitNames.VALIDATION][self.config.data.label]
           )
           loss_curves(train_dir=self.exp_dir)
           self.summary_metrics.update({
-               "best_params": best_params, "shape_training_data": self.datasets[TRAIN_SPLIT].shape,
-               "val_threshold_max_f1": val_thresh_max_f1, "val_threshold_max_lift": val_thresh_max_lift,
-               "categorical_features": self.cat_features, "n_categorical_features": len(self.cat_features),
-               "numerical_features": self.num_features, "n_numerical_features": len(self.num_features)
+               constants.SummaryMetricKeys.BEST_PARAMS: best_params, 
+               constants.SummaryMetricKeys.SHAPE_TRAINING_DATA: self.datasets[constants.SplitNames.TRAIN].shape,
+               constants.SummaryMetricKeys.VAL_THRESHOLD_MAX_F1: val_thresh_max_f1, 
+               constants.SummaryMetricKeys.VAL_THRESHOLD_MAX_LIFT: val_thresh_max_lift,
+               constants.SummaryMetricKeys.CATEGORICAL_FEATURES: self.cat_features, 
+               constants.SummaryMetricKeys.N_CATEGORICAL_FEATURES: len(self.cat_features),
+               constants.SummaryMetricKeys.NUMERICAL_FEATURES: self.num_features, 
+               constants.SummaryMetricKeys.N_NUMERICAL_FEATURES: len(self.num_features)
           })
 
      @property
      def _manual_thresholds(self) -> Dict[str, float]:
           """Defines thresholds based on validation set performance."""
           return {
-               "max_f1 (val)": self.summary_metrics.get("val_threshold_max_f1"),
-               "max_lift (val)": self.summary_metrics.get("val_threshold_max_lift")
+               constants.SummaryMetricKeys.MANUAL_THRESHOLD_MAX_F1: self.summary_metrics.get(constants.SummaryMetricKeys.VAL_THRESHOLD_MAX_F1),
+               constants.SummaryMetricKeys.MANUAL_THRESHOLD_MAX_LIFT: self.summary_metrics.get(constants.SummaryMetricKeys.VAL_THRESHOLD_MAX_LIFT)
           }
 
      def _finalize(self):

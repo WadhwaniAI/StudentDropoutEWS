@@ -9,6 +9,7 @@ from sklearn.metrics import precision_recall_curve
 from src.models.model import EWSModel
 from src.models.utils import get_model_features
 from src.configs.utils import load_config
+from src import constants
 
 
 class PredictorGroupExplainer:
@@ -45,7 +46,7 @@ class PredictorGroupExplainer:
           self.cat_features, self.num_features = get_model_features(self.exp_dir)
           self.all_features = self.cat_features + self.num_features
           self._validate_and_prune_predictor_groups()
-          self.config = load_config(os.path.join(exp_dir, "config.json"))
+          self.config = load_config(os.path.join(exp_dir, constants.ModelArtifacts.CONFIG))
           self.model = self._load_model()
           self.df = self._load_dataframe()          
 
@@ -109,11 +110,11 @@ class PredictorGroupExplainer:
 
      def _compute_threshold(self) -> float:
           """Compute threshold based on target recall or best F1 on val set."""
-          val_path = os.path.join(self.exp_dir, "val.pkl")
+          val_path = os.path.join(self.exp_dir, constants.ModelArtifacts.VALIDATION)
           val_df = pd.read_pickle(val_path)
-          assert "preds_proba_1" in val_df.columns, "Validation dataframe must contain 'preds_proba_1' column."
-          probas = val_df["preds_proba_1"].astype(np.float64).values
-          labels = val_df[self.config.data.label].astype(int).values
+          assert constants.ColumnNames.PROBA_1 in val_df.columns, f"Validation dataframe must contain '{constants.ColumnNames.PROBA_1}' column."
+          probas = val_df[constants.ColumnNames.PROBA_1].astype(np.float64).values
+          labels = val_df[self.config.data.label or constants.ColumnNames.LABEL].astype(int).values
 
           precisions, recalls, thresholds = precision_recall_curve(labels, probas)
 
@@ -127,7 +128,7 @@ class PredictorGroupExplainer:
      def _load_model(self):
           """Loads the trained CatBoost model from file."""
           clf = EWSModel(self.exp_dir, self.cat_features, self.config)
-          clf.model.load_model(os.path.join(self.exp_dir, "model.cbm"))
+          clf.model.load_model(os.path.join(self.exp_dir, constants.ModelArtifacts.MODEL))
           return clf.model
 
      def _load_dataframe(self) -> pd.DataFrame:
@@ -141,7 +142,11 @@ class PredictorGroupExplainer:
           """Generates and appends SHAP values for all features."""
           explainer = shap.TreeExplainer(self.model)
           shap_vals = explainer(self.df[self.all_features])
-          shap_df = pd.DataFrame(shap_vals.values, columns=[f"shap[{f}]" for f in shap_vals.feature_names], index=self.df.index)
+          shap_df = pd.DataFrame(
+               shap_vals.values,
+               columns=[f"{constants.ColumnNames.SHAP_PREFIX}[{f}]" for f in shap_vals.feature_names],
+               index=self.df.index
+          )
           self.df = pd.concat([self.df, shap_df], axis=1)
 
      def _add_group_contributions(self) -> None:
@@ -149,10 +154,10 @@ class PredictorGroupExplainer:
           def contribs(row):
                result = {}
                for label in (0, 1):
-                    label_str = "dropout" if label else "notdropout"
+                    label_str = constants.ModelConfig.PREDICTION_LABELS[label]
                     for group, feats in self.predictor_groups.items():
-                         shap_feats = [f for f in feats if f"shap[{f}]" in self.df.columns]
-                         shap_vals = [row[f"shap[{f}]"] for f in shap_feats]
+                         shap_feats = [f for f in feats if f"{constants.ColumnNames.SHAP_PREFIX}[{f}]" in self.df.columns]
+                         shap_vals = [row[f"{constants.ColumnNames.SHAP_PREFIX}[{f}]"] for f in shap_feats]
                          filtered = [(f, s if label else abs(s)) for f, s in zip(shap_feats, shap_vals) if (s > 0 if label else s <= 0)]
                          total = sum(s for _, s in filtered)
                          top = max(filtered, key=lambda x: x[1])[0] if filtered else None
@@ -160,23 +165,25 @@ class PredictorGroupExplainer:
                          result[f"{group}_label{label}_top_feat"] = top
                     sorted_groups = sorted(((g, result[f"{g}_label{label}_contrib"]) for g in self.predictor_groups), key=lambda x: x[1], reverse=True)
                     for i, (grp, _) in enumerate(sorted_groups, 1):
-                         result[f"predictor_group_{i}_for_{label_str}"] = grp
-                         result[f"predictor_group_{i}_for_{label_str}_top_driver"] = result[f"{grp}_label{label}_top_feat"]
+                         base_col_name = f"{constants.ColumnNames.PREDICTOR_GROUP_PREFIX}_{i}_for_{label_str}"
+                         result[base_col_name] = grp
+                         result[f"{base_col_name}{constants.ColumnNames.TOP_DRIVER_SUFFIX}"] = result[f"{grp}_label{label}_top_feat"]
                return pd.Series(result)
           self.df = pd.concat([self.df, self.df.apply(contribs, axis=1)], axis=1)
 
      def _apply_threshold_and_label(self) -> None:
           """Applies threshold to probabilities and assigns binary class labels."""
-          self.df["prediction"] = (self.df["preds_proba_1"] >= self.threshold).astype(int).map({0: "notdropout", 1: "dropout"})
+          self.df[constants.ColumnNames.PREDICTION] = (self.df[constants.ColumnNames.PROBA_1] >= self.threshold).astype(int).map(constants.ModelConfig.PREDICTION_LABELS)
 
      def _select_top_predictors(self) -> None:
           """Adds top predictor groups and their top drivers based on predicted label."""
           def extract(row):
-               label = row["prediction"]
+               label = row[constants.ColumnNames.PREDICTION]
                result = {}
                for i in range(1, len(self.predictor_groups) + 1):
-                    result[f"predictor_group_{i}"] = row.get(f"predictor_group_{i}_for_{label}")
-                    result[f"predictor_group_{i}_top_driver"] = row.get(f"predictor_group_{i}_for_{label}_top_driver")
+                    base_col = f"{constants.ColumnNames.PREDICTOR_GROUP_PREFIX}_{i}"
+                    result[base_col] = row.get(f"{base_col}_for_{label}")
+                    result[f"{base_col}{constants.ColumnNames.TOP_DRIVER_SUFFIX}"] = row.get(f"{base_col}_for_{label}{constants.ColumnNames.TOP_DRIVER_SUFFIX}")
                return pd.Series(result)
           self.df = pd.concat([self.df, self.df.apply(extract, axis=1)], axis=1)
 

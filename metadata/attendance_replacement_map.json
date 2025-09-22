@@ -1,0 +1,5 @@
+{
+     "missing": ["nan", "5", "0"],
+     "present": ["1"],
+     "absent": ["2"]
+}

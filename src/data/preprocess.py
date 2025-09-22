@@ -1,9 +1,10 @@
 import json
 import pandas as pd
-import numpy as np
 from typing import Dict, List, Set, Tuple, Optional
 from src.utils import resolve_path
-from .utils import generate_column_groups_from_schema
+from src import constants
+from .utils import generate_column_groups_from_schema, build_attendance_replacement_map
+from .dataset_schema_validator import DatasetSchemaValidator
 
 
 class DataPreprocessor:
@@ -11,19 +12,29 @@ class DataPreprocessor:
 
      def __init__(
                self,
-               schema_path: str="metadata/dataset_schema.json",
-               attendance_replacement_map: Optional[dict]=None
+               schema_path: str = None,
+               attendance_replacement_map: Optional[dict] = None
      ):
           """
           :param schema_path: Path to the JSON schema file defining column data types.
-          :param column_groups_path: Path to the JSON file defining column groups.
           :param attendance_replacement_map: Mapping for replacing attendance values.
           """
-          self.schema_path = resolve_path(schema_path)
+          self.schema_path = resolve_path(schema_path or constants.MetadataPaths.DATASET_SCHEMA)
+          
+          validator = DatasetSchemaValidator(self.schema_path)
+          if not validator.validate():
+               errors = "\n".join([f"- {error}" for error in validator.get_errors()])
+               raise ValueError(f"Schema validation failed with the following errors:\n{errors}")
+
           self.schema = self._load_json(self.schema_path)
           self.column_groups = generate_column_groups_from_schema(self.schema_path)
-          self.all_attendance_cols = self.column_groups["all_attendances"]
-          self.attendance_replacement_map = attendance_replacement_map or {"nan":"m", "5":"m", "0":"m", "1":"p", "2":"a"}
+          self.all_attendance_cols = self.column_groups[constants.ColumnGroups.ALL_ATTENDANCES]
+          self.attendance_replacement_map = (
+               attendance_replacement_map 
+               or build_attendance_replacement_map(
+                    constants.MetadataPaths.ATTENDANCE_REPLACEMENT_MAP
+               )
+          )
 
      def _load_json(self, path: str) -> dict:
           """Loads and returns JSON content from a file."""
@@ -31,8 +42,11 @@ class DataPreprocessor:
                return json.load(f)
 
      def preprocess(
-               self, df: pd.DataFrame, column_filters: Optional[Dict[str, List[str]]]=None,
-               index: str="studentid", label: Optional[str]="target"
+               self,
+               df: pd.DataFrame,
+               column_filters: Optional[Dict[str, List[str]]] = None,
+               index: str = constants.ColumnNames.INDEX,
+               label: Optional[str] = constants.ColumnNames.LABEL
      ) -> Tuple[pd.DataFrame, Dict[str, List[str]]]:
           """
           Lowercases column names, removes duplicates, casts dtypes, fixes exam attendance, and applies filters.
@@ -41,10 +55,8 @@ class DataPreprocessor:
           :param label (str): Optional. Column name for the target variable if present in the DataFrame.
           Returns: Tuple (Preprocessed DataFrame (pd.DataFrame), Filtered column_groups (dict))
           """
-          # Lowercasing column names
+          # Lowercasing column names; remove duplicates based on index
           df.columns = map(str.lower, df.columns)
-
-          # Remove duplicates based on index
           df = df.drop_duplicates(subset=index)
 
           # Filter metadata based on DataFrame columns
@@ -56,24 +68,48 @@ class DataPreprocessor:
           self.all_attendance_cols = [col for col in self.all_attendance_cols if col in df.columns]
 
           # Cast columns to schema data types
-          cast_map = {"str": str, "int": "int64", "float": np.float64}
-          dtype_map = {dtype: [col for col in df.columns if self.schema[col][0] == dtype] for dtype in cast_map}
-          converted_parts = [df[cols].astype(cast_map[dtype]) for dtype, cols in dtype_map.items() if cols]
+          dtype_map = {
+               dtype: [
+                    col for col, props in self.schema.items()
+                    if props[0] == dtype and col in df.columns
+               ]
+               for dtype in [constants.DtypeCastMap.STR, constants.DtypeCastMap.FLOAT, constants.DtypeCastMap.INT]
+          }
+          converted_parts = [
+               df[cols].astype(dtype) for dtype, cols in dtype_map.items() if cols
+          ]
           all_typed_cols = sum(dtype_map.values(), [])
           df = pd.concat([df.drop(columns=all_typed_cols)] + converted_parts, axis=1)
 
           # Replace values in attendance columns
           df.loc[:, self.all_attendance_cols] = df.loc[:, self.all_attendance_cols].replace(self.attendance_replacement_map)
 
-          # Rectify attendance using exam scores
-          for col_attnd in self.column_groups["exam_attnd_subwise"]:
-               col_score = col_attnd.replace("attnd", "score")
+          # Rectify exam attendance using exam scores
+          for col_attnd in self.column_groups[constants.ColumnGroups.EXAM_ATTND_SUBWISE]:
+               col_score = col_attnd.replace(constants.ColumnGroups.ATTND, constants.ColumnGroups.SCORE)
                if col_score in df.columns:
-                    df.loc[:, col_attnd] = df[col_score].apply(lambda x: "m" if pd.isnull(x) else "p" if x > 0 else "a")
+                    df.loc[:, col_attnd] = df[col_score].apply(
+                         lambda x: (
+                              constants.Attendance.Status.MISSING if pd.isnull(x)
+                              else constants.Attendance.Status.PRESENT if x > 0
+                              else constants.Attendance.Status.ABSENT
+                         )
+                    )
+          
+          # fillna with 0 in exam_scores after using them to rectify exam_attendance
+          df.loc[:, self.column_groups[constants.ColumnGroups.EXAM_SCORE_SUBWISE]] = df.loc[:, self.column_groups[constants.ColumnGroups.EXAM_SCORE_SUBWISE]].fillna(0)
 
-          # Fill missing values with nan for categorical columns and 0 for numerical columns
-          df.loc[:, dtype_map["str"]] = df.loc[:, dtype_map["str"]].fillna("nan")
-          df.loc[:, dtype_map["float"]] = df.loc[:, dtype_map["float"]].fillna(0.0)
+          # Fill missing values with 'm' for attendance columns
+          df.loc[:, self.all_attendance_cols] = df.loc[:, self.all_attendance_cols].fillna(constants.Attendance.Status.MISSING)
+
+          # Fill remaining missing values with "nan" for other categorical columns and 0 for numerical columns
+          str_cols_to_fill = [
+               col for col in dtype_map.get(constants.DtypeCastMap.STR, [])
+               if col not in self.all_attendance_cols
+          ]
+          df.loc[:, str_cols_to_fill] = df.loc[:, str_cols_to_fill].fillna("nan")
+          float_cols = dtype_map.get(constants.DtypeCastMap.FLOAT, [])
+          df.loc[:, float_cols] = df.loc[:, float_cols].fillna(df.loc[:, float_cols].mean())
 
           self.df = df
 
@@ -87,14 +123,21 @@ class DataPreprocessor:
           Applies filtering based on column_filters with 'in' and/or 'notin' keys.
           :param column_filters: Dict with optional 'in' and 'notin' sub-dicts specifying filtering logic.
           """
-          for mode, op in {'in': lambda x, y: x.isin(y), 'notin': lambda x, y: ~x.isin(y)}.items():
+          for mode, op in {
+               'in': lambda x, y: x.isin(y),
+               'notin': lambda x, y: ~x.isin(y)
+          }.items():
                for col, values in column_filters.get(mode, {}).items():
                     if col in self.df.columns:
                          self.df = self.df[op(self.df[col], values)]
           self.df.reset_index(drop=True, inplace=True)
 
      def _validate_and_filter_metadata(
-               self, df: pd.DataFrame, schema: dict, column_groups: dict, reserved_columns: Set[str]=None
+               self,
+               df: pd.DataFrame,
+               schema: dict,
+               column_groups: dict,
+               reserved_columns: Set[str]=None
      ) -> Tuple[dict, dict]:
           """
           Validate and filter schema and feature group metadata based on DataFrame columns.
@@ -120,7 +163,7 @@ class DataPreprocessor:
           if missing_in_groups:
                raise ValueError(f"Columns missing in column_groups: {sorted(missing_in_groups)}")
 
-          print("✅ All DataFrame columns found in schema and column_groups.")
+          print(constants.SuccessMessages.METADATA_VALIDATION)
 
           # Filter schema to used columns
           schema_filtered = {col: val for col, val in schema.items() if col in df_columns}

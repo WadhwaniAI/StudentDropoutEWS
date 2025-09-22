@@ -3,6 +3,7 @@ import pytz
 from pathlib import Path
 from datetime import datetime
 from pathlib import Path
+from src import constants
 
 
 # Define the root of this repo (2 levels up from src/)
@@ -37,7 +38,7 @@ def replace_value_in_nested_dict(d, target, replacement):
      return new_dict
 
 
-def custom_json_formatter(data: dict, indent: int = 5) -> str:
+def custom_json_formatter(data: dict, indent: int = constants.ConfigSchema.JSON_INDENT) -> str:
      """Formats a dict into JSON with 5-space indentation and inline lists."""
 
      def format_item(item, level):
@@ -55,10 +56,10 @@ def custom_json_formatter(data: dict, indent: int = 5) -> str:
      return format_item(data, 0)
      
 
-def get_timestamp(timezone: str='Asia/Kolkata') -> str:
+def get_timestamp(timezone: str=constants.DateTime.TIMEZONE) -> str:
      """Returns current timestamp as YYYY-MM-DD_HH:MM:SS."""
      now = datetime.now(pytz.timezone(timezone))
-     return f"{now.strftime('%Y-%m-%d_%H:%M:%S')}"
+     return f"{now.strftime(constants.DateTime.TIMESTAMP_FORMAT)}"
 
 
 def resolve_path(path_str: str) -> Path:

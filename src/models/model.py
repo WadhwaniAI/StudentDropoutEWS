@@ -8,6 +8,7 @@ from .utils import (
      filter_valid_params, get_optimal_thresholds
 )
 from .calibration import IsotonicCalibrator
+from src import constants
 
 
 class EWSModel:
@@ -26,8 +27,12 @@ class EWSModel:
           self.best_params = config.model.params.fixed
           self.trial_params = {}
 
-          self.model = CatBoostClassifier(train_dir=exp_dir, cat_features=cat_features, **self.best_params)
-          self.calibrator = IsotonicCalibrator(f"{self.exp_dir}/isotonic_regression.pkl")
+          self.model = CatBoostClassifier(
+               train_dir=exp_dir, cat_features=cat_features, **self.best_params
+          )
+          self.calibrator = IsotonicCalibrator(
+               f"{self.exp_dir}/{constants.ModelArtifacts.CALIBRATOR}"
+          )
 
      def fit(self, x_train, y_train, x_val, y_val):
           """
@@ -40,34 +45,46 @@ class EWSModel:
           """
           if getattr(self.config.model.params, "tune", None) is not None:
                self.tune(x_train, y_train, x_val, y_val)
-               with open(f"{self.exp_dir}/trial_params.json", "w") as f:
-                    json.dump(self.trial_params, f, indent=5)
+               with open(f"{self.exp_dir}/{constants.ModelArtifacts.TRIAL_PARAMS}", "w") as f:
+                    json.dump(self.trial_params, f, indent=constants.ConfigSchema.JSON_INDENT)
 
           self.model.fit(x_train, y_train, eval_set=(x_val, y_val), verbose=True)
           y_val_score = self.model.predict_proba(x_val)[:, 1]
 
-          df_val = pd.DataFrame({
-               "preds_proba_0": 1 - y_val_score,
-               "preds_proba_1": y_val_score,
-               "target": y_val
-          })
-          df_val.to_csv(f"{self.exp_dir}/val_precalibration_confidence_scores.csv", index=False)
+          df_val = pd.DataFrame(
+               {
+                    constants.ColumnNames.PROBA_0: 1 - y_val_score,
+                    constants.ColumnNames.PROBA_1: y_val_score,
+                    self.config.data.label or constants.ColumnNames.LABEL: y_val,
+               }
+          )
+          df_val.to_csv(
+               f"{self.exp_dir}/{constants.ModelArtifacts.PRECALIBRATION_SCORES}",
+               index=False,
+          )
 
           y_val_score = self.calibrate(y_val, y_val_score)
 
-          df_val = pd.DataFrame({
-               "preds_proba_0": 1 - y_val_score,
-               "preds_proba_1": y_val_score,
-               "target": y_val
-          })
-          df_val.to_csv(f"{self.exp_dir}/val_postcalibration_confidence_scores.csv", index=False)
+          df_val = pd.DataFrame(
+               {
+                    constants.ColumnNames.PROBA_0: 1 - y_val_score,
+                    constants.ColumnNames.PROBA_1: y_val_score,
+                    self.config.data.label or constants.ColumnNames.LABEL: y_val,
+               }
+          )
+          df_val.to_csv(
+               f"{self.exp_dir}/{constants.ModelArtifacts.POSTCALIBRATION_SCORES}",
+               index=False,
+          )
 
           th_f1, th_lift = get_optimal_thresholds(
-               df=df_val, proba_1_col="preds_proba_1", target_col=self.config.data.label
+               df=df_val,
+               proba_1_col=constants.ColumnNames.PROBA_1,
+               target_col=self.config.data.label or constants.ColumnNames.LABEL,
           )
           self.model.set_probability_threshold(th_f1)
           self.optimal_threshold = self.model.get_probability_threshold()
-          self.model.save_model(f'{self.exp_dir}/model.cbm')
+          self.model.save_model(f"{self.exp_dir}/{constants.ModelArtifacts.MODEL}")
 
           return self.best_params, th_f1, th_lift
 
@@ -78,7 +95,7 @@ class EWSModel:
           :param features (list): Feature columns to use for prediction.
           Returns: Input dataframe with appended prediction columns.
           """
-          self.model.load_model(f'{self.exp_dir}/model.cbm')
+          self.model.load_model(f"{self.exp_dir}/{constants.ModelArtifacts.MODEL}")
           self.optimal_threshold = self.model.get_probability_threshold()
 
           scores = self.model.predict_proba(x[features])
@@ -87,11 +104,13 @@ class EWSModel:
 
           preds = (scores[:, 1] >= self.optimal_threshold).astype(int)
 
-          df_out = pd.DataFrame({
-               'preds_proba_0': scores[:, 0],
-               'preds_proba_1': scores[:, 1],
-               'preds': preds
-          })
+          df_out = pd.DataFrame(
+               {
+                    constants.ColumnNames.PROBA_0: scores[:, 0],
+                    constants.ColumnNames.PROBA_1: scores[:, 1],
+                    constants.ColumnNames.PREDICTION: preds,
+               }
+          )
 
           return pd.concat([x, df_out], axis=1)
 
@@ -130,7 +149,7 @@ class EWSModel:
           self.model = CatBoostClassifier(
                train_dir=self.exp_dir,
                cat_features=self.cat_features,
-               **self.best_params
+               **self.best_params,
           )
 
      def calibrate(self, y_true: pd.Series, y_pred: np.ndarray) -> np.ndarray:
@@ -141,5 +160,7 @@ class EWSModel:
           Returns: Calibrated prediction scores.
           """
           return self.calibrator.fit_transform(
-               y_true, y_pred, self.config.model.calibration_nbins
+               y_true,
+               y_pred,
+               self.config.model.calibration_nbins or constants.ModelConfig.CALIBRATION_BINS,
           )

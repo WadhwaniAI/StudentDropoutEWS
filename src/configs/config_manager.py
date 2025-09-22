@@ -3,13 +3,18 @@ from typing import Union, Dict, Any
 from munch import Munch, munchify
 from .utils import load_config
 from src.utils import custom_json_formatter
+from src import constants
 
 
 class ConfigManager:
      """A class to load, validate, update, and manage a Config, providing a validated Munch object for experiments."""
 
      def __init__(
-               self, config_input: Union[str, Dict, Munch], config_schema: Union[str, Dict, Munch]="metadata/config_schema.json"
+               self,
+               config_input: Union[str, Dict, Munch],
+               config_schema: Union[
+                   str, Dict, Munch
+               ] = constants.MetadataPaths.CONFIG_SCHEMA,
      ):
           """
           Initializes the manager, loads config & schema, and runs validation.
@@ -29,13 +34,31 @@ class ConfigManager:
      @staticmethod
      def _get_expected_type(schema_value: Any) -> type:
           """Infers the expected Python type from a schema's placeholder value."""
-          if isinstance(schema_value, (dict, Munch)): return (dict, Munch)
-          if isinstance(schema_value, list): return list
+          if isinstance(schema_value, (dict, Munch)):
+               return (dict, Munch)
+          if isinstance(schema_value, list):
+               return list
           if isinstance(schema_value, str):
-               if "<int>" in schema_value or "<num>" in schema_value: return int
-               if "<float>" in schema_value: return float
-               if "<true|false>" in schema_value or "<bool>" in schema_value: return bool
-               if "'actual' | float" in schema_value: return (str, float)
+               if any(
+                   ph in schema_value
+                   for ph in constants.ConfigSchema.TYPE_PLACEHOLDERS["INT"]
+               ):
+                    return int
+               if any(
+                   ph in schema_value
+                   for ph in constants.ConfigSchema.TYPE_PLACEHOLDERS["FLOAT"]
+               ):
+                    return float
+               if any(
+                   ph in schema_value
+                   for ph in constants.ConfigSchema.TYPE_PLACEHOLDERS["BOOL"]
+               ):
+                    return bool
+               if any(
+                   ph in schema_value
+                   for ph in constants.ConfigSchema.TYPE_PLACEHOLDERS["FLOAT_OR_STR"]
+               ):
+                    return (str, float)
           return str
 
      @staticmethod
@@ -112,7 +135,7 @@ class ConfigManager:
           self.config = self._deep_update(self.config, munchify(additions))
           self._validate()
 
-     def save(self, path: str, indent: int = 5):
+     def save(self, path: str, indent: int = constants.ConfigSchema.JSON_INDENT):
           """
           Validates and saves the current Config using custom JSON formatting.
           :param path (str): The full path where the Config file will be saved.

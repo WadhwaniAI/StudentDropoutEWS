@@ -71,20 +71,11 @@ The [metadata](metadata) directory contains various schemas necessary to use thi
 - Please edit the dictionary within this file for the AYs of your interest.
 - This file could either be manually populated from a PDF or parsed from a CSV of holidays for any AY.
 
-[Dataset Schema](metadata/dataset_schema.json)
-- This is a *mandatory* JSON dictionary that defines the structure of a usable dataset.
-- Each key is a column name and its corresponding value is a list containing:
-  - Datatype: `str` (categorical), `float` (numerical), and `int` (target)
-  - Description: A piece of text briefly explaining the column and what it contains, and
-  - Grouping: The logical group it belongs to (used in preprocessing)
-- Modify [Dataset Schema](metadata/dataset_schema.json) if your dataset has different column names, datatypes, descriptions or groupings.
-
-[Config Schema](metadata/config_schema.json)
-- This is a *mandatory* nested JSON dictionary that defines the structure of a `Config` file used for training or inference.
-- A new `Config` file needs to be created by the user for every training run, and an existing one is used to infer on a new dataset.
-- [Config Schema](metadata/config_schema.json) **should not be deleted or edited**.
-  - A copy of this file needs to be made by the user for their own experiments.
-- This is explained in detail [here](metadata/CONFIG_README.md).
+[Attendance Replacement Map](metadata/attendance_replacement_map.json)
+- This is a *mandatory* JSON file that defines the semantic mapping for raw attendance values.
+- It is used to convert different raw data values (e.g., `"1"`, `"2"`, `"nan"`) into the standardized representations for `"present"`, `"absent"`, and `"missing"`.
+- The keys in this file **must** be `"present"`, `"absent"`, and `"missing"`. The validation logic strictly checks for these keys, which correspond to the `constants.Attendance.Status` class in `constants.py`, ensuring consistency.
+- Please edit these constants for your dataset appropriately.
 
 [Predictor groups](metadata/predictor_groups.json)
 - This is an *optional* JSON dictionary logically categorizing similar features into predictor groups.
@@ -106,13 +97,37 @@ The [metadata](metadata) directory contains various schemas necessary to use thi
 
 ---
 
-- A valid dataset for training and inference must conform to the [Dataset Schema](metadata/dataset_schema.json). 
-  - The columns of your dataset must be a subset of the columns in [Dataset Schema](metadata/dataset_schema.json).
-  - If your dataset has different column names, please modify [Dataset Schema](metadata/dataset_schema.json) accordingly before use.
-- Dataset files must be in a pickle (`.pkl`) format only (e.g., `dataset/ay2223_grade3.pkl`).
-  - Currently, support for other file formats is not provided.
-- The stem of a dataset file path is used to extract metadata like the "academic year" and "grade".
-  - It must follow the pattern: `ay<academic_year>_grade<grade>`. Eg: `dataset/ay2223_grade3.pkl`.
+A valid dataset for training and inference must satisfy the following requirements:
+
+#### 1. File Format
+- Dataset files must be in the pickle (`.pkl`) format. Other formats are not currently supported.
+
+#### 2. Naming Convention
+- The filename (excluding extension) must follow the pattern `ay<academic_year>_grade<grade>`.
+- This convention is used to extract metadata like the academic year and grade.
+- For example: `dataset/ay2223_grade3.pkl`.
+
+#### 3. Schema Conformance
+- The dataset must conform to the structure defined in the [Dataset Schema](metadata/dataset_schema.json).
+- This is a *mandatory* JSON dictionary (explained [here](metadata/DATASET_README.md)) that defines the structure of a usable dataset.
+- The columns in your dataset must be a subset of those defined in the schema.
+- If your dataset uses different column names, you must update the [Dataset Schema](metadata/dataset_schema.json) accordingly.
+- An illustrative sample dataset is shown [here](metadata/illustrative_dataset.csv).
+  - **Disclaimer:** *This sample dataset contains synthetically generated data for demonstration purposes. Any resemblance to real individuals or entities is purely coincidental.*
+
+---
+
+</details>
+
+<details>
+<summary><span style="font-size: 20px">⚙️ CONFIGURATION</span></summary>
+
+---
+
+- A `Config` file is required to run the training or inference pipelines.
+- This file must conform to the structure defined in the [Config Schema](metadata/config_schema.json).
+- The schema file itself **should not be edited**. Instead, you should create a copy to use for your experiments.
+- For a detailed explanation of all the parameters, please see the [Configuration README](metadata/CONFIG_README.md).
 
 ---
 
@@ -227,6 +242,6 @@ We acknowledge with gratitude the collaborative partnership that has made EWS po
 <details>
 <summary><span style="font-size: 20px">🛡️ LICENSE</span></summary>
 
-- This project is licensed under the [Apache License 2.0](LICENSE) © 2025 Wadhwani Institute for Artificial Intelligence (Wadhwani AI)
+- This project is licensed under the [Apache License 2.0](LICENSE) © 2025 Wadhwani Institute for Artificial Intelligence (Wadhwani AI).
 
 </details>
