@@ -109,10 +109,10 @@ A valid dataset for training and inference must satisfy the following requiremen
 
 #### 3. Schema Conformance
 - The dataset must conform to the structure defined in the [Dataset Schema](metadata/dataset_schema.json).
-- This is a *mandatory* JSON dictionary (explained [here](metadata/DATASET_README.md) that defines the structure of a usable dataset.
+- This is a *mandatory* JSON dictionary (explained [here](metadata/DATASET_README.md)) that defines the structure of a usable dataset.
 - The columns in your dataset must be a subset of those defined in the schema.
 - If your dataset uses different column names, you must update the [Dataset Schema](metadata/dataset_schema.json) accordingly.
-- An illustrative dataset is shown [here](metadata/illustrative_dataset.csv).
+- An illustrative sample dataset is shown [here](metadata/illustrative_dataset.csv).
 
 ---
 
