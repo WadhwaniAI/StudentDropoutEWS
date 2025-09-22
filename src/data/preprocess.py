@@ -1,6 +1,5 @@
 import json
 import pandas as pd
-import numpy as np
 from typing import Dict, List, Set, Tuple, Optional
 from src.utils import resolve_path
 from src import constants
