@@ -6,7 +6,7 @@ It uses classes as namespaces to provide better organization, autocompletion, an
 
 class MetadataPaths:
      """File paths for metadata and configuration files."""
-     DATASET_SCHEMA = "metadata/demo_dataset_schema.json"
+     DATASET_SCHEMA = "metadata/dataset_schema.json"
      CONFIG_SCHEMA = "metadata/config_schema.json"
      HOLIDAYS_CALENDAR = "metadata/holidays_calendar.json"
      ATTENDANCE_REPLACEMENT_MAP = "metadata/attendance_replacement_map.json"
