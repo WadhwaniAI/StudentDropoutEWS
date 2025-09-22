@@ -113,6 +113,7 @@ A valid dataset for training and inference must satisfy the following requiremen
 - The columns in your dataset must be a subset of those defined in the schema.
 - If your dataset uses different column names, you must update the [Dataset Schema](metadata/dataset_schema.json) accordingly.
 - An illustrative sample dataset is shown [here](metadata/illustrative_dataset.csv).
+  - **Note:** This sample dataset contains synthetically generated data for demonstration purposes. Any resemblance to real individuals or entities is purely coincidental.
 
 ---
 
